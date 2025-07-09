@@ -172,9 +172,9 @@ node install-mcp-tools.js
 
 ## 📚 さらに詳しく
 
-- [英語版README](./README.md)
-- [AI-Context Flow詳細設定](./CLAUDE.md)
-- [開発者向けドキュメント](./docs/)
+- [英語版README](../README.md)
+- [ClaudeFlow詳細設定](../CLAUDE.md)
+- [開発者向けドキュメント](../docs/)
 
 ## 🤝 サポート
 
