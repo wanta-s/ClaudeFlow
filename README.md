@@ -100,6 +100,7 @@ cp -r commands shared CLAUDE.md ~/.claude/
 
 ## 📖 ドキュメント
 
+- [日本語使い方ガイド](./USAGE-JP.md) 🆕
 - [SuperClaude設定ガイド](./CLAUDE.md)
 - [AI開発フロー](./ai-development-flow/)
 - [日本語ドキュメント](./japanese-documentation/)
