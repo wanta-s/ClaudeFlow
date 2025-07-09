@@ -1,0 +1,19 @@
+{
+  "name": "mcp-tools-installer",
+  "version": "1.0.0",
+  "description": "Automatic installer for SuperClaude MCP tools",
+  "main": "install-mcp-tools.js",
+  "bin": {
+    "install-mcp-tools": "./install-mcp-tools.js"
+  },
+  "scripts": {
+    "install": "node install-mcp-tools.js",
+    "postinstall": "node install-mcp-tools.js"
+  },
+  "keywords": ["mcp", "superclaude", "claude-code", "installer"],
+  "author": "SuperClaude Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
