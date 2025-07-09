@@ -60,6 +60,30 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 - **minimal-impact-implementation/** - 最小影響実装
 - **change-impact-testing/** - 変更影響テスト
 
+## 🔄 アップデート
+
+### JavaScript版（推奨）
+```bash
+node install-mcp-tools.js --update
+```
+
+### ワンライナーアップデート
+
+**Unix/Linux/Mac:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/update.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/update.ps1 | iex
+```
+
+アップデート時の特徴：
+- 🔐 現在の設定を自動バックアップ（~/.claude-backup）
+- 📦 最新版を自動ダウンロード
+- ✅ エラー時は自動的にバックアップから復元
+
 ## 🗑️ アンインストール
 
 ### JavaScript版（推奨）

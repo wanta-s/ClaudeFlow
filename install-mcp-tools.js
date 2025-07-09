@@ -264,6 +264,101 @@ async function mainWithArgs() {
   console.log(`\n${colors.green}Happy coding with SuperClaude!${colors.reset}`);
 }
 
+// Update function
+async function update() {
+  log.header('MCP Tools Updater for SuperClaude');
+  
+  console.log('\n📦 Checking for updates...');
+  
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  const claudeDir = path.join(homeDir, '.claude');
+  const tempDir = path.join(homeDir, '.claude-update-temp');
+  
+  try {
+    // Create temp directory
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+    
+    // Clone latest version
+    log.info('Downloading latest version from GitHub...');
+    await execAsync(`git clone https://github.com/wanta-s/ai-first-context-engineering.git "${tempDir}/repo"`);
+    
+    // Backup current installation
+    const backupDir = path.join(homeDir, '.claude-backup');
+    if (fs.existsSync(claudeDir)) {
+      log.info('Backing up current installation...');
+      if (fs.existsSync(backupDir)) {
+        fs.rmSync(backupDir, { recursive: true, force: true });
+      }
+      fs.cpSync(claudeDir, backupDir, { recursive: true });
+    }
+    
+    // Copy new files
+    log.info('Updating files...');
+    const repoDir = path.join(tempDir, 'repo');
+    
+    // Update CLAUDE.md
+    const newClaudeMd = path.join(repoDir, 'CLAUDE.md');
+    const targetClaudeMd = path.join(claudeDir, 'CLAUDE.md');
+    if (fs.existsSync(newClaudeMd)) {
+      fs.copyFileSync(newClaudeMd, targetClaudeMd);
+      console.log('✅ Updated CLAUDE.md');
+    }
+    
+    // Update commands directory
+    const newCommandsDir = path.join(repoDir, 'commands');
+    const targetCommandsDir = path.join(claudeDir, 'commands');
+    if (fs.existsSync(newCommandsDir)) {
+      if (!fs.existsSync(targetCommandsDir)) {
+        fs.mkdirSync(targetCommandsDir, { recursive: true });
+      }
+      fs.cpSync(newCommandsDir, targetCommandsDir, { recursive: true });
+      console.log('✅ Updated commands directory');
+    }
+    
+    // Update shared directory
+    const newSharedDir = path.join(repoDir, 'shared');
+    const targetSharedDir = path.join(claudeDir, 'shared');
+    if (fs.existsSync(newSharedDir)) {
+      if (!fs.existsSync(targetSharedDir)) {
+        fs.mkdirSync(targetSharedDir, { recursive: true });
+      }
+      fs.cpSync(newSharedDir, targetSharedDir, { recursive: true });
+      console.log('✅ Updated shared directory');
+    }
+    
+    // Clean up temp directory
+    fs.rmSync(tempDir, { recursive: true, force: true });
+    
+    log.success('\n✨ Update complete! SuperClaude MCP tools are now up to date.');
+    console.log('\nBackup saved to: ~/.claude-backup');
+    console.log('You can restore the backup if needed.');
+    
+  } catch (error) {
+    log.error('Update failed:');
+    console.error(error.message);
+    
+    // Clean up temp directory on error
+    if (fs.existsSync(tempDir)) {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+    
+    // Restore backup if it exists
+    const backupDir = path.join(homeDir, '.claude-backup');
+    if (fs.existsSync(backupDir)) {
+      log.info('Restoring from backup...');
+      if (fs.existsSync(claudeDir)) {
+        fs.rmSync(claudeDir, { recursive: true, force: true });
+      }
+      fs.cpSync(backupDir, claudeDir, { recursive: true });
+      log.success('Restored from backup.');
+    }
+    
+    process.exit(1);
+  }
+}
+
 // Uninstall function
 async function uninstall() {
   log.header('MCP Tools Uninstaller for SuperClaude');
@@ -339,18 +434,27 @@ Usage: node install-mcp-tools.js [options]
 Options:
   -y, --yes         Skip confirmation prompt and install automatically
   -u, --uninstall   Uninstall SuperClaude MCP tools
+  --update          Update SuperClaude MCP tools to latest version
   -h, --help        Show this help message
 
 Examples:
   node install-mcp-tools.js          # Interactive installation
   node install-mcp-tools.js -y       # Automatic installation without prompts
   node install-mcp-tools.js -u       # Uninstall MCP tools
+  node install-mcp-tools.js --update # Update to latest version
 `);
   process.exit(0);
 }
 
-// Check if uninstall flag is present
-if (args.includes('-u') || args.includes('--uninstall')) {
+// Check if update flag is present
+if (args.includes('--update')) {
+  update().catch(error => {
+    log.error('Unexpected error occurred:');
+    console.error(error);
+    process.exit(1);
+  });
+} else if (args.includes('-u') || args.includes('--uninstall')) {
+  // Check if uninstall flag is present
   uninstall().catch(error => {
     log.error('Unexpected error occurred:');
     console.error(error);
