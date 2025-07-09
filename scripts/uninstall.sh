@@ -69,7 +69,7 @@ echo ""
 if [ $REMOVED_COUNT -gt 0 ]; then
     echo "✅ Uninstallation complete! Removed $REMOVED_COUNT items."
 else
-    echo "ℹ️  No AI-Context Flow MCP tools found to uninstall."
+    echo "ℹ️  No ClaudeFlow MCP tools found to uninstall."
 fi
 
 echo ""

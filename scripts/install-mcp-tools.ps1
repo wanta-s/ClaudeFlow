@@ -1,4 +1,4 @@
-# MCP Tools Installer for AI-Context Flow (Windows PowerShell)
+# MCP Tools Installer for ClaudeFlow (Windows PowerShell)
 # This script installs essential MCP tools for enhanced Claude Code functionality
 
 $ErrorActionPreference = "Stop"
@@ -14,7 +14,7 @@ function Write-ColorOutput($ForegroundColor) {
 }
 
 Write-Host "========================================" -ForegroundColor Green
-Write-Host "   MCP Tools Installer for AI-Context Flow  " -ForegroundColor Green
+Write-Host "   MCP Tools Installer for ClaudeFlow  " -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 
@@ -109,9 +109,9 @@ if (-not (Install-MCPTool -ToolName "Puppeteer" -PackageName "@puppeteer/mcp-ser
 }
 Write-Host ""
 
-# Copy AI-Context Flow configuration files
+# Copy ClaudeFlow configuration files
 Write-Host ""
-Write-Host "Installing AI-Context Flow configuration files..." -ForegroundColor Yellow
+Write-Host "Installing ClaudeFlow configuration files..." -ForegroundColor Yellow
 
 $claudeDir = "$env:USERPROFILE\.claude"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -159,7 +159,7 @@ if (Test-Path $sharedSource) {
 }
 
 Write-Host ""
-Write-Host "✓ AI-Context Flow configuration files installed successfully!" -ForegroundColor Green
+Write-Host "✓ ClaudeFlow configuration files installed successfully!" -ForegroundColor Green
 
 # Summary
 Write-Host ""
@@ -186,4 +186,4 @@ if ($failedInstalls.Count -eq 0) {
 }
 
 Write-Host ""
-Write-Host "Happy coding with AI-Context Flow!" -ForegroundColor Green
+Write-Host "Happy coding with ClaudeFlow!" -ForegroundColor Green

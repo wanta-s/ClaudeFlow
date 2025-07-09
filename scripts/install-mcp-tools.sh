@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# MCP Tools Installer for AI-Context Flow
+# MCP Tools Installer for ClaudeFlow
 # This script installs essential MCP tools for enhanced Claude Code functionality
 
 set -e
@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}   MCP Tools Installer for AI-Context Flow  ${NC}"
+echo -e "${GREEN}   MCP Tools Installer for ClaudeFlow  ${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 
@@ -85,9 +85,9 @@ if ! install_tool "Puppeteer" "@puppeteer/mcp-server" "Browser automation and we
     failed_installs+=("Puppeteer")
 fi
 
-# Copy AI-Context Flow configuration files
+# Copy ClaudeFlow configuration files
 echo ""
-echo -e "${YELLOW}Installing AI-Context Flow configuration files...${NC}"
+echo -e "${YELLOW}Installing ClaudeFlow configuration files...${NC}"
 
 CLAUDE_DIR="$HOME/.claude"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -124,7 +124,7 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}✓ AI-Context Flow configuration files installed successfully!${NC}"
+echo -e "${GREEN}✓ ClaudeFlow configuration files installed successfully!${NC}"
 
 # Summary
 echo ""
@@ -151,4 +151,4 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}Happy coding with AI-Context Flow!${NC}"
+echo -e "${GREEN}Happy coding with ClaudeFlow!${NC}"

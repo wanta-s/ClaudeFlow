@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * MCP Tools Installer for AI-Context Flow
+ * MCP Tools Installer for ClaudeFlow
  * Cross-platform installer for essential MCP tools
  */
 
@@ -146,7 +146,7 @@ async function showInstallationPlan() {
 
 // Main installation process
 async function main() {
-  log.header('MCP Tools Installer for AI-Context Flow');
+  log.header('MCP Tools Installer for ClaudeFlow');
   
   // Check npm
   if (!await checkNpm()) {
@@ -197,7 +197,7 @@ async function main() {
     process.exit(1);
   }
   
-  console.log(`\n${colors.green}Happy coding with AI-Context Flow!${colors.reset}`);
+  console.log(`\n${colors.green}Happy coding with ClaudeFlow!${colors.reset}`);
 }
 
 // Parse command line arguments
@@ -206,7 +206,7 @@ const skipConfirmation = args.includes('-y') || args.includes('--yes');
 
 // Modified main function to handle skip confirmation
 async function mainWithArgs() {
-  log.header('MCP Tools Installer for AI-Context Flow');
+  log.header('MCP Tools Installer for ClaudeFlow');
   
   // Check npm
   if (!await checkNpm()) {
@@ -239,9 +239,9 @@ async function mainWithArgs() {
     console.log('');
   }
   
-  // Copy AI-Context Flow configuration files
+  // Copy ClaudeFlow configuration files
   console.log('');
-  log.info('Installing AI-Context Flow configuration files...\n');
+  log.info('Installing ClaudeFlow configuration files...\n');
   
   const homeDir = process.env.HOME || process.env.USERPROFILE;
   const claudeDir = path.join(homeDir, '.claude');
@@ -290,7 +290,7 @@ async function mainWithArgs() {
     }
     
     console.log('');
-    log.success('AI-Context Flow configuration files installed successfully!');
+    log.success('ClaudeFlow configuration files installed successfully!');
   } catch (error) {
     log.error('Failed to copy configuration files:');
     console.error(error.message);
@@ -318,12 +318,12 @@ async function mainWithArgs() {
     process.exit(1);
   }
   
-  console.log(`\n${colors.green}Happy coding with AI-Context Flow!${colors.reset}`);
+  console.log(`\n${colors.green}Happy coding with ClaudeFlow!${colors.reset}`);
 }
 
 // Update function
 async function update() {
-  log.header('MCP Tools Updater for AI-Context Flow');
+  log.header('MCP Tools Updater for ClaudeFlow');
   
   console.log('\n📦 Checking for updates...');
   
@@ -397,7 +397,7 @@ async function update() {
     // Clean up temp directory
     fs.rmSync(tempDir, { recursive: true, force: true });
     
-    log.success('\n✨ Update complete! AI-Context Flow MCP tools are now up to date.');
+    log.success('\n✨ Update complete! ClaudeFlow MCP tools are now up to date.');
     console.log('\nBackup saved to: ~/.claude-backup');
     console.log('You can restore the backup if needed.');
     
@@ -427,9 +427,9 @@ async function update() {
 
 // Uninstall function
 async function uninstall() {
-  log.header('MCP Tools Uninstaller for AI-Context Flow');
+  log.header('MCP Tools Uninstaller for ClaudeFlow');
   
-  console.log('\n⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/');
+  console.log('\n⚠️  This will remove ClaudeFlow MCP tools from ~/.claude/');
   const proceed = await getUserConfirmation('Continue with uninstallation?');
   
   if (!proceed) {
@@ -438,7 +438,7 @@ async function uninstall() {
   }
   
   console.log('');
-  log.info('Removing AI-Context Flow MCP tools...');
+  log.info('Removing ClaudeFlow MCP tools...');
   
   let removedCount = 0;
   const homeDir = process.env.HOME || process.env.USERPROFILE;
@@ -484,7 +484,7 @@ async function uninstall() {
   if (removedCount > 0) {
     log.success(`Uninstallation complete! Removed ${removedCount} items.`);
   } else {
-    log.info('No AI-Context Flow MCP tools found to uninstall.');
+    log.info('No ClaudeFlow MCP tools found to uninstall.');
   }
   
   console.log('\n👋 Thank you for using AI-First Context Engineering!');
@@ -493,14 +493,14 @@ async function uninstall() {
 // Show help if requested
 if (args.includes('-h') || args.includes('--help')) {
   console.log(`
-MCP Tools Installer for AI-Context Flow
+MCP Tools Installer for ClaudeFlow
 
 Usage: node install-mcp-tools.js [options]
 
 Options:
   -y, --yes         Skip confirmation prompt and install automatically
-  -u, --uninstall   Uninstall AI-Context Flow MCP tools
-  --update          Update AI-Context Flow MCP tools to latest version
+  -u, --uninstall   Uninstall ClaudeFlow MCP tools
+  --update          Update ClaudeFlow MCP tools to latest version
   -h, --help        Show this help message
 
 Examples:

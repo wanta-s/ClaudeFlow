@@ -72,7 +72,7 @@ Write-Host ""
 if ($removedCount -gt 0) {
     Write-Host "✅ Uninstallation complete! Removed $removedCount items." -ForegroundColor Green
 } else {
-    Write-Host "ℹ️  No AI-Context Flow MCP tools found to uninstall." -ForegroundColor Cyan
+    Write-Host "ℹ️  No ClaudeFlow MCP tools found to uninstall." -ForegroundColor Cyan
 }
 
 Write-Host ""
