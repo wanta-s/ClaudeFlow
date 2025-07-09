@@ -115,14 +115,14 @@ async function installTool(tool) {
 }
 
 // Get user confirmation
-async function getUserConfirmation() {
+async function getUserConfirmation(message = 'Do you want to proceed with the installation?') {
   const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
   });
   
   return new Promise((resolve) => {
-    readline.question(`\n${colors.yellow}Do you want to proceed with the installation? (Y/n): ${colors.reset}`, (answer) => {
+    readline.question(`\n${colors.yellow}${message} (Y/n): ${colors.reset}`, (answer) => {
       readline.close();
       resolve(answer.toLowerCase() !== 'n' && answer.toLowerCase() !== 'no');
     });
@@ -332,6 +332,15 @@ async function update() {
   const tempDir = path.join(homeDir, '.claude-update-temp');
   
   try {
+    // Check if git is available
+    try {
+      await execAsync('git --version');
+    } catch (error) {
+      log.error('Git is not installed. Please install Git first.');
+      console.log('Download Git from: https://git-scm.com/downloads');
+      process.exit(1);
+    }
+    
     // Create temp directory
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });

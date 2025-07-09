@@ -8,12 +8,21 @@
   },
   "scripts": {
     "install": "node scripts/install-mcp-tools.js",
-    "postinstall": "node scripts/install-mcp-tools.js"
+    "update": "node scripts/install-mcp-tools.js --update",
+    "uninstall": "node scripts/install-mcp-tools.js --uninstall"
   },
-  "keywords": ["mcp", "superclaude", "claude-code", "installer"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wanta-s/ai-first-context-engineering.git"
+  },
+  "keywords": ["mcp", "superclaude", "claude-code", "installer", "ai-development"],
   "author": "SuperClaude Team",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/wanta-s/ai-first-context-engineering/issues"
+  },
+  "homepage": "https://github.com/wanta-s/ai-first-context-engineering#readme"
 }

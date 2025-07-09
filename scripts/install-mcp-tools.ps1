@@ -134,7 +134,11 @@ if (Test-Path $claudeMdSource) {
 
 # Copy commands directory
 $commandsSource = Join-Path $parentDir "commands"
+$commandsTarget = Join-Path $claudeDir "commands"
 if (Test-Path $commandsSource) {
+    if (Test-Path $commandsTarget) {
+        Remove-Item $commandsTarget -Recurse -Force
+    }
     Copy-Item $commandsSource -Destination $claudeDir -Recurse -Force
     Write-Host "✓ Copied commands directory" -ForegroundColor Green
 } else {
@@ -143,7 +147,11 @@ if (Test-Path $commandsSource) {
 
 # Copy shared directory
 $sharedSource = Join-Path $parentDir "shared"
+$sharedTarget = Join-Path $claudeDir "shared"
 if (Test-Path $sharedSource) {
+    if (Test-Path $sharedTarget) {
+        Remove-Item $sharedTarget -Recurse -Force
+    }
     Copy-Item $sharedSource -Destination $claudeDir -Recurse -Force
     Write-Host "✓ Copied shared directory" -ForegroundColor Green
 } else {

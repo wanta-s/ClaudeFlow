@@ -21,7 +21,7 @@ node scripts/install-mcp-tools.js
 
 **シェルスクリプト版（Unix/Linux/Mac）:**
 ```bash
-chmod +x install-mcp-tools.sh
+chmod +x scripts/install-mcp-tools.sh
 ./scripts/install-mcp-tools.sh
 ```
 
