@@ -109,7 +109,52 @@ if (-not (Install-MCPTool -ToolName "Puppeteer" -PackageName "@puppeteer/mcp-ser
 }
 Write-Host ""
 
+# Copy SuperClaude configuration files
+Write-Host ""
+Write-Host "Installing SuperClaude configuration files..." -ForegroundColor Yellow
+
+$claudeDir = "$env:USERPROFILE\.claude"
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$parentDir = Split-Path -Parent $scriptDir
+
+# Create .claude directory if it doesn't exist
+if (-not (Test-Path $claudeDir)) {
+    New-Item -ItemType Directory -Path $claudeDir -Force | Out-Null
+    Write-Host "✓ Created $claudeDir" -ForegroundColor Green
+}
+
+# Copy CLAUDE.md
+$claudeMdSource = Join-Path $parentDir "CLAUDE.md"
+if (Test-Path $claudeMdSource) {
+    Copy-Item $claudeMdSource -Destination $claudeDir -Force
+    Write-Host "✓ Copied CLAUDE.md" -ForegroundColor Green
+} else {
+    Write-Host "⚠ CLAUDE.md not found in project root" -ForegroundColor Yellow
+}
+
+# Copy commands directory
+$commandsSource = Join-Path $parentDir "commands"
+if (Test-Path $commandsSource) {
+    Copy-Item $commandsSource -Destination $claudeDir -Recurse -Force
+    Write-Host "✓ Copied commands directory" -ForegroundColor Green
+} else {
+    Write-Host "⚠ commands directory not found" -ForegroundColor Yellow
+}
+
+# Copy shared directory
+$sharedSource = Join-Path $parentDir "shared"
+if (Test-Path $sharedSource) {
+    Copy-Item $sharedSource -Destination $claudeDir -Recurse -Force
+    Write-Host "✓ Copied shared directory" -ForegroundColor Green
+} else {
+    Write-Host "⚠ shared directory not found" -ForegroundColor Yellow
+}
+
+Write-Host ""
+Write-Host "✓ SuperClaude configuration files installed successfully!" -ForegroundColor Green
+
 # Summary
+Write-Host ""
 Write-Host "========================================" -ForegroundColor Green
 Write-Host "         Installation Summary           " -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green

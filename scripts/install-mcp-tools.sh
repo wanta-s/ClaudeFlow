@@ -85,7 +85,49 @@ if ! install_tool "Puppeteer" "@puppeteer/mcp-server" "Browser automation and we
     failed_installs+=("Puppeteer")
 fi
 
+# Copy SuperClaude configuration files
+echo ""
+echo -e "${YELLOW}Installing SuperClaude configuration files...${NC}"
+
+CLAUDE_DIR="$HOME/.claude"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PARENT_DIR="$( dirname "$SCRIPT_DIR" )"
+
+# Create .claude directory if it doesn't exist
+if [ ! -d "$CLAUDE_DIR" ]; then
+    mkdir -p "$CLAUDE_DIR"
+    echo -e "${GREEN}✓ Created $CLAUDE_DIR${NC}"
+fi
+
+# Copy CLAUDE.md
+if [ -f "$PARENT_DIR/CLAUDE.md" ]; then
+    cp "$PARENT_DIR/CLAUDE.md" "$CLAUDE_DIR/"
+    echo -e "${GREEN}✓ Copied CLAUDE.md${NC}"
+else
+    echo -e "${YELLOW}⚠ CLAUDE.md not found in project root${NC}"
+fi
+
+# Copy commands directory
+if [ -d "$PARENT_DIR/commands" ]; then
+    cp -r "$PARENT_DIR/commands" "$CLAUDE_DIR/"
+    echo -e "${GREEN}✓ Copied commands directory${NC}"
+else
+    echo -e "${YELLOW}⚠ commands directory not found${NC}"
+fi
+
+# Copy shared directory
+if [ -d "$PARENT_DIR/shared" ]; then
+    cp -r "$PARENT_DIR/shared" "$CLAUDE_DIR/"
+    echo -e "${GREEN}✓ Copied shared directory${NC}"
+else
+    echo -e "${YELLOW}⚠ shared directory not found${NC}"
+fi
+
+echo ""
+echo -e "${GREEN}✓ SuperClaude configuration files installed successfully!${NC}"
+
 # Summary
+echo ""
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}         Installation Summary           ${NC}"
 echo -e "${GREEN}========================================${NC}"

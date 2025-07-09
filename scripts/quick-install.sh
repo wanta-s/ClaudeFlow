@@ -5,13 +5,13 @@ echo "Downloading and running MCP Tools installer..."
 
 # Method 1: Using curl
 if command -v curl &> /dev/null; then
-    curl -sSL https://raw.githubusercontent.com/your-repo/mcp-tools-installer/main/install-mcp-tools.js | node
+    curl -sSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install-mcp-tools.js | node
     exit 0
 fi
 
 # Method 2: Using wget
 if command -v wget &> /dev/null; then
-    wget -qO- https://raw.githubusercontent.com/your-repo/mcp-tools-installer/main/install-mcp-tools.js | node
+    wget -qO- https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install-mcp-tools.js | node
     exit 0
 fi
 
