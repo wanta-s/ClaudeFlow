@@ -16,18 +16,18 @@ cd ai-first-context-engineering
 
 **JavaScript版（推奨）:**
 ```bash
-node install-mcp-tools.js
+node scripts/install-mcp-tools.js
 ```
 
 **シェルスクリプト版（Unix/Linux/Mac）:**
 ```bash
 chmod +x install-mcp-tools.sh
-./install-mcp-tools.sh
+./scripts/install-mcp-tools.sh
 ```
 
 **PowerShell版（Windows）:**
 ```powershell
-.\install-mcp-tools.ps1
+.\scripts\install-mcp-tools.ps1
 ```
 
 ## 📦 ワンライナーインストール
@@ -39,12 +39,12 @@ npx github:wanta-s/ai-first-context-engineering
 
 ### curl を使用（Unix/Linux/Mac）
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install.sh | bash
 ```
 
 ### PowerShell を使用（Windows）
 ```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install.ps1 | iex
 ```
 
 ## 📚 含まれるツール
@@ -64,19 +64,19 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 
 ### JavaScript版（推奨）
 ```bash
-node install-mcp-tools.js --update
+node scripts/install-mcp-tools.js --update
 ```
 
 ### ワンライナーアップデート
 
 **Unix/Linux/Mac:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/update.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/update.sh | bash
 ```
 
 **Windows PowerShell:**
 ```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/update.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/update.ps1 | iex
 ```
 
 アップデート時の特徴：
@@ -88,29 +88,29 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 
 ### JavaScript版（推奨）
 ```bash
-node install-mcp-tools.js --uninstall
+node scripts/install-mcp-tools.js --uninstall
 ```
 
 ### シェルスクリプト版（Unix/Linux/Mac）
 ```bash
-./uninstall.sh
+./scripts/uninstall.sh
 ```
 
 ### PowerShell版（Windows）
 ```powershell
-.\uninstall.ps1
+.\scripts\uninstall.ps1
 ```
 
 ### ワンライナーアンインストール
 
 **Unix/Linux/Mac:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/uninstall.sh | bash
 ```
 
 **Windows PowerShell:**
 ```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/uninstall.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/uninstall.ps1 | iex
 ```
 
 ## 🔧 手動インストール
@@ -122,12 +122,28 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 cp -r commands shared CLAUDE.md ~/.claude/
 ```
 
+## 📁 プロジェクト構成
+
+```
+ai-first-context-engineering/
+├── README.md                # このファイル
+├── package.json            # npm設定
+├── scripts/                # インストール・管理スクリプト
+│   ├── install-mcp-tools.js   # メインインストーラー
+│   ├── install.sh/ps1         # ワンライナー用
+│   ├── update.sh/ps1          # アップデート用
+│   └── uninstall.sh/ps1       # アンインストール用
+├── docs/                   # ドキュメント
+│   ├── USAGE-JP.md           # 日本語使い方ガイド
+│   └── ...                   # その他のドキュメント
+└── ai-development-flow/    # AI開発ワークフロー
+```
+
 ## 📖 ドキュメント
 
-- [日本語使い方ガイド](./USAGE-JP.md) 🆕
+- [日本語使い方ガイド](./docs/USAGE-JP.md) 🆕
 - [SuperClaude設定ガイド](./CLAUDE.md)
 - [AI開発フロー](./ai-development-flow/)
-- [日本語ドキュメント](./japanese-documentation/)
 
 ## 🤝 貢献
 

@@ -20,11 +20,11 @@ cd ai-first-context-engineering
 echo "🔧 Running installer..."
 if command -v node &> /dev/null; then
     echo "Using Node.js installer..."
-    node install-mcp-tools.js
-elif [ -f install-mcp-tools.sh ]; then
+    node scripts/install-mcp-tools.js
+elif [ -f scripts/install-mcp-tools.sh ]; then
     echo "Using shell installer..."
-    chmod +x install-mcp-tools.sh
-    ./install-mcp-tools.sh
+    chmod +x scripts/install-mcp-tools.sh
+    ./scripts/install-mcp-tools.sh
 else
     echo "❌ No suitable installer found!"
     exit 1

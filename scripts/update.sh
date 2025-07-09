@@ -20,7 +20,7 @@ cd ai-first-context-engineering
 echo "🔧 Running updater..."
 if command -v node &> /dev/null; then
     echo "Using Node.js updater..."
-    node install-mcp-tools.js --update
+    node scripts/install-mcp-tools.js --update
 else
     echo "❌ Node.js is required for updating!"
     echo "Please install Node.js first or use the manual update method."
