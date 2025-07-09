@@ -8,6 +8,8 @@
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const execAsync = promisify(exec);
+const path = require('path');
+const fs = require('fs');
 
 // ANSI color codes
 const colors = {
@@ -262,6 +264,71 @@ async function mainWithArgs() {
   console.log(`\n${colors.green}Happy coding with SuperClaude!${colors.reset}`);
 }
 
+// Uninstall function
+async function uninstall() {
+  log.header('MCP Tools Uninstaller for SuperClaude');
+  
+  console.log('\n⚠️  This will remove SuperClaude MCP tools from ~/.claude/');
+  const proceed = await getUserConfirmation('Continue with uninstallation?');
+  
+  if (!proceed) {
+    log.warning('Uninstallation cancelled by user.');
+    process.exit(0);
+  }
+  
+  console.log('');
+  log.info('Removing SuperClaude MCP tools...');
+  
+  let removedCount = 0;
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  const claudeDir = path.join(homeDir, '.claude');
+  
+  // Remove CLAUDE.md
+  const claudeMd = path.join(claudeDir, 'CLAUDE.md');
+  if (fs.existsSync(claudeMd)) {
+    console.log('📄 Removing CLAUDE.md...');
+    fs.unlinkSync(claudeMd);
+    removedCount++;
+  }
+  
+  // Remove commands directory
+  const commandsDir = path.join(claudeDir, 'commands');
+  if (fs.existsSync(commandsDir)) {
+    console.log('📁 Removing commands directory...');
+    fs.rmSync(commandsDir, { recursive: true, force: true });
+    removedCount++;
+  }
+  
+  // Remove shared directory
+  const sharedDir = path.join(claudeDir, 'shared');
+  if (fs.existsSync(sharedDir)) {
+    console.log('📁 Removing shared directory...');
+    fs.rmSync(sharedDir, { recursive: true, force: true });
+    removedCount++;
+  }
+  
+  // Check if .claude directory is empty
+  if (fs.existsSync(claudeDir)) {
+    const items = fs.readdirSync(claudeDir);
+    if (items.length === 0) {
+      console.log('📁 Removing empty .claude directory...');
+      fs.rmdirSync(claudeDir);
+      removedCount++;
+    } else {
+      log.info('Keeping .claude directory (contains other files)');
+    }
+  }
+  
+  console.log('');
+  if (removedCount > 0) {
+    log.success(`Uninstallation complete! Removed ${removedCount} items.`);
+  } else {
+    log.info('No SuperClaude MCP tools found to uninstall.');
+  }
+  
+  console.log('\n👋 Thank you for using AI-First Context Engineering!');
+}
+
 // Show help if requested
 if (args.includes('-h') || args.includes('--help')) {
   console.log(`
@@ -270,19 +337,30 @@ MCP Tools Installer for SuperClaude
 Usage: node install-mcp-tools.js [options]
 
 Options:
-  -y, --yes    Skip confirmation prompt and install automatically
-  -h, --help   Show this help message
+  -y, --yes         Skip confirmation prompt and install automatically
+  -u, --uninstall   Uninstall SuperClaude MCP tools
+  -h, --help        Show this help message
 
 Examples:
   node install-mcp-tools.js          # Interactive installation
   node install-mcp-tools.js -y       # Automatic installation without prompts
+  node install-mcp-tools.js -u       # Uninstall MCP tools
 `);
   process.exit(0);
 }
 
-// Run the installer
-mainWithArgs().catch(error => {
-  log.error('Unexpected error occurred:');
-  console.error(error);
-  process.exit(1);
-});
+// Check if uninstall flag is present
+if (args.includes('-u') || args.includes('--uninstall')) {
+  uninstall().catch(error => {
+    log.error('Unexpected error occurred:');
+    console.error(error);
+    process.exit(1);
+  });
+} else {
+  // Run the installer
+  mainWithArgs().catch(error => {
+    log.error('Unexpected error occurred:');
+    console.error(error);
+    process.exit(1);
+  });
+}

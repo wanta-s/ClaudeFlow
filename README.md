@@ -60,6 +60,35 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 - **minimal-impact-implementation/** - 最小影響実装
 - **change-impact-testing/** - 変更影響テスト
 
+## 🗑️ アンインストール
+
+### JavaScript版（推奨）
+```bash
+node install-mcp-tools.js --uninstall
+```
+
+### シェルスクリプト版（Unix/Linux/Mac）
+```bash
+./uninstall.sh
+```
+
+### PowerShell版（Windows）
+```powershell
+.\uninstall.ps1
+```
+
+### ワンライナーアンインストール
+
+**Unix/Linux/Mac:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/uninstall.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/uninstall.ps1 | iex
+```
+
 ## 🔧 手動インストール
 
 1. このリポジトリをクローン
