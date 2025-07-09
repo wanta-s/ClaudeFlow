@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# MCP Tools Installer for SuperClaude
+# MCP Tools Installer for AI-Context Flow
 # This script installs essential MCP tools for enhanced Claude Code functionality
 
 set -e
@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}   MCP Tools Installer for SuperClaude  ${NC}"
+echo -e "${GREEN}   MCP Tools Installer for AI-Context Flow  ${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 
@@ -76,7 +76,7 @@ if ! install_tool "Sequential" "@sequential-thinking/mcp-server" "Complex proble
 fi
 
 # Install Magic (--magic)
-if ! install_tool "Magic" "@superclaude/magic-mcp-server" "Advanced compression and token optimization"; then
+if ! install_tool "Magic" "@ai-context-flow/magic-mcp-server" "Advanced compression and token optimization"; then
     failed_installs+=("Magic")
 fi
 
@@ -85,9 +85,9 @@ if ! install_tool "Puppeteer" "@puppeteer/mcp-server" "Browser automation and we
     failed_installs+=("Puppeteer")
 fi
 
-# Copy SuperClaude configuration files
+# Copy AI-Context Flow configuration files
 echo ""
-echo -e "${YELLOW}Installing SuperClaude configuration files...${NC}"
+echo -e "${YELLOW}Installing AI-Context Flow configuration files...${NC}"
 
 CLAUDE_DIR="$HOME/.claude"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -124,7 +124,7 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}✓ SuperClaude configuration files installed successfully!${NC}"
+echo -e "${GREEN}✓ AI-Context Flow configuration files installed successfully!${NC}"
 
 # Summary
 echo ""
@@ -151,4 +151,4 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}Happy coding with SuperClaude!${NC}"
+echo -e "${GREEN}Happy coding with AI-Context Flow!${NC}"

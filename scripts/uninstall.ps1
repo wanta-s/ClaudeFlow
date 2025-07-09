@@ -1,12 +1,12 @@
 # AI-First Context Engineering - Uninstaller for Windows
-# This script removes SuperClaude MCP tools
+# This script removes AI-Context Flow MCP tools
 
 Write-Host "🗑️  AI-First Context Engineering Uninstaller" -ForegroundColor Red
 Write-Host "==========================================" -ForegroundColor Red
 Write-Host ""
 
 # Confirm uninstallation
-$confirmation = Read-Host "⚠️  This will remove SuperClaude MCP tools from ~/.claude/. Continue? (y/N)"
+$confirmation = Read-Host "⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/. Continue? (y/N)"
 if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
     Write-Host "❌ Uninstallation cancelled." -ForegroundColor Yellow
     exit 0
@@ -72,7 +72,7 @@ Write-Host ""
 if ($removedCount -gt 0) {
     Write-Host "✅ Uninstallation complete! Removed $removedCount items." -ForegroundColor Green
 } else {
-    Write-Host "ℹ️  No SuperClaude MCP tools found to uninstall." -ForegroundColor Cyan
+    Write-Host "ℹ️  No AI-Context Flow MCP tools found to uninstall." -ForegroundColor Cyan
 }
 
 Write-Host ""

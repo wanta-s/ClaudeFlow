@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * MCP Tools Installer for SuperClaude
+ * MCP Tools Installer for AI-Context Flow
  * Cross-platform installer for essential MCP tools
  */
 
@@ -36,9 +36,9 @@ const tools = [
   },
   {
     name: 'Magic',
-    package: '@superclaude/magic-mcp-server',
+    package: '@ai-context-flow/magic-mcp-server',
     description: 'Advanced compression and token optimization',
-    github: 'https://github.com/NomenAK/SuperClaude'
+    github: 'https://github.com/NomenAK/AI-Context Flow'
   },
   {
     name: 'Puppeteer',
@@ -146,7 +146,7 @@ async function showInstallationPlan() {
 
 // Main installation process
 async function main() {
-  log.header('MCP Tools Installer for SuperClaude');
+  log.header('MCP Tools Installer for AI-Context Flow');
   
   // Check npm
   if (!await checkNpm()) {
@@ -197,7 +197,7 @@ async function main() {
     process.exit(1);
   }
   
-  console.log(`\n${colors.green}Happy coding with SuperClaude!${colors.reset}`);
+  console.log(`\n${colors.green}Happy coding with AI-Context Flow!${colors.reset}`);
 }
 
 // Parse command line arguments
@@ -206,7 +206,7 @@ const skipConfirmation = args.includes('-y') || args.includes('--yes');
 
 // Modified main function to handle skip confirmation
 async function mainWithArgs() {
-  log.header('MCP Tools Installer for SuperClaude');
+  log.header('MCP Tools Installer for AI-Context Flow');
   
   // Check npm
   if (!await checkNpm()) {
@@ -239,9 +239,9 @@ async function mainWithArgs() {
     console.log('');
   }
   
-  // Copy SuperClaude configuration files
+  // Copy AI-Context Flow configuration files
   console.log('');
-  log.info('Installing SuperClaude configuration files...\n');
+  log.info('Installing AI-Context Flow configuration files...\n');
   
   const homeDir = process.env.HOME || process.env.USERPROFILE;
   const claudeDir = path.join(homeDir, '.claude');
@@ -290,7 +290,7 @@ async function mainWithArgs() {
     }
     
     console.log('');
-    log.success('SuperClaude configuration files installed successfully!');
+    log.success('AI-Context Flow configuration files installed successfully!');
   } catch (error) {
     log.error('Failed to copy configuration files:');
     console.error(error.message);
@@ -318,12 +318,12 @@ async function mainWithArgs() {
     process.exit(1);
   }
   
-  console.log(`\n${colors.green}Happy coding with SuperClaude!${colors.reset}`);
+  console.log(`\n${colors.green}Happy coding with AI-Context Flow!${colors.reset}`);
 }
 
 // Update function
 async function update() {
-  log.header('MCP Tools Updater for SuperClaude');
+  log.header('MCP Tools Updater for AI-Context Flow');
   
   console.log('\n📦 Checking for updates...');
   
@@ -397,7 +397,7 @@ async function update() {
     // Clean up temp directory
     fs.rmSync(tempDir, { recursive: true, force: true });
     
-    log.success('\n✨ Update complete! SuperClaude MCP tools are now up to date.');
+    log.success('\n✨ Update complete! AI-Context Flow MCP tools are now up to date.');
     console.log('\nBackup saved to: ~/.claude-backup');
     console.log('You can restore the backup if needed.');
     
@@ -427,9 +427,9 @@ async function update() {
 
 // Uninstall function
 async function uninstall() {
-  log.header('MCP Tools Uninstaller for SuperClaude');
+  log.header('MCP Tools Uninstaller for AI-Context Flow');
   
-  console.log('\n⚠️  This will remove SuperClaude MCP tools from ~/.claude/');
+  console.log('\n⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/');
   const proceed = await getUserConfirmation('Continue with uninstallation?');
   
   if (!proceed) {
@@ -438,7 +438,7 @@ async function uninstall() {
   }
   
   console.log('');
-  log.info('Removing SuperClaude MCP tools...');
+  log.info('Removing AI-Context Flow MCP tools...');
   
   let removedCount = 0;
   const homeDir = process.env.HOME || process.env.USERPROFILE;
@@ -484,7 +484,7 @@ async function uninstall() {
   if (removedCount > 0) {
     log.success(`Uninstallation complete! Removed ${removedCount} items.`);
   } else {
-    log.info('No SuperClaude MCP tools found to uninstall.');
+    log.info('No AI-Context Flow MCP tools found to uninstall.');
   }
   
   console.log('\n👋 Thank you for using AI-First Context Engineering!');
@@ -493,14 +493,14 @@ async function uninstall() {
 // Show help if requested
 if (args.includes('-h') || args.includes('--help')) {
   console.log(`
-MCP Tools Installer for SuperClaude
+MCP Tools Installer for AI-Context Flow
 
 Usage: node install-mcp-tools.js [options]
 
 Options:
   -y, --yes         Skip confirmation prompt and install automatically
-  -u, --uninstall   Uninstall SuperClaude MCP tools
-  --update          Update SuperClaude MCP tools to latest version
+  -u, --uninstall   Uninstall AI-Context Flow MCP tools
+  --update          Update AI-Context Flow MCP tools to latest version
   -h, --help        Show this help message
 
 Examples:

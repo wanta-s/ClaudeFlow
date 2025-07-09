@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI-First Context Engineering - Quick Installer
-# This script clones and installs SuperClaude MCP tools
+# This script clones and installs AI-Context Flow MCP tools
 
 set -e
 
@@ -35,4 +35,4 @@ cd /
 rm -rf "$TEMP_DIR"
 
 echo "✅ Installation complete!"
-echo "🎉 SuperClaude MCP tools are now installed in ~/.claude/"
+echo "🎉 AI-Context Flow MCP tools are now installed in ~/.claude/"

@@ -1,6 +1,6 @@
-# AI-First Context Engineering
+# AI-Context Flow (ACF)
 
-SuperClaude MCP Tools と AI開発ワークフローのインストーラーとドキュメントです。
+**AI-Context Flow** は、Claude Codeを強化するAI開発ワークフローツールです。AIファーストのコンテキストエンジニアリング手法を用いて、効率的な開発環境を提供します。
 
 ## 🚀 クイックインストール
 
@@ -49,10 +49,10 @@ iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering
 
 ## 📚 含まれるツール
 
-### SuperClaude MCP Tools
-- **commands/** - 様々なMCPコマンド
+### AI-Context Flow (ACF) Components
+- **commands/** - 様々なMCPコマンド定義
 - **shared/** - 共有設定とルール
-- **CLAUDE.md** - SuperClaude設定ファイル
+- **CLAUDE.md** - AI-Context Flow設定ファイル
 
 ### AI開発ワークフロー
 - **ai-development-flow/** - AI開発自動化スクリプト
@@ -142,7 +142,7 @@ ai-first-context-engineering/
 ## 📖 ドキュメント
 
 - [日本語使い方ガイド](./docs/USAGE-JP.md) 🆕
-- [SuperClaude設定ガイド](./CLAUDE.md)
+- [AI-Context Flow設定ガイド](./CLAUDE.md)
 - [AI開発フロー](./ai-development-flow/)
 
 ## 🤝 貢献

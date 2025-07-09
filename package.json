@@ -1,10 +1,10 @@
 {
-  "name": "ai-first-context-engineering",
+  "name": "ai-context-flow",
   "version": "1.0.0",
-  "description": "SuperClaude MCP tools and AI development workflow installer",
+  "description": "AI-Context Flow (ACF) - Enhanced AI development workflow tools for Claude Code",
   "main": "scripts/install-mcp-tools.js",
   "bin": {
-    "install-mcp-tools": "./scripts/install-mcp-tools.js"
+    "acf-install": "./scripts/install-mcp-tools.js"
   },
   "scripts": {
     "install": "node scripts/install-mcp-tools.js",
@@ -15,8 +15,8 @@
     "type": "git",
     "url": "git+https://github.com/wanta-s/ai-first-context-engineering.git"
   },
-  "keywords": ["mcp", "superclaude", "claude-code", "installer", "ai-development"],
-  "author": "SuperClaude Team",
+  "keywords": ["mcp", "ai-context-flow", "claude-code", "installer", "ai-development"],
+  "author": "AI-Context Flow Team",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

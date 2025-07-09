@@ -2,7 +2,7 @@
 
 ## 📋 概要
 
-このツールは、Claude Codeを最強にパワーアップさせる「SuperClaude」の設定と、AI開発ワークフローを提供します。
+このツールは、Claude Codeを最強にパワーアップさせる「AI-Context Flow」の設定と、AI開発ワークフローを提供します。
 
 ## 🔧 インストール方法
 
@@ -24,13 +24,13 @@ ls ~/.claude/
 ```
 
 以下のファイルがインストールされます：
-- `CLAUDE.md` - SuperClaudeのメイン設定
+- `CLAUDE.md` - AI-Context Flowのメイン設定
 - `commands/` - 各種コマンド定義
 - `shared/` - 共有設定とルール
 
 ## 🎯 使い方
 
-### 1. SuperClaude機能の活用
+### 1. AI-Context Flow機能の活用
 
 インストール後、Claude Codeは自動的に以下の機能を使えるようになります：
 
@@ -92,7 +92,7 @@ ai-first-context-engineering/
 ```
 User: "ReactとTypeScriptで簡単なTodoアプリを作ってください"
 
-Claude: [SuperClaudeが自動的に以下を実行]
+Claude: [AI-Context Flowが自動的に以下を実行]
 1. プロジェクト構造を計画（Todoリスト作成）
 2. 必要なファイルを効率的に生成
 3. テストコードも同時に作成
@@ -103,7 +103,7 @@ Claude: [SuperClaudeが自動的に以下を実行]
 ```
 User: "このエラーを修正してください: [エラーメッセージ]"
 
-Claude: [SuperClaudeが自動的に以下を実行]
+Claude: [AI-Context Flowが自動的に以下を実行]
 1. エラーの原因を段階的に分析（Analyzerペルソナ）
 2. 最小限の変更で修正（minimal-impact）
 3. 修正の影響範囲を確認
@@ -114,7 +114,7 @@ Claude: [SuperClaudeが自動的に以下を実行]
 ```
 User: "このコードをレビューしてください"
 
-Claude: [SuperClaudeが自動的に以下を実行]
+Claude: [AI-Context Flowが自動的に以下を実行]
 1. セキュリティチェック（OWASP Top 10）
 2. パフォーマンス分析
 3. ベストプラクティスとの比較
@@ -175,7 +175,7 @@ node install-mcp-tools.js
 ## 📚 さらに詳しく
 
 - [英語版README](./README.md)
-- [SuperClaude詳細設定](./CLAUDE.md)
+- [AI-Context Flow詳細設定](./CLAUDE.md)
 - [開発者向けドキュメント](./docs/)
 
 ## 🤝 サポート

@@ -1,5 +1,5 @@
 # AI-First Context Engineering - Quick Installer for Windows
-# This script clones and installs SuperClaude MCP tools
+# This script clones and installs AI-Context Flow MCP tools
 
 Write-Host "🚀 AI-First Context Engineering Installer" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
@@ -28,7 +28,7 @@ try {
     }
 
     Write-Host "✅ Installation complete!" -ForegroundColor Green
-    Write-Host "🎉 SuperClaude MCP tools are now installed in ~/.claude/" -ForegroundColor Cyan
+    Write-Host "🎉 AI-Context Flow MCP tools are now installed in ~/.claude/" -ForegroundColor Cyan
 }
 finally {
     # Cleanup

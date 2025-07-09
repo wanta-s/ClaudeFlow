@@ -1,4 +1,4 @@
-# MCP Tools Installer for SuperClaude
+# MCP Tools Installer for AI-Context Flow
 
 This installer helps you set up essential MCP (Model Context Protocol) tools for enhanced Claude Code functionality.
 
@@ -49,10 +49,10 @@ If the installer doesn't work, you can install tools manually:
 ```bash
 npm install -g @context7/mcp-server
 npm install -g @sequential-thinking/mcp-server
-npm install -g @superclaude/magic-mcp-server
+npm install -g @ai-context-flow/magic-mcp-server
 npm install -g @puppeteer/mcp-server
 ```
 
 ## After Installation
 
-Once installed, these tools will be available in Claude Code to enhance your development experience with SuperClaude's advanced features.
+Once installed, these tools will be available in Claude Code to enhance your development experience with AI-Context Flow's advanced features.

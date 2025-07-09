@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI-First Context Engineering - Uninstaller
-# This script removes SuperClaude MCP tools
+# This script removes AI-Context Flow MCP tools
 
 set -e
 
@@ -9,7 +9,7 @@ echo "==========================================="
 echo ""
 
 # Confirm uninstallation
-read -p "⚠️  This will remove SuperClaude MCP tools from ~/.claude/. Continue? (y/N) " -n 1 -r
+read -p "⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/. Continue? (y/N) " -n 1 -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "❌ Uninstallation cancelled."
@@ -69,7 +69,7 @@ echo ""
 if [ $REMOVED_COUNT -gt 0 ]; then
     echo "✅ Uninstallation complete! Removed $REMOVED_COUNT items."
 else
-    echo "ℹ️  No SuperClaude MCP tools found to uninstall."
+    echo "ℹ️  No AI-Context Flow MCP tools found to uninstall."
 fi
 
 echo ""

@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI-First Context Engineering - Quick Updater
-# This script updates SuperClaude MCP tools to the latest version
+# This script updates AI-Context Flow MCP tools to the latest version
 
 set -e
 
