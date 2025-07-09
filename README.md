@@ -8,7 +8,7 @@
 
 1. **リポジトリをクローン**
 ```bash
-git clone https://github.com/wanta-s/ai-first-context-engineering.git
+git clone https://github.com/wanta-s/ClaudeFlow.git
 cd ai-first-context-engineering
 ```
 
@@ -25,10 +25,6 @@ chmod +x scripts/install-mcp-tools.sh
 ./scripts/install-mcp-tools.sh
 ```
 
-**PowerShell版（Windows）:**
-```powershell
-.\scripts\install-mcp-tools.ps1
-```
 
 ## 📦 ワンライナーインストール
 
@@ -42,10 +38,6 @@ npx github:wanta-s/ai-first-context-engineering
 curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install.sh | bash
 ```
 
-### PowerShell を使用（Windows）
-```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install.ps1 | iex
-```
 
 ## 📚 含まれるツール
 
@@ -74,10 +66,6 @@ node scripts/install-mcp-tools.js --update
 curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/update.sh | bash
 ```
 
-**Windows PowerShell:**
-```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/update.ps1 | iex
-```
 
 アップデート時の特徴：
 - 🔐 現在の設定を自動バックアップ（~/.claude-backup）
@@ -96,10 +84,6 @@ node scripts/install-mcp-tools.js --uninstall
 ./scripts/uninstall.sh
 ```
 
-### PowerShell版（Windows）
-```powershell
-.\scripts\uninstall.ps1
-```
 
 ### ワンライナーアンインストール
 
@@ -108,10 +92,6 @@ node scripts/install-mcp-tools.js --uninstall
 curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/uninstall.sh | bash
 ```
 
-**Windows PowerShell:**
-```powershell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/uninstall.ps1 | iex
-```
 
 ## 🔧 手動インストール
 

@@ -13,8 +13,8 @@ cd "$TEMP_DIR"
 
 # Clone repository
 echo "📦 Downloading repository..."
-git clone https://github.com/wanta-s/ai-first-context-engineering.git
-cd ai-first-context-engineering
+git clone https://github.com/wanta-s/ClaudeFlow.git
+cd ClaudeFlow
 
 # Run the installer
 echo "🔧 Running installer..."

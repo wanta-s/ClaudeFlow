@@ -348,7 +348,7 @@ async function update() {
     
     // Clone latest version
     log.info('Downloading latest version from GitHub...');
-    await execAsync(`git clone https://github.com/wanta-s/ai-first-context-engineering.git "${tempDir}/repo"`);
+    await execAsync(`git clone https://github.com/wanta-s/ClaudeFlow.git "${tempDir}/repo"`);
     
     // Backup current installation
     const backupDir = path.join(homeDir, '.claude-backup');

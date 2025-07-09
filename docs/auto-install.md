@@ -7,10 +7,6 @@
 curl -sSL https://your-domain.com/install-mcp.js | node
 ```
 
-### Windows (PowerShell):
-```powershell
-iwr -useb https://your-domain.com/install-mcp.js | node
-```
 
 ## 方法2: NPXを使用（npmがインストール済みの場合）
 

@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wanta-s/ai-first-context-engineering.git"
+    "url": "git+https://github.com/wanta-s/ClaudeFlow.git"
   },
   "keywords": ["mcp", "claudeflow", "claude-code", "installer", "ai-development"],
   "author": "ClaudeFlow Team",
@@ -22,7 +22,7 @@
     "node": ">=14.0.0"
   },
   "bugs": {
-    "url": "https://github.com/wanta-s/ai-first-context-engineering/issues"
+    "url": "https://github.com/wanta-s/ClaudeFlow/issues"
   },
-  "homepage": "https://github.com/wanta-s/ai-first-context-engineering#readme"
+  "homepage": "https://github.com/wanta-s/ClaudeFlow#readme"
 }

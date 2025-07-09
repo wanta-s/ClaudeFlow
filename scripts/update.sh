@@ -13,7 +13,7 @@ cd "$TEMP_DIR"
 
 # Clone repository
 echo "📦 Downloading latest version..."
-git clone https://github.com/wanta-s/ai-first-context-engineering.git
+git clone https://github.com/wanta-s/ClaudeFlow.git
 cd ai-first-context-engineering
 
 # Run the updater

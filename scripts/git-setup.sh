@@ -7,7 +7,7 @@ echo "=== Initializing Git repository ==="
 git init
 
 echo "=== Adding remote origin ==="
-git remote add origin https://github.com/wanta-s/ai-first-context-engineering.git
+git remote add origin https://github.com/wanta-s/ClaudeFlow.git
 
 echo "=== Checking git status ==="
 git status
@@ -18,7 +18,7 @@ git add .
 echo "=== Creating commit ==="
 git commit -m "Initial commit: AI-first context engineering framework
 
-- MCP tools installer (JavaScript, Shell, PowerShell versions)
+- MCP tools installer (JavaScript and Shell versions)
 - Todo app example implementation
 - Context engineering documentation and workflows
 - Development flow scripts and templates

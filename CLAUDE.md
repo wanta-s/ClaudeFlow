@@ -3,7 +3,7 @@
 This file should be placed in ~/.claude/CLAUDE.md
 
 For the full ClaudeFlow configuration, please refer to:
-https://github.com/wanta-s/ai-first-context-engineering
+https://github.com/wanta-s/ClaudeFlow
 
 ## Quick Start
 

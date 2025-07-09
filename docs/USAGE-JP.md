@@ -12,8 +12,6 @@
 # Unix/Linux/Mac
 curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/install.sh | bash
 
-# Windows PowerShell
-iwr -useb https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/install.ps1 | iex
 ```
 
 ### 2. インストール後の確認
@@ -157,7 +155,7 @@ nano ~/.claude/CLAUDE.md
 ### インストールがうまくいかない
 ```bash
 # 手動インストール
-git clone https://github.com/wanta-s/ai-first-context-engineering.git
+git clone https://github.com/wanta-s/ClaudeFlow.git
 cd ai-first-context-engineering
 node install-mcp-tools.js
 ```

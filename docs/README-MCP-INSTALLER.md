@@ -22,11 +22,6 @@ chmod +x install-mcp-tools.sh
 ./install-mcp-tools.sh
 ```
 
-### Method 3: PowerShell (Windows)
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\install-mcp-tools.ps1
-```
 
 ## Prerequisites
 
