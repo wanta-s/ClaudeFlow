@@ -18,7 +18,7 @@ try {
     Write-Host "🔧 Running updater..." -ForegroundColor Yellow
     if (Get-Command node -ErrorAction SilentlyContinue) {
         Write-Host "Using Node.js updater..." -ForegroundColor Green
-        node install-mcp-tools.js --update
+        node scripts/install-mcp-tools.js --update
     } else {
         Write-Host "❌ Node.js is required for updating!" -ForegroundColor Red
         Write-Host "Please install Node.js first or use the manual update method." -ForegroundColor Red

@@ -239,6 +239,63 @@ async function mainWithArgs() {
     console.log('');
   }
   
+  // Copy SuperClaude configuration files
+  console.log('');
+  log.info('Installing SuperClaude configuration files...\n');
+  
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  const claudeDir = path.join(homeDir, '.claude');
+  
+  try {
+    // Create .claude directory if it doesn't exist
+    if (!fs.existsSync(claudeDir)) {
+      fs.mkdirSync(claudeDir, { recursive: true });
+      console.log(`✅ Created ${claudeDir}`);
+    }
+    
+    // Check for CLAUDE.md in parent directory
+    const claudeMdPath = path.join(__dirname, '..', 'CLAUDE.md');
+    if (fs.existsSync(claudeMdPath)) {
+      const targetPath = path.join(claudeDir, 'CLAUDE.md');
+      fs.copyFileSync(claudeMdPath, targetPath);
+      console.log('✅ Copied CLAUDE.md');
+    } else {
+      log.warning('CLAUDE.md not found in project root');
+    }
+    
+    // Check for commands directory
+    const commandsPath = path.join(__dirname, '..', 'commands');
+    if (fs.existsSync(commandsPath)) {
+      const targetPath = path.join(claudeDir, 'commands');
+      if (!fs.existsSync(targetPath)) {
+        fs.mkdirSync(targetPath, { recursive: true });
+      }
+      fs.cpSync(commandsPath, targetPath, { recursive: true });
+      console.log('✅ Copied commands directory');
+    } else {
+      log.warning('commands directory not found');
+    }
+    
+    // Check for shared directory
+    const sharedPath = path.join(__dirname, '..', 'shared');
+    if (fs.existsSync(sharedPath)) {
+      const targetPath = path.join(claudeDir, 'shared');
+      if (!fs.existsSync(targetPath)) {
+        fs.mkdirSync(targetPath, { recursive: true });
+      }
+      fs.cpSync(sharedPath, targetPath, { recursive: true });
+      console.log('✅ Copied shared directory');
+    } else {
+      log.warning('shared directory not found');
+    }
+    
+    console.log('');
+    log.success('SuperClaude configuration files installed successfully!');
+  } catch (error) {
+    log.error('Failed to copy configuration files:');
+    console.error(error.message);
+  }
+  
   // Summary
   log.header('Installation Summary');
   

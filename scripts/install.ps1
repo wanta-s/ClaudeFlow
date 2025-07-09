@@ -18,10 +18,10 @@ try {
     Write-Host "🔧 Running installer..." -ForegroundColor Yellow
     if (Get-Command node -ErrorAction SilentlyContinue) {
         Write-Host "Using Node.js installer..." -ForegroundColor Green
-        node install-mcp-tools.js
-    } elseif (Test-Path "install-mcp-tools.ps1") {
+        node scripts/install-mcp-tools.js
+    } elseif (Test-Path "scripts/install-mcp-tools.ps1") {
         Write-Host "Using PowerShell installer..." -ForegroundColor Green
-        .\install-mcp-tools.ps1
+        .\scripts\install-mcp-tools.ps1
     } else {
         Write-Host "❌ No suitable installer found!" -ForegroundColor Red
         exit 1
