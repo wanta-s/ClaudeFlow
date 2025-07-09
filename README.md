@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/ins
 - **CLAUDE.md** - ClaudeFlow設定ファイル
 
 ### AI開発ワークフロー
-- **ai-development-flow/** - AI開発自動化スクリプト
+- **ClaudeFlow/** - AI開発自動化スクリプト
 - **test-driven-development/** - TDD手法
 - **minimal-impact-implementation/** - 最小影響実装
 - **change-impact-testing/** - 変更影響テスト
@@ -107,23 +107,29 @@ cp -r commands shared CLAUDE.md ~/.claude/
 ```
 ClaudeFlow/
 ├── README.md                # このファイル
+├── CLAUDE.md               # ClaudeFlow設定ファイル
 ├── package.json            # npm設定
 ├── scripts/                # インストール・管理スクリプト
 │   ├── install-mcp-tools.js   # メインインストーラー
-│   ├── install.sh/ps1         # ワンライナー用
-│   ├── update.sh/ps1          # アップデート用
-│   └── uninstall.sh/ps1       # アンインストール用
+│   ├── install.sh             # ワンライナー用
+│   ├── update.sh              # アップデート用
+│   └── uninstall.sh           # アンインストール用
+├── commands/               # MCPコマンド定義
+├── shared/                 # 共有設定とルール
 ├── docs/                   # ドキュメント
 │   ├── USAGE-JP.md           # 日本語使い方ガイド
 │   └── ...                   # その他のドキュメント
-└── ai-development-flow/    # AI開発ワークフロー
+└── ClaudeFlow/             # AI開発ワークフロー
+    ├── scripts/            # 自動化スクリプト
+    ├── tasks/              # タスクテンプレート
+    └── templates/          # 各種テンプレート
 ```
 
 ## 📖 ドキュメント
 
 - [日本語使い方ガイド](./docs/USAGE-JP.md) 🆕
 - [ClaudeFlow設定ガイド](./CLAUDE.md)
-- [AI開発フロー](./ai-development-flow/)
+- [AI開発フロー](./ClaudeFlow/README.md)
 
 ## 🤝 貢献
 
