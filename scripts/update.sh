@@ -1,10 +1,10 @@
 #!/bin/bash
-# AI-First Context Engineering - Quick Updater
+# ClaudeFlow - Quick Updater
 # This script updates ClaudeFlow MCP tools to the latest version
 
 set -e
 
-echo "🔄 AI-First Context Engineering Updater"
+echo "🔄 ClaudeFlow Updater"
 echo "======================================="
 
 # Create temp directory
@@ -14,7 +14,7 @@ cd "$TEMP_DIR"
 # Clone repository
 echo "📦 Downloading latest version..."
 git clone https://github.com/wanta-s/ClaudeFlow.git
-cd ai-first-context-engineering
+cd ClaudeFlow
 
 # Run the updater
 echo "🔧 Running updater..."

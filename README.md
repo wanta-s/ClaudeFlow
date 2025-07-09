@@ -9,7 +9,7 @@
 1. **リポジトリをクローン**
 ```bash
 git clone https://github.com/wanta-s/ClaudeFlow.git
-cd ai-first-context-engineering
+cd ClaudeFlow
 ```
 
 2. **インストールスクリプトを実行**
@@ -30,12 +30,12 @@ chmod +x scripts/install-mcp-tools.sh
 
 ### npm/npx を使用（Node.jsが必要）
 ```bash
-npx github:wanta-s/ai-first-context-engineering
+npx github:wanta-s/ClaudeFlow
 ```
 
 ### curl を使用（Unix/Linux/Mac）
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/install.sh | bash
 ```
 
 
@@ -63,7 +63,7 @@ node scripts/install-mcp-tools.js --update
 
 **Unix/Linux/Mac:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/update.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/update.sh | bash
 ```
 
 
@@ -89,7 +89,7 @@ node scripts/install-mcp-tools.js --uninstall
 
 **Unix/Linux/Mac:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/scripts/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/uninstall.sh | bash
 ```
 
 
@@ -105,7 +105,7 @@ cp -r commands shared CLAUDE.md ~/.claude/
 ## 📁 プロジェクト構成
 
 ```
-ai-first-context-engineering/
+ClaudeFlow/
 ├── README.md                # このファイル
 ├── package.json            # npm設定
 ├── scripts/                # インストール・管理スクリプト

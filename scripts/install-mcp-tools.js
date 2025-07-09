@@ -487,7 +487,7 @@ async function uninstall() {
     log.info('No ClaudeFlow MCP tools found to uninstall.');
   }
   
-  console.log('\n👋 Thank you for using AI-First Context Engineering!');
+  console.log('\n👋 Thank you for using ClaudeFlow!');
 }
 
 // Show help if requested

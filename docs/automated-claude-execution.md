@@ -71,7 +71,7 @@ run_implementation "design/auth-api.yaml"
 
 # 設定
 CLAUDE_CMD="claude --dangerously-skip-permissions --allowedTools all"
-PROJECT_DIR="/mnt/c/makeProc/ai-first-context-engineering"
+PROJECT_DIR="/mnt/c/makeProc/ClaudeFlow"
 LOG_DIR="$PROJECT_DIR/logs"
 
 # フェーズ1: 実装
@@ -193,7 +193,7 @@ done
 # safe-auto-claude.sh
 
 # 特定のディレクトリ内でのみ自動実行を許可
-SAFE_DIR="/mnt/c/makeProc/ai-first-context-engineering"
+SAFE_DIR="/mnt/c/makeProc/ClaudeFlow"
 CURRENT_DIR=$(pwd)
 
 if [[ ! "$CURRENT_DIR" =~ ^"$SAFE_DIR" ]]; then

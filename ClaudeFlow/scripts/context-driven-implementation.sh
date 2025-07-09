@@ -675,7 +675,7 @@ EOF
 # 進捗とメトリクス表示
 show_metrics() {
     echo ""
-    echo -e "${CYAN}📊 コードメトリクス${NC}"
+    echo -e "${CYAN}📊 コードメトリクス${NC}"/
     echo "------------------------"
     
     if [ -f "$METRICS_FILE" ]; then

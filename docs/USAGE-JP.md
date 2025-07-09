@@ -1,8 +1,8 @@
-# 🚀 AI-First Context Engineering 使い方ガイド
+# 🚀 ClaudeFlow 使い方ガイド
 
 ## 📋 概要
 
-このツールは、Claude Codeを最強にパワーアップさせる「AI-Context Flow」の設定と、AI開発ワークフローを提供します。
+このツールは、Claude Codeを最強にパワーアップさせる「ClaudeFlow」の設定と、AI開発ワークフローを提供します。
 
 ## 🔧 インストール方法
 
@@ -10,7 +10,7 @@
 
 ```bash
 # Unix/Linux/Mac
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ai-first-context-engineering/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/install.sh | bash
 
 ```
 
@@ -22,13 +22,13 @@ ls ~/.claude/
 ```
 
 以下のファイルがインストールされます：
-- `CLAUDE.md` - AI-Context Flowのメイン設定
+- `CLAUDE.md` - ClaudeFlowのメイン設定
 - `commands/` - 各種コマンド定義
 - `shared/` - 共有設定とルール
 
 ## 🎯 使い方
 
-### 1. AI-Context Flow機能の活用
+### 1. ClaudeFlow機能の活用
 
 インストール後、Claude Codeは自動的に以下の機能を使えるようになります：
 
@@ -57,7 +57,7 @@ ls ~/.claude/
 
 #### 📁 プロジェクト構造
 ```
-ai-first-context-engineering/
+ClaudeFlow/
 ├── ai-development-flow/        # AI開発フロー
 ├── test-driven-development/    # TDD手法
 ├── minimal-impact-implementation/  # 最小影響実装
@@ -156,7 +156,7 @@ nano ~/.claude/CLAUDE.md
 ```bash
 # 手動インストール
 git clone https://github.com/wanta-s/ClaudeFlow.git
-cd ai-first-context-engineering
+cd ClaudeFlow
 node install-mcp-tools.js
 ```
 

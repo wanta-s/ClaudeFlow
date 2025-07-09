@@ -1,5 +1,5 @@
 # Shared Directory
 
-This directory contains shared configurations and rules for AI-Context Flow.
+This directory contains shared configurations and rules for ClaudeFlow.
 
 Place your shared YAML files here.

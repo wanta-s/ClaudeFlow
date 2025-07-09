@@ -1,4 +1,4 @@
-# MCP Tools Installer for AI-Context Flow
+# MCP Tools Installer for ClaudeFlow
 
 This installer helps you set up essential MCP (Model Context Protocol) tools for enhanced Claude Code functionality.
 

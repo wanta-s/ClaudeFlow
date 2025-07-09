@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Git setup and push script
-cd /mnt/c/makeProc/ai-first-context-engineering
+cd /mnt/c/makeProc/ClaudeFlow
 
 echo "=== Initializing Git repository ==="
 git init
@@ -16,7 +16,7 @@ echo "=== Adding all files ==="
 git add .
 
 echo "=== Creating commit ==="
-git commit -m "Initial commit: AI-first context engineering framework
+git commit -m "Initial commit: ClaudeFlow framework
 
 - MCP tools installer (JavaScript and Shell versions)
 - Todo app example implementation

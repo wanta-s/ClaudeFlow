@@ -1,10 +1,10 @@
 #!/bin/bash
-# AI-First Context Engineering - Quick Installer
+# ClaudeFlow - Quick Installer
 # This script clones and installs ClaudeFlow MCP tools
 
 set -e
 
-echo "🚀 AI-First Context Engineering Installer"
+echo "🚀 ClaudeFlow Installer"
 echo "========================================"
 
 # Create temp directory
