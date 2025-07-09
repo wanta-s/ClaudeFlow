@@ -2,7 +2,7 @@
 
 ## 📋 概要
 
-このツールは、Claude Codeを最強にパワーアップさせる「ClaudeFlow」の設定と、AI開発ワークフローを提供します。
+このツールは、Claude Codeの機能を強化する「ClaudeFlow」の設定と、AI開発ワークフローを提供します。
 
 ## 🔧 インストール方法
 
@@ -184,4 +184,4 @@ node install-mcp-tools.js
 
 ---
 
-🎉 **これでClaude Codeが超強力なAI開発アシスタントに変身しました！**
+ClaudeFlowの設定が完了しました。
