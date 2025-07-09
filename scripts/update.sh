@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI-First Context Engineering - Quick Updater
-# This script updates AI-Context Flow MCP tools to the latest version
+# This script updates ClaudeFlow MCP tools to the latest version
 
 set -e
 

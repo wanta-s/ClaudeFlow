@@ -1,12 +1,12 @@
 # AI-First Context Engineering - Uninstaller for Windows
-# This script removes AI-Context Flow MCP tools
+# This script removes ClaudeFlow MCP tools
 
 Write-Host "🗑️  AI-First Context Engineering Uninstaller" -ForegroundColor Red
 Write-Host "==========================================" -ForegroundColor Red
 Write-Host ""
 
 # Confirm uninstallation
-$confirmation = Read-Host "⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/. Continue? (y/N)"
+$confirmation = Read-Host "⚠️  This will remove ClaudeFlow MCP tools from ~/.claude/. Continue? (y/N)"
 if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
     Write-Host "❌ Uninstallation cancelled." -ForegroundColor Yellow
     exit 0

@@ -98,7 +98,7 @@ if (-not (Install-MCPTool -ToolName "Sequential" -PackageName "@sequential-think
 Write-Host ""
 
 # Install Magic (--magic)
-if (-not (Install-MCPTool -ToolName "Magic" -PackageName "@ai-context-flow/magic-mcp-server" -Description "Advanced compression and token optimization")) {
+if (-not (Install-MCPTool -ToolName "Magic" -PackageName "@claudeflow/magic-mcp-server" -Description "Advanced compression and token optimization")) {
     $failedInstalls += "Magic"
 }
 Write-Host ""

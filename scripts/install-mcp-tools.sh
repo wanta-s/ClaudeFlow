@@ -76,7 +76,7 @@ if ! install_tool "Sequential" "@sequential-thinking/mcp-server" "Complex proble
 fi
 
 # Install Magic (--magic)
-if ! install_tool "Magic" "@ai-context-flow/magic-mcp-server" "Advanced compression and token optimization"; then
+if ! install_tool "Magic" "@claudeflow/magic-mcp-server" "Advanced compression and token optimization"; then
     failed_installs+=("Magic")
 fi
 

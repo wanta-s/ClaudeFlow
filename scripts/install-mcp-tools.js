@@ -36,9 +36,9 @@ const tools = [
   },
   {
     name: 'Magic',
-    package: '@ai-context-flow/magic-mcp-server',
+    package: '@claudeflow/magic-mcp-server',
     description: 'Advanced compression and token optimization',
-    github: 'https://github.com/NomenAK/AI-Context Flow'
+    github: 'https://github.com/NomenAK/ClaudeFlow'
   },
   {
     name: 'Puppeteer',

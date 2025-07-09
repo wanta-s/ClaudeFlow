@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI-First Context Engineering - Uninstaller
-# This script removes AI-Context Flow MCP tools
+# This script removes ClaudeFlow MCP tools
 
 set -e
 
@@ -9,7 +9,7 @@ echo "==========================================="
 echo ""
 
 # Confirm uninstallation
-read -p "⚠️  This will remove AI-Context Flow MCP tools from ~/.claude/. Continue? (y/N) " -n 1 -r
+read -p "⚠️  This will remove ClaudeFlow MCP tools from ~/.claude/. Continue? (y/N) " -n 1 -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "❌ Uninstallation cancelled."

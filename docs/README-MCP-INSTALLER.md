@@ -49,7 +49,7 @@ If the installer doesn't work, you can install tools manually:
 ```bash
 npm install -g @context7/mcp-server
 npm install -g @sequential-thinking/mcp-server
-npm install -g @ai-context-flow/magic-mcp-server
+npm install -g @claudeflow/magic-mcp-server
 npm install -g @puppeteer/mcp-server
 ```
 

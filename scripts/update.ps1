@@ -1,5 +1,5 @@
 # AI-First Context Engineering - Quick Updater for Windows
-# This script updates AI-Context Flow MCP tools to the latest version
+# This script updates ClaudeFlow MCP tools to the latest version
 
 Write-Host "🔄 AI-First Context Engineering Updater" -ForegroundColor Cyan
 Write-Host "=======================================" -ForegroundColor Cyan
