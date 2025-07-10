@@ -5,6 +5,22 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-01-10
+
+### Added
+- Context Engineering philosophy section emphasizing incremental development
+- Detailed guidance on managing Claude Code's context window limitations
+- "Build small, test small" approach throughout documentation
+- Practical examples of context-aware development patterns
+- Advanced context optimization techniques
+- Troubleshooting section for context window-related issues
+
+### Changed
+- Enhanced README.md with context engineering principles
+- Updated USAGE-JP.md with comprehensive small iteration examples
+- Improved step-by-step implementation guidance with testing at each stage
+- Added concrete examples showing proper task decomposition
+
 ## [2.1.0] - 2025-01-10
 
 ### Changed
