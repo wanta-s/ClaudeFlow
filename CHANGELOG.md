@@ -5,6 +5,23 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.1] - 2025-01-10
+
+### Restored
+- Hybrid implementation mode (combining Context Engineering and Incremental approaches)
+- Implementation mode selection in run-pipeline.sh (4 options)
+- `hybrid-implementation.sh` script with quality validation
+- `incremental-implementation.sh` script
+- `HYBRID-IMPLEMENTATION.md` documentation
+- `06_implementation_incremental.md` task file
+
+### Changed
+- run-pipeline.sh now offers 4 implementation modes again:
+  1. Context Engineering
+  2. Incremental
+  3. Hybrid (recommended)
+  4. Standard
+
 ## [2.6.0] - 2025-01-10
 
 ### Added
