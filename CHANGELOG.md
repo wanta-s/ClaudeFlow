@@ -5,6 +5,19 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-01-10
+
+### Added
+- Comprehensive development flowchart documentation (DEVELOPMENT-FLOW.md)
+- Detailed step-by-step analysis of the entire ClaudeFlow process
+- Visual flowchart showing all decision points and phases
+- Explanation of three implementation modes (Context Engineering, Incremental, Standard)
+- File structure diagrams showing generated outputs
+- Feedback loop and testing integration documentation
+
+### Changed
+- Added links to new flowchart documentation in README.md and USAGE-JP.md
+
 ## [2.2.0] - 2025-01-10
 
 ### Added
