@@ -5,6 +5,27 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-01-10
+
+### Changed - BREAKING
+- Complete documentation overhaul to accurately reflect actual functionality
+- Removed all false claims about AI automation and Claude Code integration
+- Clarified that ClaudeFlow is a template generation tool, not an AI enhancement
+- Updated README.md to clearly state limitations and actual features
+- Rewrote USAGE-JP.md with prominent disclaimers about what the tool does NOT do
+- Updated CLAUDE.md to clarify it's just a placeholder file
+
+### Added
+- Clear limitation sections in documentation
+- Accurate descriptions of template generation functionality
+- Honest expectations management in user guides
+
+### Removed
+- False claims about "advanced thinking modes"
+- Misleading references to "token optimization"
+- Unsubstantiated "AI development workflow" automation claims
+- References to non-existent MCP tools and integrations
+
 ## [1.1.0] - 2025-01-10
 
 ### Changed

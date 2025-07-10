@@ -1,7 +1,7 @@
 {
   "name": "claudeflow",
-  "version": "1.1.0",
-  "description": "ClaudeFlow (CF) - Enhanced AI development workflow tools for Claude Code",
+  "version": "2.0.0",
+  "description": "ClaudeFlow (CF) - Template generation and project structure tools for development planning",
   "main": "scripts/install-mcp-tools.js",
   "bin": {
     "cf-install": "./scripts/install-mcp-tools.js"
