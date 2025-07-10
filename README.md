@@ -1,6 +1,6 @@
 # ClaudeFlow (CF)
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 **ClaudeFlow** は、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。

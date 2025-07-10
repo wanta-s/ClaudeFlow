@@ -1,12 +1,12 @@
 # 🚀 ClaudeFlow 使い方ガイド
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
 
 ## 📋 概要
 
 ClaudeFlowは、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。プロジェクトの「設計図」を作成することで、Claude Codeが体系的で一貫性のあるコードを生成できるようになります。
 
-**現在のバージョン**: v2.4.0 | [変更履歴](../CHANGELOG.md)
+**現在のバージョン**: v2.5.0 | [変更履歴](../CHANGELOG.md)
 
 ## 🎯 ClaudeFlowの価値
 

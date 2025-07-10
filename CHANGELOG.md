@@ -5,6 +5,20 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-01-10
+
+### Added
+- Quality Validation Research phase after minimal implementation
+- Automatic code quality analysis for reliability, maintainability, and reusability
+- Iterative improvement process (up to 3 iterations) until quality standards are met
+- Quality scoring system (5-point scale, must achieve 3+ on all items, 4+ average)
+- Research results saved to context for future reference
+
+### Changed
+- Hybrid implementation now has 9 steps instead of 8
+- Updated all documentation to reflect the new quality validation phase
+- Improved code quality through systematic validation before testing
+
 ## [2.4.0] - 2025-01-10
 
 ### Added
