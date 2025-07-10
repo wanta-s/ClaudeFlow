@@ -1,8 +1,11 @@
 # ClaudeFlow (CF)
 
-**ClaudeFlow** は、Claude Codeを強化するAI開発ワークフローツールです。AIファーストのコンテキストエンジニアリング手法を用いて、効率的な開発環境を提供します。
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## 🚀 クイックインストール
+**ClaudeFlow** は、Claude Code向けのAI開発ワークフローツールです。コンテキストエンジニアリングを活用した開発支援を提供します。
+
+## インストール
 
 ### Claude Codeでの使用方法
 
@@ -26,7 +29,7 @@ chmod +x scripts/install-mcp-tools.sh
 ```
 
 
-## 📦 ワンライナーインストール
+## ワンライナーインストール
 
 ### npm/npx を使用（Node.jsが必要）
 ```bash
@@ -39,10 +42,10 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/ins
 ```
 
 
-## 📚 含まれるツール
+## 含まれるツール
 
 ### ClaudeFlow (CF) Components
-- **commands/** - 様々なMCPコマンド定義
+- **commands/** - MCPコマンド定義
 - **shared/** - 共有設定とルール
 - **CLAUDE.md** - ClaudeFlow設定ファイル
 
@@ -52,7 +55,7 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/ins
 - **minimal-impact-implementation/** - 最小影響実装
 - **change-impact-testing/** - 変更影響テスト
 
-## 🔄 アップデート
+## アップデート
 
 ### JavaScript版（推奨）
 ```bash
@@ -67,12 +70,12 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/upd
 ```
 
 
-アップデート時の特徴：
-- 🔐 現在の設定を自動バックアップ（~/.claude-backup）
-- 📦 最新版を自動ダウンロード
-- ✅ エラー時は自動的にバックアップから復元
+アップデート時の動作：
+- 現在の設定をバックアップ（~/.claude-backup）
+- 最新版をダウンロード
+- エラー時はバックアップから復元
 
-## 🗑️ アンインストール
+## アンインストール
 
 ### JavaScript版（推奨）
 ```bash
@@ -93,7 +96,7 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/uni
 ```
 
 
-## 🔧 手動インストール
+## 手動インストール
 
 1. このリポジトリをクローン
 2. `~/.claude/` ディレクトリを作成
@@ -102,7 +105,7 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/scripts/uni
 cp -r commands shared CLAUDE.md ~/.claude/
 ```
 
-## 📁 プロジェクト構成
+## プロジェクト構成
 
 ```
 ClaudeFlow/
@@ -125,16 +128,16 @@ ClaudeFlow/
     └── templates/          # 各種テンプレート
 ```
 
-## 📖 ドキュメント
+## ドキュメント
 
-- [日本語使い方ガイド](./docs/USAGE-JP.md) 🆕
+- [日本語使い方ガイド](./docs/USAGE-JP.md)
 - [ClaudeFlow設定ガイド](./CLAUDE.md)
 - [AI開発フロー](./ClaudeFlow/README.md)
 
-## 🤝 貢献
+## 貢献
 
 プルリクエストを歓迎します！
 
-## 📄 ライセンス
+## ライセンス
 
 MIT License

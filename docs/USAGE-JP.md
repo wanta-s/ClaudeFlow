@@ -1,8 +1,12 @@
 # 🚀 ClaudeFlow 使い方ガイド
 
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+
 ## 📋 概要
 
 このツールは、Claude Codeの機能を強化する「ClaudeFlow」の設定と、AI開発ワークフローを提供します。
+
+**現在のバージョン**: v1.1.0 | [変更履歴](../CHANGELOG.md)
 
 ## 🔧 インストール方法
 
