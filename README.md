@@ -212,6 +212,8 @@ Claude Codeには**コンテキストウィンドウ**（一度に処理でき�
 
 - [日本語使い方ガイド](./docs/USAGE-JP.md)
 - [開発フローチャート](./docs/DEVELOPMENT-FLOW.md)
+- [ハイブリッド実装ガイド](./docs/HYBRID-IMPLEMENTATION.md)
+- [繰り返し実装とテスト](./docs/ITERATIVE-IMPLEMENTATION.md)
 - [設定ファイルについて](./CLAUDE.md)
 - [変更履歴](./CHANGELOG.md)
 
