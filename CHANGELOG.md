@@ -5,6 +5,21 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-01-10
+
+### Added
+- New Hybrid Implementation mode combining Context Engineering and Incremental approaches
+- Created hybrid-implementation.sh script with 8-step process per feature
+- Comprehensive HYBRID-IMPLEMENTATION.md documentation
+- Pattern library mechanism that grows with each implemented feature
+- Code metrics tracking for quality assurance
+- Immediate testing after minimal implementation for early failure detection
+
+### Changed
+- Updated DEVELOPMENT-FLOW.md to include 4 implementation modes (added Hybrid)
+- Modified USAGE-JP.md to recommend Hybrid implementation for new projects
+- Hybrid mode is now the recommended default approach
+
 ## [2.3.0] - 2025-01-10
 
 ### Added

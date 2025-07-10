@@ -1,12 +1,12 @@
 # 🚀 ClaudeFlow 使い方ガイド
 
-[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
 
 ## 📋 概要
 
 ClaudeFlowは、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。プロジェクトの「設計図」を作成することで、Claude Codeが体系的で一貫性のあるコードを生成できるようになります。
 
-**現在のバージョン**: v2.3.0 | [変更履歴](../CHANGELOG.md)
+**現在のバージョン**: v2.4.0 | [変更履歴](../CHANGELOG.md)
 
 ## 🎯 ClaudeFlowの価値
 
@@ -153,7 +153,14 @@ ClaudeFlowは以下のようなドキュメントを生成します：
 
 2. **実装フェーズ**（Claude Code）
    ```
-   「生成された設計書に基づいて、プロジェクトの基本構造を実装してください」
+   # 実装モード選択時に「ハイブリッド実装」を選択
+   # 各機能に対して：
+   # - 仕様生成
+   # - 最小実装
+   # - 即時テスト
+   # - リファクタリング
+   # - 包括的テスト
+   # - 最適化
    ```
 
 ### パターン2: 機能追加
@@ -389,6 +396,7 @@ ProductモデルをimplementしてくださいId」
 
 - [英語版README](../README.md)
 - [開発フローチャート](./DEVELOPMENT-FLOW.md)
+- [ハイブリッド実装ガイド](./HYBRID-IMPLEMENTATION.md)
 - [設定ファイルについて](../CLAUDE.md)
 - [テンプレート一覧](../ClaudeFlow/tasks/)
 
