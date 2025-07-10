@@ -5,13 +5,8 @@
 
 set -e
 
-# カラー定義
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[0;33m'
-RED='\033[0;31m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# 共通関数を読み込み
+source "$(dirname "$0")/common-functions.sh"
 
 # プロジェクトディレクトリ
 PROJECT_ROOT="$(dirname "$0")/.."
@@ -19,61 +14,27 @@ RESULTS_DIR="$PROJECT_ROOT/results"
 IMPLEMENTATION_DIR="$PROJECT_ROOT/implementation"
 TESTS_DIR="$PROJECT_ROOT/tests"
 
-# 実装ディレクトリ作成
+# ディレクトリ作成
 mkdir -p "$IMPLEMENTATION_DIR"
 mkdir -p "$TESTS_DIR"
 
-# 入力ファイル
+# 引数処理
 REQUIREMENTS_FILE="${1:-$RESULTS_DIR/03_requirements_result.md}"
 DESIGN_FILE="${2:-$RESULTS_DIR/05_design_result.md}"
 
-echo -e "${CYAN}================================================${NC}"
-echo -e "${CYAN}        インクリメンタル実装モード             ${NC}"
-echo -e "${CYAN}================================================${NC}"
-echo ""
-echo "機能を1つずつ実装し、都度テストを実行します。"
+echo -e "${CYAN}=====================================${NC}"
+echo -e "${CYAN}     インクリメンタル実装モード      ${NC}"
+echo -e "${CYAN}=====================================${NC}"
 echo ""
 
 # 実装する機能リストを生成
 generate_feature_list() {
-    cat > "$IMPLEMENTATION_DIR/extract_features.md" << EOF
-# 実装機能の抽出
-
-以下の要件定義書から、実装すべき機能を個別のタスクとして抽出してください。
-
-## 出力形式
-各機能を以下の形式でリスト化：
-
-\`\`\`json
-{
-  "features": [
-    {
-      "id": "feature_001",
-      "name": "ユーザー登録機能",
-      "description": "新規ユーザーの登録処理",
-      "dependencies": [],
-      "estimated_time": "2時間",
-      "test_requirements": "ユニットテスト、統合テスト"
-    },
-    {
-      "id": "feature_002",
-      "name": "ログイン機能",
-      "description": "ユーザー認証とセッション管理",
-      "dependencies": ["feature_001"],
-      "estimated_time": "3時間",
-      "test_requirements": "ユニットテスト、セキュリティテスト"
-    }
-  ]
-}
-\`\`\`
-
-優先順位と依存関係を考慮して、実装順序を決定してください。
-
----
-要件定義書の内容：
-EOF
-
-    cat "$REQUIREMENTS_FILE" >> "$IMPLEMENTATION_DIR/extract_features.md"
+    # プロンプトを読み込んで変数を適用
+    local prompt=$(load_prompt "13_extract_features")
+    prompt=$(apply_prompt_vars "$prompt" \
+        "requirements_content" "$(cat "$REQUIREMENTS_FILE")")
+    
+    echo "$prompt" > "$IMPLEMENTATION_DIR/extract_features.md"
     
     # AIに機能リストを生成させる
     claude --file "$IMPLEMENTATION_DIR/extract_features.md" > "$IMPLEMENTATION_DIR/features.json"
@@ -90,49 +51,15 @@ implement_feature() {
     echo -e "${GREEN}実装開始: ${feature_name}${NC}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     
-    # 実装タスクファイルを作成
-    cat > "$IMPLEMENTATION_DIR/implement_${feature_id}.md" << EOF
-# 機能実装タスク: ${feature_name}
-
-## 実装内容
-${feature_desc}
-
-## 要件
-- 要件定義書の該当部分を参照
-- テスト可能な形で実装
-- エラーハンドリングを含む
-
-## 成果物
-1. 実装コード（フロントエンド/バックエンド）
-2. ユニットテスト
-3. 統合テスト（必要に応じて）
-
-## 出力形式
-実装したコードを以下の形式で出力：
-
-### フロントエンドコード
-\`\`\`typescript
-// ファイルパス: frontend/src/features/${feature_id}/
-// 実装コード
-\`\`\`
-
-### バックエンドコード
-\`\`\`typescript
-// ファイルパス: backend/src/features/${feature_id}/
-// 実装コード
-\`\`\`
-
-### テストコード
-\`\`\`typescript
-// ファイルパス: tests/${feature_id}/
-// テストコード
-\`\`\`
-
----
-設計書の内容：
-EOF
-
-    cat "$DESIGN_FILE" >> "$IMPLEMENTATION_DIR/implement_${feature_id}.md"
+    # プロンプトを読み込んで変数を適用
+    local prompt=$(load_prompt "10_implement_feature")
+    prompt=$(apply_prompt_vars "$prompt" \
+        "feature_name" "$feature_name" \
+        "feature_description" "$feature_desc" \
+        "feature_id" "$feature_id" \
+        "design_content" "$(cat "$DESIGN_FILE")")
+    
+    echo "$prompt" > "$IMPLEMENTATION_DIR/implement_${feature_id}.md"
     
     # AIに実装させる
     echo -e "${YELLOW}実装中...${NC}"
@@ -149,30 +76,13 @@ run_feature_tests() {
     echo ""
     echo -e "${CYAN}テスト実行: ${feature_name}${NC}"
     
-    # テスト実行タスクを作成
-    cat > "$TESTS_DIR/test_${feature_id}.md" << EOF
-# テスト実行: ${feature_name}
-
-実装された機能のテストを実行し、結果を報告してください。
-
-## テスト内容
-1. ユニットテストの実行
-2. 正常系のテスト
-3. 異常系のテスト
-4. エッジケースのテスト
-
-## 実装コード
-EOF
-
-    cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md" >> "$TESTS_DIR/test_${feature_id}.md"
+    # プロンプトを読み込んで変数を適用
+    local prompt=$(load_prompt "11_run_tests")
+    prompt=$(apply_prompt_vars "$prompt" \
+        "feature_name" "$feature_name" \
+        "implementation_code" "$(cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")")
     
-    echo "" >> "$TESTS_DIR/test_${feature_id}.md"
-    echo "## テスト結果フォーマット" >> "$TESTS_DIR/test_${feature_id}.md"
-    echo '```' >> "$TESTS_DIR/test_${feature_id}.md"
-    echo "テスト名: [テスト名]" >> "$TESTS_DIR/test_${feature_id}.md"
-    echo "結果: PASS/FAIL" >> "$TESTS_DIR/test_${feature_id}.md"
-    echo "詳細: [詳細メッセージ]" >> "$TESTS_DIR/test_${feature_id}.md"
-    echo '```' >> "$TESTS_DIR/test_${feature_id}.md"
+    echo "$prompt" > "$TESTS_DIR/test_${feature_id}.md"
     
     # テスト実行
     echo -e "${YELLOW}テスト実行中...${NC}"
@@ -203,19 +113,14 @@ fix_implementation() {
     
     echo -e "${YELLOW}実装を修正中...${NC}"
     
-    cat > "$IMPLEMENTATION_DIR/fix_${feature_id}.md" << EOF
-# 実装修正: ${feature_name}
-
-テストが失敗しました。以下のテスト結果を確認し、実装を修正してください。
-
-## テスト結果
-EOF
-
-    cat "$TESTS_DIR/${feature_id}_test_result.md" >> "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
+    # プロンプトを読み込んで変数を適用
+    local prompt=$(load_prompt "12_fix_implementation")
+    prompt=$(apply_prompt_vars "$prompt" \
+        "feature_name" "$feature_name" \
+        "test_results" "$(cat "$TESTS_DIR/${feature_id}_test_result.md")" \
+        "current_implementation" "$(cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")")
     
-    echo "" >> "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
-    echo "## 現在の実装" >> "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
-    cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md" >> "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
+    echo "$prompt" > "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
     
     # 修正実行
     claude --file "$IMPLEMENTATION_DIR/fix_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
@@ -250,57 +155,57 @@ main() {
     echo -e "${BLUE}機能リストを生成中...${NC}"
     generate_feature_list
     
-    # 機能数を取得（簡易的な方法）
-    total_features=$(grep -c '"id"' "$IMPLEMENTATION_DIR/features.json" || echo "5")
-    current_feature=0
+    # JSONから機能リストを抽出
+    features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json")
+    total_features=$(echo "$features" | jq -s 'length')
+    current=0
     
-    echo ""
     echo -e "${GREEN}実装する機能数: ${total_features}${NC}"
     echo ""
     
-    # 各機能を実装とテスト
-    # 実際にはJSONをパースして処理すべきだが、ここでは簡易的に
-    for i in $(seq 1 $total_features); do
-        feature_id="feature_$(printf "%03d" $i)"
-        feature_name="機能${i}"
-        feature_desc="機能${i}の実装"
+    # 各機能を実装
+    echo "$features" | while read -r feature; do
+        feature_id=$(echo "$feature" | jq -r '.id')
+        feature_name=$(echo "$feature" | jq -r '.name')
+        feature_desc=$(echo "$feature" | jq -r '.description')
         
-        # 実装
+        current=$((current + 1))
+        
+        # 機能を実装
         implement_feature "$feature_id" "$feature_name" "$feature_desc"
         
-        # テスト
+        # テストを実行
         run_feature_tests "$feature_id" "$feature_name"
         
-        # 進捗更新
-        current_feature=$((current_feature + 1))
-        show_progress $current_feature $total_features "$feature_name"
+        # 進捗を表示
+        show_progress $current $total_features "$feature_name"
         
         # 次の機能に進むか確認
-        if [ $current_feature -lt $total_features ]; then
-            echo -e "${YELLOW}次の機能に進みますか？ (y/n/a=すべて自動)${NC}"
+        if [ $current -lt $total_features ]; then
+            echo -e "${YELLOW}次の機能に進みますか？ (y/n/a=全自動)${NC}"
             read -n 1 continue_confirm
             echo ""
             
             if [[ $continue_confirm =~ ^[Nn]$ ]]; then
-                echo "実装を中断しました。"
+                echo -e "${YELLOW}実装を中断しました。${NC}"
                 break
             elif [[ $continue_confirm =~ ^[Aa]$ ]]; then
-                echo -e "${BLUE}残りの機能を自動で実装します...${NC}"
-                # 以降は確認なしで続行
+                # 自動モードに切り替え
+                export AUTO_MODE=true
+            fi
+            
+            # 自動モードでない場合のみ確認
+            if [ "$AUTO_MODE" != "true" ]; then
+                continue
             fi
         fi
     done
     
-    # 完了メッセージ
     echo ""
-    echo -e "${CYAN}================================================${NC}"
-    echo -e "${GREEN}✅ すべての機能の実装とテストが完了しました！${NC}"
-    echo -e "${CYAN}================================================${NC}"
-    echo ""
-    echo "成果物:"
-    echo "- 実装コード: $IMPLEMENTATION_DIR/"
-    echo "- テスト結果: $TESTS_DIR/"
+    echo -e "${CYAN}=====================================${NC}"
+    echo -e "${GREEN}インクリメンタル実装完了！${NC}"
+    echo -e "${CYAN}=====================================${NC}"
 }
 
-# 実行
+# スクリプト実行
 main
