@@ -1,27 +1,29 @@
 # 🚀 ClaudeFlow 使い方ガイド
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
 
 ## 📋 概要
 
-このツールは、Claude Code向けの設定ファイルとプロジェクトテンプレートを提供します。開発計画やタスク管理用のMarkdownテンプレートを生成し、プロジェクトの構造化を支援します。
+ClaudeFlowは、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。プロジェクトの「設計図」を作成することで、Claude Codeが体系的で一貫性のあるコードを生成できるようになります。
 
-**現在のバージョン**: v2.0.0 | [変更履歴](../CHANGELOG.md)
+**現在のバージョン**: v2.1.0 | [変更履歴](../CHANGELOG.md)
 
-## 🚨 重要な注意事項
+## 🎯 ClaudeFlowの価値
 
-ClaudeFlowは以下の機能を**提供しません**：
-- ❌ 自動的なAI開発機能
-- ❌ Claude Codeとの直接的な統合
-- ❌ 自動コード生成
-- ❌ トークン最適化
-- ❌ 思考モードの拡張
+### Claude Codeとの相乗効果
 
-ClaudeFlowが実際に**提供する**機能：
-- ✅ 設定ファイルのインストール（~/.claude/ディレクトリへ）
-- ✅ プロジェクト計画用のMarkdownテンプレート
-- ✅ タスク管理テンプレート
-- ✅ プロジェクト構造の提案
+```
+ClaudeFlow（設計）+ Claude Code（実装）= 高品質なコードベース
+```
+
+- **ClaudeFlow**: プロジェクトの全体像を設計
+- **Claude Code**: 設計に基づいて実際のコードを生成
+
+### 解決する課題
+
+1. **構造の不明確さ** → 明確なプロジェクト構造を定義
+2. **タスクの複雑さ** → 管理可能な単位に分解
+3. **一貫性の欠如** → 標準化されたアプローチを提供
 
 ## 🔧 インストール方法
 
@@ -30,7 +32,6 @@ ClaudeFlowが実際に**提供する**機能：
 ```bash
 # Unix/Linux/Mac
 curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/install.sh | bash
-
 ```
 
 ### 2. インストール後の確認
@@ -40,169 +41,219 @@ curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/install.sh 
 ls ~/.claude/
 ```
 
-以下のファイルがインストールされます：
-- `CLAUDE.md` - 基本的な設定ファイル
-- `commands/` - 空のディレクトリ（将来の拡張用）
-- `shared/` - 空のディレクトリ（将来の拡張用）
+## 🎯 実践的な使い方
 
-## 🎯 実際の使い方
-
-### 1. Markdownテンプレートの生成
-
-ClaudeFlowの主な機能は、プロジェクト計画用のテンプレート生成です：
+### ステップ1: プロジェクトの構造化
 
 ```bash
 # ClaudeFlowディレクトリに移動
 cd ClaudeFlow/scripts
 
-# プロジェクトテンプレートを生成
+# プロジェクト設計を開始
 ./start.sh
 ```
 
-スクリプトは以下を行います：
-1. プロジェクト名や説明を対話的に入力
-2. 入力内容に基づいてMarkdownテンプレートを生成
-3. results/ディレクトリにファイルを保存
+#### 対話例：
+```
+Project name: ECサイト
+Description: モダンなECサイトの構築
+Tech stack: Next.js, TypeScript, Prisma, PostgreSQL
+Main features: 商品管理、カート機能、決済連携
+```
 
-### 2. 生成されるテンプレート
+### ステップ2: 生成されたドキュメントの確認
 
-#### プロジェクト計画テンプレート
+ClaudeFlowは以下のようなドキュメントを生成します：
+
 ```markdown
-# プロジェクト名
+# ECサイト プロジェクト計画
 
 ## 概要
-[プロジェクトの説明]
+モダンなECサイトの構築
+
+## 技術スタック
+- Frontend: Next.js, TypeScript
+- Backend: Prisma, PostgreSQL
+- その他: Stripe決済API
 
 ## タスクリスト
-- [ ] タスク1
-- [ ] タスク2
+1. [ ] データベース設計
+2. [ ] 商品管理機能の実装
+3. [ ] カート機能の実装
+4. [ ] 決済連携の実装
+...
 ```
 
-### 3. テンプレートの活用方法
+### ステップ3: Claude Codeでの実装
 
-生成されたテンプレートは手動で編集して使用します：
-1. 生成されたMarkdownファイルを開く
-2. プレースホルダーを実際の内容に置き換える
-3. プロジェクトのドキュメントとして活用
+生成されたドキュメントをClaude Codeに提供して実装を進めます：
 
-## 📁 プロジェクト構造
-
-ClaudeFlowをインストールすると、以下の構造が作成されます：
-
+#### 例1: 初期セットアップ
 ```
-~/.claude/
-├── CLAUDE.md       # 基本設定ファイル
-├── commands/       # 空のディレクトリ
-└── shared/         # 空のディレクトリ
-
-ClaudeFlow/
-├── scripts/        # テンプレート生成スクリプト
-├── tasks/          # テンプレートファイル
-└── results/        # 生成されたファイルの保存先
+「このプロジェクト計画に基づいて、ECサイトの初期プロジェクト構造を作成してください。Next.js、TypeScript、Prismaを使用します。」
 ```
 
-## 💡 具体的な使用例
+#### 例2: 機能実装
+```
+「タスク#1のデータベース設計に基づいて、Prismaスキーマを実装してください。商品、ユーザー、注文のモデルが必要です。」
+```
 
-### 例1: 新規プロジェクトの計画
+#### 例3: 段階的な開発
+```
+「タスク#2の商品管理機能を実装してください。CRUD操作とページネーションを含めてください。」
+```
+
+## 💡 活用パターン
+
+### パターン1: 新規プロジェクト立ち上げ
+
+1. **設計フェーズ**（ClaudeFlow）
+   ```bash
+   ./start.sh
+   # 全体構造を定義
+   ```
+
+2. **実装フェーズ**（Claude Code）
+   ```
+   「生成された設計書に基づいて、プロジェクトの基本構造を実装してください」
+   ```
+
+### パターン2: 機能追加
+
+1. **機能設計**（ClaudeFlow）
+   ```bash
+   ./generate-tasks.sh
+   # 新機能のタスクを生成
+   ```
+
+2. **機能実装**（Claude Code）
+   ```
+   「ユーザー認証機能のタスクリストに従って実装を進めてください」
+   ```
+
+### パターン3: リファクタリング
+
+1. **現状分析**（ClaudeFlow）
+   - 既存コードの課題を整理
+   - 改善計画を文書化
+
+2. **段階的改善**（Claude Code）
+   ```
+   「リファクタリング計画に基づいて、ステップ1から順に実行してください」
+   ```
+
+## 📊 実例：Todoアプリ開発
+
+### 1. ClaudeFlowで設計
 
 ```bash
-cd ClaudeFlow/scripts
 ./start.sh
-
-# 対話的な入力:
-# Project name: MyNewApp
-# Project description: A todo list application
-# ...
-
-# 結果: results/にプロジェクト計画のMarkdownファイルが生成される
+# 入力内容:
+# - Project: TodoApp
+# - Stack: React, TypeScript, Express
+# - Features: タスク管理、カテゴリ分け、期限設定
 ```
 
-### 例2: 既存テンプレートの利用
+### 2. 生成される構造
 
-```bash
-# テンプレートをコピーして編集
-cp ClaudeFlow/tasks/01_planning.md my-project-plan.md
-# エディタで開いて編集
+```
+TodoApp/
+├── docs/
+│   ├── project_plan.md      # 全体計画
+│   ├── task_breakdown.md    # タスク分解
+│   └── tech_specs.md        # 技術仕様
+├── frontend/                # React アプリ
+├── backend/                 # Express API
+└── shared/                  # 共有型定義
 ```
 
-## ⚠️ 制限事項と期待値管理
+### 3. Claude Codeへの指示
 
-### 期待しないでください：
-- Claude Codeが自動的に賢くなることはありません
-- AIが自動的にコードを生成することはありません
-- 複雑なタスクが自動化されることはありません
+```
+「project_plan.mdに基づいて、TodoAppのフロントエンド基本構造を実装してください。TypeScriptとReact Hooksを使用し、コンポーネントは機能別に整理してください。」
+```
 
-### 実際の効果：
-- プロジェクトの構造化に役立つテンプレートを提供
-- 開発計画の文書化を支援
-- 標準的なプロジェクト構造の提案
+### 4. 結果
 
-## 🎨 カスタマイズ
+Claude Codeが以下を生成：
+- 整理されたコンポーネント構造
+- 型安全なTypeScript実装
+- 計画に沿った機能実装
 
-### テンプレートの編集
+## ⚡ プロのヒント
+
+### 1. 詳細な設計 = 良質なコード
+
+ClaudeFlowで詳細に設計するほど、Claude Codeはより適切なコードを生成します。
+
+### 2. 段階的な実装
+
+大きなプロジェクトは小さなタスクに分解して、一つずつClaude Codeに実装を依頼します。
+
+### 3. フィードバックループ
+
+```
+設計 → 実装 → レビュー → 設計の更新
+```
+
+### 4. テンプレートのカスタマイズ
+
+プロジェクトに合わせてテンプレートをカスタマイズ：
 
 ```bash
-# テンプレートファイルを直接編集
-nano ClaudeFlow/tasks/01_planning.md
-
-# 独自のテンプレートを追加
+# 独自テンプレートを追加
 cp my-template.md ClaudeFlow/tasks/
 ```
 
-### スクリプトの修正
+## 🛠️ 高度な使い方
 
-生成スクリプトはシンプルなbashスクリプトなので、必要に応じて編集できます：
+### カスタムワークフロー
 
 ```bash
-# スクリプトを編集
-nano ClaudeFlow/scripts/start.sh
+# 独自のワークフローを作成
+cd ClaudeFlow/scripts
+./interactive-planning.sh
+
+# 詳細な技術仕様を生成
+./generate-tasks.sh --detailed
+```
+
+### CI/CDとの連携
+
+生成されたドキュメントをGitで管理し、プロジェクトの進捗を追跡：
+
+```bash
+git add docs/
+git commit -m "Add project planning documents"
 ```
 
 ## 🆘 トラブルシューティング
 
-### インストールがうまくいかない
-```bash
-# 手動インストール
-git clone https://github.com/wanta-s/ClaudeFlow.git
-cd ClaudeFlow
-node scripts/install-mcp-tools.js
-```
+### Claude Codeが計画を理解できない場合
 
-### テンプレートが生成されない
-```bash
-# 権限を確認
-chmod +x ClaudeFlow/scripts/*.sh
+1. より具体的な説明を追加
+2. タスクをさらに細分化
+3. 技術的な制約を明記
 
-# 手動で実行
-bash ClaudeFlow/scripts/start.sh
-```
+### 生成されたコードが期待と異なる場合
 
-### ファイルが見つからない
-```bash
-# インストール状況を確認
-ls -la ~/.claude/
-
-# 再インストール
-curl -fsSL https://raw.githubusercontent.com/wanta-s/ClaudeFlow/main/install.sh | bash
-```
+1. 設計ドキュメントを見直し
+2. より詳細な要件を追加
+3. 段階的に実装を進める
 
 ## 📚 さらに詳しく
 
 - [英語版README](../README.md)
 - [設定ファイルについて](../CLAUDE.md)
-- [開発テンプレート](../docs/)
+- [テンプレート一覧](../ClaudeFlow/tasks/)
 
 ## 🤝 サポート
 
 問題や質問がある場合：
 - GitHubでIssueを作成
-- プルリクエストで改善提案
-
-特に以下の貢献を歓迎します：
-- 実際に動作する機能の実装
-- より実用的なテンプレートの追加
-- ドキュメントの改善
+- より良いテンプレートの提案
+- Claude Codeとの連携改善アイデア
 
 ---
 
-ClaudeFlowの設定が完了しました。
+ClaudeFlowとClaude Codeを組み合わせることで、より効率的で体系的な開発が可能になります。

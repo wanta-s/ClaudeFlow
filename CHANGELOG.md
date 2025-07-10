@@ -5,6 +5,20 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-01-10
+
+### Changed
+- Reframed documentation to emphasize ClaudeFlow as a Claude Code enabler
+- Updated README.md to show how ClaudeFlow helps Claude Code generate better code
+- Rewrote USAGE-JP.md with practical examples of ClaudeFlow + Claude Code workflow
+- Updated CLAUDE.md to explain the synergy between ClaudeFlow and Claude Code
+- Changed package.json description to reflect the tool's true purpose
+
+### Added
+- Clear workflow examples showing ClaudeFlow → Claude Code process
+- Practical use cases for different development scenarios
+- Step-by-step guides for using both tools together
+
 ## [2.0.0] - 2025-01-10
 
 ### Changed - BREAKING
