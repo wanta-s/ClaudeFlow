@@ -246,7 +246,7 @@ generate_tests() {
 }
 
 # 進捗表示
-show_progress() {
+show_progress_status() {
     local current=$1
     local total=$2
     local feature_name=$3
@@ -255,6 +255,7 @@ show_progress() {
     echo -e "${CYAN}【進捗状況】${NC}"
     echo -e "完了: ${current}/${total} 機能"
     
+    # common-functions.shのshow_progress関数を使用
     show_progress $current $total
     echo ""
 }
@@ -300,7 +301,7 @@ main() {
         cp "$IMPLEMENTATION_DIR/${feature_id}_v2.ts" "$IMPLEMENTATION_DIR/${feature_id}_final.ts"
         
         # 進捗表示
-        show_progress $current $total_features "$feature_name"
+        show_progress_status $current $total_features "$feature_name"
         
         # 次の機能に進むか確認
         if [ $current -lt $total_features ]; then

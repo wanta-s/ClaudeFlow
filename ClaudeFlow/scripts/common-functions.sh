@@ -41,8 +41,12 @@ apply_prompt_vars() {
         local var_value="$2"
         shift 2
         
-        # 変数を置換（sedのエスケープ処理を含む）
-        prompt_content=$(echo "$prompt_content" | sed "s/\${$var_name}/$(echo "$var_value" | sed 's/[[\.*^$()+?{|]/\\&/g')/g")
+        # 変数値のエスケープ処理
+        # バックスラッシュ、アンパサンド、スラッシュ、改行をエスケープ
+        local escaped_value=$(echo "$var_value" | sed 's/\\/\\\\/g; s/&/\\&/g; s/\//\\\//g')
+        
+        # 変数を置換
+        prompt_content=$(echo "$prompt_content" | sed "s/\${$var_name}/$escaped_value/g")
     done
     
     echo "$prompt_content"
