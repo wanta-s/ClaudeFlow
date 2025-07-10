@@ -5,6 +5,24 @@ All notable changes to ClaudeFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2025-01-10
+
+### Added
+- External prompt files in `prompts/` directory for better maintainability
+- Common functions library (`common-functions.sh`) with prompt loading utilities
+- `load_prompt` and `apply_prompt_vars` functions for dynamic prompt management
+
+### Changed
+- Simplified implementation phase to use only Context Engineering mode
+- Removed implementation mode selection from run-pipeline.sh
+- All prompts are now stored in separate MD files for easier version control
+
+### Removed
+- Incremental implementation mode and related scripts
+- Hybrid implementation mode and documentation
+- Implementation mode selection during phase 6
+- Files removed: `incremental-implementation.sh`, `hybrid-implementation.sh`, `HYBRID-IMPLEMENTATION.md`
+
 ## [2.5.0] - 2025-01-10
 
 ### Added

@@ -76,37 +76,23 @@ for phase in "${phases[@]}"; do
         exit 1
     fi
     
-    # 実装フェーズの場合は特別な処理
+    # 実装フェーズの場合はコンテキストエンジニアリングモードを実行
     if [ "$phase_file" = "06_implementation" ]; then
-        # 実装モードを確認
-        echo -e "${YELLOW}実装フェーズです。どのモードで実行しますか？${NC}"
-        echo "1) コンテキストエンジニアリング（実装→リファクタ→テスト）"
-        echo "2) インクリメンタル（機能ごとに実装・テスト）"
-        echo "3) 通常モード（すべて一度に実装）"
-        echo -n "選択 (1-3): "
-        read impl_mode
+        log_info "実装フェーズ: コンテキストエンジニアリングモードで実行"
         
-        if [ "$impl_mode" = "1" ]; then
-            log_info "コンテキストエンジニアリング実装モードで実行"
-            # コンテキスト駆動実装スクリプトを実行
-            "$PROJECT_ROOT/scripts/context-driven-implementation.sh" \
-                "$RESULTS_DIR/03_requirements_result.md" \
-                "$RESULTS_DIR/05_design_result.md"
-            
-            # 結果をまとめる
+        # コンテキスト駆動実装スクリプトを実行
+        "$PROJECT_ROOT/scripts/context-driven-implementation.sh" \
+            "$RESULTS_DIR/03_requirements_result.md" \
+            "$RESULTS_DIR/05_design_result.md"
+        
+        # 結果をまとめる
+        if ls "$PROJECT_ROOT/implementation/"*_final.ts 1> /dev/null 2>&1; then
             cat "$PROJECT_ROOT/implementation/"*_final.ts > "$result_file"
-            continue
-        elif [ "$impl_mode" = "2" ]; then
-            log_info "インクリメンタル実装モードで実行"
-            # インクリメンタル実装スクリプトを実行
-            "$PROJECT_ROOT/scripts/incremental-implementation.sh" \
-                "$RESULTS_DIR/03_requirements_result.md" \
-                "$RESULTS_DIR/05_design_result.md"
-            
-            # 結果をまとめる
-            cat "$PROJECT_ROOT/implementation/"*.md > "$result_file"
-            continue
+        else
+            log_error "実装結果ファイルが見つかりません"
+            exit 1
         fi
+        continue
     fi
     
     # Claudeコマンドの構築
