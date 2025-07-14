@@ -37,7 +37,7 @@ generate_feature_list() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/extract_features.md"
     
     # AIに機能リストを生成させる
-    claude --file "$IMPLEMENTATION_DIR/extract_features.md" > "$IMPLEMENTATION_DIR/features.json"
+    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print > "$IMPLEMENTATION_DIR/features.json"
 }
 
 # 個別機能の実装
@@ -63,7 +63,7 @@ implement_feature() {
     
     # AIに実装させる
     echo -e "${YELLOW}実装中...${NC}"
-    claude --file "$IMPLEMENTATION_DIR/implement_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
+    cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     echo -e "${GREEN}✅ 実装完了${NC}"
 }
@@ -86,7 +86,7 @@ run_feature_tests() {
     
     # テスト実行
     echo -e "${YELLOW}テスト実行中...${NC}"
-    claude --file "$TESTS_DIR/test_${feature_id}.md" > "$TESTS_DIR/${feature_id}_test_result.md"
+    cat "$TESTS_DIR/test_${feature_id}.md" | claude --print > "$TESTS_DIR/${feature_id}_test_result.md"
     
     # テスト結果の確認
     if grep -q "FAIL" "$TESTS_DIR/${feature_id}_test_result.md"; then
@@ -123,7 +123,7 @@ fix_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
     
     # 修正実行
-    claude --file "$IMPLEMENTATION_DIR/fix_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
+    cat "$IMPLEMENTATION_DIR/fix_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
     mv "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     # 再テスト

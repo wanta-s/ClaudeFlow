@@ -151,21 +151,28 @@ for phase in "${phases[@]}"; do
     fi
     
     # Claudeコマンドの構築
-    claude_cmd="claude --file \"$task_file\""
+    # ファイルを結合してClaudeに渡す
+    temp_input="$RESULTS_DIR/.temp_input_${phase_file}.md"
+    cat "$task_file" > "$temp_input"
     
     # 前のフェーズの結果を入力として追加
     if [ -n "$previous_result" ] && [ -f "$previous_result" ]; then
-        claude_cmd="$claude_cmd --file \"$previous_result\""
+        echo -e "\n\n---\n# 前のフェーズの結果\n" >> "$temp_input"
+        cat "$previous_result" >> "$temp_input"
     fi
     
     # 初期入力ファイルがある場合（最初のフェーズのみ）
     if [ -n "$INITIAL_INPUT" ] && [ "$phase_file" = "01_planning" ] && [ -f "$INITIAL_INPUT" ]; then
-        claude_cmd="$claude_cmd --file \"$INITIAL_INPUT\""
+        echo -e "\n\n---\n# ユーザー入力\n" >> "$temp_input"
+        cat "$INITIAL_INPUT" >> "$temp_input"
     fi
     
     # 実行
-    log_info "実行中: $claude_cmd > \"$result_file\""
-    eval "$claude_cmd > \"$result_file\""
+    log_info "実行中: cat $temp_input | claude --print > \"$result_file\""
+    cat "$temp_input" | claude --print > "$result_file"
+    
+    # 一時ファイルを削除
+    rm -f "$temp_input"
     
     # 結果確認
     if [ -s "$result_file" ]; then

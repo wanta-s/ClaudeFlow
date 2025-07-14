@@ -97,7 +97,7 @@ extract_features() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/extract_features.md"
     
-    claude --file "$IMPLEMENTATION_DIR/extract_features.md" > "$IMPLEMENTATION_DIR/features.json"
+    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print > "$IMPLEMENTATION_DIR/features.json"
     
     echo -e "${GREEN}✅ 機能リスト抽出完了${NC}"
 }
@@ -116,7 +116,7 @@ analyze_feature() {
     
     echo "$prompt" > "$CONTEXT_DIR/analyze_${feature_name}.md"
     
-    claude --file "$CONTEXT_DIR/analyze_${feature_name}.md" > "$CONTEXT_DIR/analysis_${feature_name}.json"
+    cat "$CONTEXT_DIR/analyze_${feature_name}.md" | claude --print > "$CONTEXT_DIR/analysis_${feature_name}.json"
 }
 
 # 関数仕様書の生成
@@ -136,7 +136,7 @@ generate_function_spec() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/spec_${feature_id}.md"
     
-    claude --file "$IMPLEMENTATION_DIR/spec_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_spec.md"
+    cat "$IMPLEMENTATION_DIR/spec_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_spec.md"
     
     echo -e "${GREEN}✅ 関数仕様書生成完了${NC}"
 }
@@ -161,7 +161,7 @@ minimal_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md"
     
     echo -e "${YELLOW}最小実装を生成中...${NC}"
-    claude --file "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md" > "$IMPLEMENTATION_DIR/${feature_id}_v1.ts"
+    cat "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_v1.ts"
     
     # コード行数を計測
     local loc=$(wc -l < "$IMPLEMENTATION_DIR/${feature_id}_v1.ts")
@@ -187,7 +187,7 @@ refactor_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/refactor_${feature_id}.md"
     
     echo -e "${YELLOW}リファクタリング中...${NC}"
-    claude --file "$IMPLEMENTATION_DIR/refactor_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_v2.ts"
+    cat "$IMPLEMENTATION_DIR/refactor_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_v2.ts"
     
     # リファクタリング後の行数
     local loc=$(wc -l < "$IMPLEMENTATION_DIR/${feature_id}_v2.ts")
@@ -214,7 +214,7 @@ extract_new_patterns() {
     
     echo "$prompt" > "$CONTEXT_DIR/extract_patterns_${feature_id}.md"
     
-    local new_patterns=$(claude --file "$CONTEXT_DIR/extract_patterns_${feature_id}.md")
+    local new_patterns=$(cat "$CONTEXT_DIR/extract_patterns_${feature_id}.md" | claude --print)
     
     if [ -n "$new_patterns" ]; then
         echo "" >> "$PATTERNS_FILE"
@@ -240,7 +240,7 @@ generate_tests() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/test_${feature_id}.md"
     
-    claude --file "$IMPLEMENTATION_DIR/test_${feature_id}.md" > "$IMPLEMENTATION_DIR/${feature_id}_test.ts"
+    cat "$IMPLEMENTATION_DIR/test_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_test.ts"
     
     echo -e "${GREEN}✅ テスト生成完了${NC}"
 }
