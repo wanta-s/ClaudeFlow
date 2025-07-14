@@ -83,9 +83,10 @@ for phase in "${phases[@]}"; do
         echo -e "${YELLOW}実装フェーズです。どのモードで実行しますか？${NC}"
         echo "1) コンテキストエンジニアリング（実装→リファクタ→テスト）"
         echo "2) インクリメンタル（機能ごとに実装・テスト）"
-        echo "3) ハイブリッド（CE + インクリメンタル）- 推奨"
-        echo "4) 通常モード（すべて一度に実装）"
-        echo -n "選択 (1-4): "
+        echo "3) 自動インクリメンタル（完全自動修正）"
+        echo "4) ハイブリッド（CE + インクリメンタル）- 推奨"
+        echo "5) 通常モード（すべて一度に実装）"
+        echo -n "選択 (1-5): "
         read impl_mode
         
         if [ "$impl_mode" = "1" ]; then
@@ -119,6 +120,19 @@ for phase in "${phases[@]}"; do
             fi
             continue
         elif [ "$impl_mode" = "3" ]; then
+            log_info "自動インクリメンタル実装モードで実行"
+            # 自動インクリメンタル実装スクリプトを実行
+            "$PROJECT_ROOT/scripts/auto-incremental-implementation.sh"
+            
+            # 結果をまとめる
+            if ls "$PROJECT_ROOT/results/implementation/"*.md 1> /dev/null 2>&1; then
+                cat "$PROJECT_ROOT/results/implementation/"*.md > "$result_file"
+            else
+                log_error "実装結果ファイルが見つかりません"
+                exit 1
+            fi
+            continue
+        elif [ "$impl_mode" = "4" ]; then
             log_info "ハイブリッド実装モードで実行"
             # ハイブリッド実装スクリプトを実行
             "$PROJECT_ROOT/scripts/hybrid-implementation.sh" \

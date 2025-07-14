@@ -86,7 +86,7 @@ EOF
 cat "$INPUT_FILE" >> "$ANALYSIS_DIR/analyze_project.md"
 
 # AIに分析させる
-claude --file "$ANALYSIS_DIR/analyze_project.md" > "$ANALYSIS_DIR/analysis_result.json"
+cat "$ANALYSIS_DIR/analyze_project.md" | claude --print > "$ANALYSIS_DIR/analysis_result.json"
 
 # 分析結果を読み取り
 if [ -f "$ANALYSIS_DIR/analysis_result.json" ]; then
