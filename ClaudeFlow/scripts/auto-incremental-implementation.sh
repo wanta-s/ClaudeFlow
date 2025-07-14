@@ -78,7 +78,7 @@ run_feature_tests_with_retry() {
         if [ $retry_count -eq 0 ]; then
             echo -e "${CYAN}テスト実行: ${feature_name}${NC}"
         else
-            echo -e "${CYAN}再テスト実行 (${retry_count}/${MAX_RETRY}): ${feature_name}${NC}"
+            echo -e "${CYAN}再テスト実行 [${retry_count}/${MAX_RETRY}]: ${feature_name}${NC}"
         fi
         
         # プロンプトを読み込んで変数を適用
@@ -95,7 +95,7 @@ run_feature_tests_with_retry() {
         
         # テスト結果の確認
         if grep -q "FAIL" "$TESTS_DIR/${feature_id}_test_result.md"; then
-            echo -e "${RED}❌ テスト失敗 (試行 $((retry_count + 1))/${MAX_RETRY})${NC}"
+            echo -e "${RED}❌ テスト失敗 [試行 $((retry_count + 1))/${MAX_RETRY}]${NC}"
             
             if [ $retry_count -lt $((MAX_RETRY - 1)) ]; then
                 # 自動修正を実行
@@ -105,7 +105,7 @@ run_feature_tests_with_retry() {
                     ((retry_count++))
                 else
                     # 手動確認モード
-                    echo -e "${YELLOW}修正を試みますか？ (y/n/a)${NC}"
+                    echo -e "${YELLOW}修正を試みますか？ [y/n/a]${NC}"
                     echo "y: はい、n: いいえ、a: 以降すべて自動修正"
                     read -n 1 fix_confirm
                     echo ""
@@ -196,9 +196,9 @@ show_summary() {
     echo -e "${CYAN}【実装サマリー】${NC}"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "総機能数: ${total}"
-    echo -e "${GREEN}成功: ${passed} ($(( passed * 100 / total ))%)${NC}"
+    echo -e "${GREEN}成功: ${passed} [$(( passed * 100 / total ))%]${NC}"
     if [ $failed -gt 0 ]; then
-        echo -e "${RED}失敗: ${failed} ($(( failed * 100 / total ))%)${NC}"
+        echo -e "${RED}失敗: ${failed} [$(( failed * 100 / total ))%]${NC}"
     fi
     echo -e "実行時間: ${duration}秒"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -213,7 +213,7 @@ main() {
     mkdir -p "$IMPLEMENTATION_DIR" "$TESTS_DIR"
     
     # 自動修正モードの確認
-    echo -e "${YELLOW}自動修正モードで実行しますか？ (y/n)${NC}"
+    echo -e "${YELLOW}自動修正モードで実行しますか？ [y/n]${NC}"
     echo "y: 自動修正（推奨）、n: 手動確認"
     read -n 1 auto_mode
     echo ""
