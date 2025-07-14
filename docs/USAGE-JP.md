@@ -1,6 +1,13 @@
 # 🚀 ClaudeFlow 使い方ガイド
 
 [![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-開発中-orange.svg)](#開発状況)
+
+## ⚠️ 開発状況
+
+**現在、ClaudeFlowは仮実装段階です。一部の機能は正常に動作しない可能性があります。**
+
+詳細は[README.md](../README.md#開発状況)をご確認ください。
 
 ## 📋 概要
 

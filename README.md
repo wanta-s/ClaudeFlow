@@ -2,8 +2,25 @@
 
 [![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-開発中-orange.svg)](#開発状況)
 
 **ClaudeFlow** は、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。
+
+## ⚠️ 開発状況
+
+**現在、ClaudeFlowは仮実装段階です。一部の機能は正常に動作しない可能性があります。**
+
+### 既知の問題
+- 実装モードの一部で機能生成が不完全な場合があります
+- WSL環境でjqコマンドが必要です（代替としてPythonを使用）
+- 文字化けが発生する環境があります（UTF-8エンコーディング設定で対応中）
+
+### 動作確認済みの機能
+- 基本的なプロジェクト構造の生成
+- タスクテンプレートの生成
+- 要件定義フェーズの実行
+
+正式リリースまでお待ちください。開発の進捗は[Issues](https://github.com/wanta-s/ClaudeFlow/issues)でご確認いただけます。
 
 ## ClaudeFlowの役割
 
