@@ -55,7 +55,7 @@ $(cat "$RESULTS_DIR/00_user_input.md")
 上記の内容を踏まえて、タスクで指定された出力フォーマットに従って成果物を生成してください。"
 
     # Claudeに実行
-    echo "$prompt" | claude --print > "$result_file"
+    echo "$prompt" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$result_file"
     
     if [ -s "$result_file" ]; then
         echo -e "${GREEN}✓ 完了: $phase_name${NC}"

@@ -72,7 +72,7 @@ generate_phase_task() {
     create_task_generator_prompt "$phase_number" "$phase_name"
     
     # Claudeで生成
-    cat "$TEMP_DIR/generate_${phase_number}.md" | claude --print > "$output_file"
+    cat "$TEMP_DIR/generate_${phase_number}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$output_file"
     
     if [ -s "$output_file" ]; then
         echo -e "  ✅ 生成完了: $output_file"

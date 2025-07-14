@@ -41,7 +41,7 @@ generate_feature_list() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/generate_features.md"
     
     # 機能リスト生成
-    cat "$IMPLEMENTATION_DIR/generate_features.md" | claude --print > "$IMPLEMENTATION_DIR/features.json"
+    cat "$IMPLEMENTATION_DIR/generate_features.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/features.json"
 }
 
 # 単一機能の実装
@@ -61,7 +61,7 @@ implement_feature() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/implement_${feature_id}.md"
     
     # 実装実行
-    cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
+    cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     echo -e "${GREEN}✅ 実装完了${NC}"
 }
@@ -91,7 +91,7 @@ run_feature_tests_with_retry() {
         
         # テスト実行
         echo -e "${YELLOW}テスト実行中...${NC}"
-        cat "$TESTS_DIR/test_${feature_id}.md" | claude --print > "$TESTS_DIR/${feature_id}_test_result.md"
+        cat "$TESTS_DIR/test_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$TESTS_DIR/${feature_id}_test_result.md"
         
         # テスト結果の確認
         if grep -q "FAIL" "$TESTS_DIR/${feature_id}_test_result.md"; then
@@ -152,7 +152,7 @@ auto_fix_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
     
     # 修正実行
-    cat "$IMPLEMENTATION_DIR/fix_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
+    cat "$IMPLEMENTATION_DIR/fix_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
     mv "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     echo -e "${GREEN}修正完了${NC}"
@@ -230,8 +230,33 @@ main() {
     generate_feature_list
     
     # JSONから機能リストを抽出
-    features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json" 2>/dev/null || echo '[]')
-    total_features=$(echo "$features" | jq -s 'length' 2>/dev/null || echo 0)
+    if command -v jq &> /dev/null; then
+        # jqが利用可能な場合
+        features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json" 2>/dev/null || echo '[]')
+        total_features=$(echo "$features" | jq -s 'length' 2>/dev/null || echo 0)
+    else
+        # jqが利用できない場合はPythonを使用
+        echo -e "${YELLOW}jqが見つかりません。Pythonを使用してJSONを解析します...${NC}"
+        features=$(python3 -c "
+import json
+try:
+    with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+        data = json.load(f)
+        for feature in data['features']:
+            print(json.dumps(feature))
+except:
+    pass
+" 2>/dev/null || echo '[]')
+        total_features=$(python3 -c "
+import json
+try:
+    with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+        data = json.load(f)
+        print(len(data['features']))
+except:
+    print(0)
+" 2>/dev/null || echo 0)
+    fi
     
     if [ "$total_features" -eq 0 ]; then
         echo -e "${RED}エラー: 機能リストの生成に失敗しました${NC}"
@@ -248,8 +273,14 @@ main() {
     
     # 各機能を実装
     echo "$features" | while read -r feature; do
-        feature_id=$(echo "$feature" | jq -r '.id')
-        feature_name=$(echo "$feature" | jq -r '.name')
+        if command -v jq &> /dev/null; then
+            feature_id=$(echo "$feature" | jq -r '.id')
+            feature_name=$(echo "$feature" | jq -r '.name')
+        else
+            # Pythonを使用してJSONを解析
+            feature_id=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+            feature_name=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['name'])")
+        fi
         
         ((current++))
         
@@ -267,7 +298,7 @@ main() {
         show_detailed_progress $current $total_features $passed $failed
         
         # 最後の機能の場合、統計情報をファイルに保存
-        if [ $current -eq $total_features ]; then
+        if [ "$current" -eq "$total_features" ]; then
             echo "$passed" > "$IMPLEMENTATION_DIR/.passed_count"
             echo "$failed" > "$IMPLEMENTATION_DIR/.failed_count"
         fi
@@ -287,6 +318,7 @@ main() {
     # 後片付け
     rm -f "$IMPLEMENTATION_DIR/.passed_count" "$IMPLEMENTATION_DIR/.failed_count"
     
+    echo ""
     echo ""
     echo -e "${GREEN}自動インクリメンタル実装が完了しました！${NC}"
     

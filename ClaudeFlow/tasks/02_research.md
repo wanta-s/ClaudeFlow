@@ -113,5 +113,5 @@ project/
 
 ## 実行例
 ```bash
-claude --file 02_research.md --file ../results/01_planning_result.md --file ../results/00_user_input.md > ../results/02_research_result.md
+cat 02_research.md ../results/01_planning_result.md ../results/00_user_input.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/02_research_result.md
 ```

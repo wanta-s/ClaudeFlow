@@ -1,0 +1,81 @@
+{
+  "features": [
+    {
+      "id": "feature_001",
+      "name": "ユーザー登録",
+      "description": "メールアドレス、パスワード、名前でのユーザー登録機能",
+      "priority": 1,
+      "dependencies": []
+    },
+    {
+      "id": "feature_002",
+      "name": "ユーザーログイン",
+      "description": "メールアドレスとパスワードによる認証、JWTトークン生成",
+      "priority": 1,
+      "dependencies": []
+    },
+    {
+      "id": "feature_003",
+      "name": "タスク作成",
+      "description": "タイトル、説明、優先度、期限、カテゴリを持つタスクの作成",
+      "priority": 2,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_004",
+      "name": "タスク一覧表示",
+      "description": "全タスクの一覧表示、フィルター、ソート、ページネーション機能",
+      "priority": 2,
+      "dependencies": ["feature_002", "feature_003"]
+    },
+    {
+      "id": "feature_005",
+      "name": "タスクステータス管理",
+      "description": "未着手、進行中、完了、保留のステータス変更機能",
+      "priority": 3,
+      "dependencies": ["feature_003", "feature_004"]
+    },
+    {
+      "id": "feature_006",
+      "name": "タスク詳細表示",
+      "description": "タスクの詳細情報表示、編集・削除ボタンの配置",
+      "priority": 3,
+      "dependencies": ["feature_004"]
+    },
+    {
+      "id": "feature_007",
+      "name": "タスク編集",
+      "description": "既存タスクの情報編集、権限チェック付き",
+      "priority": 4,
+      "dependencies": ["feature_006"]
+    },
+    {
+      "id": "feature_008",
+      "name": "タスク削除",
+      "description": "タスクの論理削除、削除確認ダイアログ付き",
+      "priority": 4,
+      "dependencies": ["feature_006"]
+    },
+    {
+      "id": "feature_009",
+      "name": "ユーザープロファイル",
+      "description": "プロファイル情報の表示・編集、パスワード変更",
+      "priority": 5,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_010",
+      "name": "ダッシュボード統計",
+      "description": "タスク統計情報の表示、グラフによる可視化",
+      "priority": 5,
+      "dependencies": ["feature_003", "feature_004", "feature_005"]
+    },
+    {
+      "id": "feature_011",
+      "name": "最近のタスク表示",
+      "description": "最近作成/更新されたタスクの表示（最大10件）",
+      "priority": 6,
+      "dependencies": ["feature_004"]
+    }
+  ]
+}

@@ -37,7 +37,7 @@ generate_feature_list() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/extract_features.md"
     
     # AIに機能リストを生成させる
-    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print > "$IMPLEMENTATION_DIR/features.json"
+    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/features.json"
 }
 
 # 個別機能の実装
@@ -63,7 +63,7 @@ implement_feature() {
     
     # AIに実装させる
     echo -e "${YELLOW}実装中...${NC}"
-    cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
+    cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     echo -e "${GREEN}✅ 実装完了${NC}"
 }
@@ -86,7 +86,7 @@ run_feature_tests() {
     
     # テスト実行
     echo -e "${YELLOW}テスト実行中...${NC}"
-    cat "$TESTS_DIR/test_${feature_id}.md" | claude --print > "$TESTS_DIR/${feature_id}_test_result.md"
+    cat "$TESTS_DIR/test_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$TESTS_DIR/${feature_id}_test_result.md"
     
     # テスト結果の確認
     if grep -q "FAIL" "$TESTS_DIR/${feature_id}_test_result.md"; then
@@ -123,7 +123,7 @@ fix_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/fix_${feature_id}.md"
     
     # 修正実行
-    cat "$IMPLEMENTATION_DIR/fix_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
+    cat "$IMPLEMENTATION_DIR/fix_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md"
     mv "$IMPLEMENTATION_DIR/${feature_id}_implementation_fixed.md" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
     # 再テスト
@@ -156,8 +156,27 @@ main() {
     generate_feature_list
     
     # JSONから機能リストを抽出
-    features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json")
-    total_features=$(echo "$features" | jq -s 'length')
+    if command -v jq &> /dev/null; then
+        # jqが利用可能な場合
+        features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json")
+        total_features=$(echo "$features" | jq -s 'length')
+    else
+        # jqが利用できない場合はPythonを使用
+        echo -e "${YELLOW}jqが見つかりません。Pythonを使用してJSONを解析します...${NC}"
+        features=$(python3 -c "
+import json
+with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+    data = json.load(f)
+    for feature in data['features']:
+        print(json.dumps(feature))
+")
+        total_features=$(python3 -c "
+import json
+with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+    data = json.load(f)
+    print(len(data['features']))
+")
+    fi
     current=0
     
     echo -e "${GREEN}実装する機能数: ${total_features}${NC}"
@@ -165,9 +184,16 @@ main() {
     
     # 各機能を実装
     echo "$features" | while read -r feature; do
-        feature_id=$(echo "$feature" | jq -r '.id')
-        feature_name=$(echo "$feature" | jq -r '.name')
-        feature_desc=$(echo "$feature" | jq -r '.description')
+        if command -v jq &> /dev/null; then
+            feature_id=$(echo "$feature" | jq -r '.id')
+            feature_name=$(echo "$feature" | jq -r '.name')
+            feature_desc=$(echo "$feature" | jq -r '.description')
+        else
+            # Pythonを使用してJSONを解析
+            feature_id=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+            feature_name=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['name'])")
+            feature_desc=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['description'])")
+        fi
         
         current=$((current + 1))
         

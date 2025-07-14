@@ -116,5 +116,5 @@ graph TD
 
 ## 実行例
 ```bash
-claude --file 03_requirements.md --file ../results/01_planning_result.md --file ../results/02_research_result.md > ../results/03_requirements_result.md
+cat 03_requirements.md ../results/01_planning_result.md ../results/02_research_result.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/03_requirements_result.md
 ```

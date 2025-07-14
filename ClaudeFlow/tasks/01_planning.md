@@ -87,5 +87,5 @@
 
 ## 実行例
 ```bash
-claude --file 01_planning.md --file ../results/00_user_input.md > ../results/01_planning_result.md
+cat 01_planning.md ../results/00_user_input.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/01_planning_result.md
 ```

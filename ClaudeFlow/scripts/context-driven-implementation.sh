@@ -97,7 +97,7 @@ extract_features() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/extract_features.md"
     
-    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print > "$IMPLEMENTATION_DIR/features.json"
+    cat "$IMPLEMENTATION_DIR/extract_features.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/features.json"
     
     echo -e "${GREEN}✅ 機能リスト抽出完了${NC}"
 }
@@ -116,7 +116,7 @@ analyze_feature() {
     
     echo "$prompt" > "$CONTEXT_DIR/analyze_${feature_name}.md"
     
-    cat "$CONTEXT_DIR/analyze_${feature_name}.md" | claude --print > "$CONTEXT_DIR/analysis_${feature_name}.json"
+    cat "$CONTEXT_DIR/analyze_${feature_name}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$CONTEXT_DIR/analysis_${feature_name}.json"
 }
 
 # 関数仕様書の生成
@@ -136,7 +136,7 @@ generate_function_spec() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/spec_${feature_id}.md"
     
-    cat "$IMPLEMENTATION_DIR/spec_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_spec.md"
+    cat "$IMPLEMENTATION_DIR/spec_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_spec.md"
     
     echo -e "${GREEN}✅ 関数仕様書生成完了${NC}"
 }
@@ -161,7 +161,7 @@ minimal_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md"
     
     echo -e "${YELLOW}最小実装を生成中...${NC}"
-    cat "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_v1.ts"
+    cat "$IMPLEMENTATION_DIR/implement_${feature_id}_minimal.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_v1.ts"
     
     # コード行数を計測
     local loc=$(wc -l < "$IMPLEMENTATION_DIR/${feature_id}_v1.ts")
@@ -187,7 +187,7 @@ refactor_implementation() {
     echo "$prompt" > "$IMPLEMENTATION_DIR/refactor_${feature_id}.md"
     
     echo -e "${YELLOW}リファクタリング中...${NC}"
-    cat "$IMPLEMENTATION_DIR/refactor_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_v2.ts"
+    cat "$IMPLEMENTATION_DIR/refactor_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_v2.ts"
     
     # リファクタリング後の行数
     local loc=$(wc -l < "$IMPLEMENTATION_DIR/${feature_id}_v2.ts")
@@ -214,7 +214,7 @@ extract_new_patterns() {
     
     echo "$prompt" > "$CONTEXT_DIR/extract_patterns_${feature_id}.md"
     
-    local new_patterns=$(cat "$CONTEXT_DIR/extract_patterns_${feature_id}.md" | claude --print)
+    local new_patterns=$(cat "$CONTEXT_DIR/extract_patterns_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep')
     
     if [ -n "$new_patterns" ]; then
         echo "" >> "$PATTERNS_FILE"
@@ -240,7 +240,7 @@ generate_tests() {
     
     echo "$prompt" > "$IMPLEMENTATION_DIR/test_${feature_id}.md"
     
-    cat "$IMPLEMENTATION_DIR/test_${feature_id}.md" | claude --print > "$IMPLEMENTATION_DIR/${feature_id}_test.ts"
+    cat "$IMPLEMENTATION_DIR/test_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_test.ts"
     
     echo -e "${GREEN}✅ テスト生成完了${NC}"
 }
@@ -269,8 +269,27 @@ main() {
     extract_features
     
     # JSONから機能リストを読み込み
-    features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json")
-    total_features=$(echo "$features" | jq -s 'length')
+    if command -v jq &> /dev/null; then
+        # jqが利用可能な場合
+        features=$(jq -r '.features[]' "$IMPLEMENTATION_DIR/features.json")
+        total_features=$(echo "$features" | jq -s 'length')
+    else
+        # jqが利用できない場合はPythonを使用
+        echo -e "${YELLOW}jqが見つかりません。Pythonを使用してJSONを解析します...${NC}"
+        features=$(python3 -c "
+import json
+with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+    data = json.load(f)
+    for feature in data['features']:
+        print(json.dumps(feature))
+")
+        total_features=$(python3 -c "
+import json
+with open('$IMPLEMENTATION_DIR/features.json', 'r') as f:
+    data = json.load(f)
+    print(len(data['features']))
+")
+    fi
     current=0
     
     echo ""
@@ -279,8 +298,14 @@ main() {
     
     # 各機能を処理
     echo "$features" | while read -r feature; do
-        feature_id=$(echo "$feature" | jq -r '.id')
-        feature_name=$(echo "$feature" | jq -r '.name')
+        if command -v jq &> /dev/null; then
+            feature_id=$(echo "$feature" | jq -r '.id')
+            feature_name=$(echo "$feature" | jq -r '.name')
+        else
+            # Pythonを使用してJSONを解析
+            feature_id=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+            feature_name=$(echo "$feature" | python3 -c "import json,sys; print(json.load(sys.stdin)['name'])")
+        fi
         
         current=$((current + 1))
         

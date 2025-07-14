@@ -114,7 +114,7 @@ cat > "$TASKS_DIR/01_planning.md" << 'EOF'
 
 ## 実行例
 ```bash
-cat 01_planning.md ../results/00_user_input.md | claude --print > ../results/01_planning_result.md
+cat 01_planning.md ../results/00_user_input.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/01_planning_result.md
 ```
 EOF
 
@@ -236,7 +236,7 @@ project/
 
 ## 実行例
 ```bash
-cat 02_research.md ../results/01_planning_result.md ../results/00_user_input.md | claude --print > ../results/02_research_result.md
+cat 02_research.md ../results/01_planning_result.md ../results/00_user_input.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/02_research_result.md
 ```
 EOF
 
@@ -361,7 +361,7 @@ graph TD
 
 ## 実行例
 ```bash
-cat 03_requirements.md ../results/01_planning_result.md ../results/02_research_result.md | claude --print > ../results/03_requirements_result.md
+cat 03_requirements.md ../results/01_planning_result.md ../results/02_research_result.md | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > ../results/03_requirements_result.md
 ```
 EOF
 
