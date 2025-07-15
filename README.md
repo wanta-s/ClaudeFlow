@@ -19,6 +19,7 @@
 - 基本的なプロジェクト構造の生成
 - タスクテンプレートの生成
 - 要件定義フェーズの実行
+- **🔒 自動認証システム** - パスワード・認証情報の自動生成・管理
 
 正式リリースまでお待ちください。開発の進捗は[Issues](https://github.com/wanta-s/ClaudeFlow/issues)でご確認いただけます。
 
@@ -29,6 +30,7 @@ ClaudeFlowは「プロジェクトの設計図」を作成し、Claude Codeが�
 1. **プロジェクト構造の明確化** - 開発前に全体像を整理
 2. **タスクの体系化** - 複雑な開発を管理可能な単位に分割
 3. **開発フローの標準化** - 一貫性のある開発プロセスを提供
+4. **🔒 セキュリティ自動化** - 認証情報の自動生成と安全な管理
 
 ## Claude Codeとの連携フロー
 
@@ -232,6 +234,8 @@ Claude Codeには**コンテキストウィンドウ**（一度に処理でき�
 - [ハイブリッド実装ガイド](./docs/HYBRID-IMPLEMENTATION.md)
 - [繰り返し実装とテスト](./docs/ITERATIVE-IMPLEMENTATION.md)
 - [自動インクリメンタル実装](./docs/AUTO-INCREMENTAL-IMPLEMENTATION.md)
+- [🔒 自動認証システム](./docs/SECURITY-AUTO-AUTH.md)
+- [🧹 クリーンアップガイド](./docs/CLEANUP-GUIDE.md)
 - [設定ファイルについて](./CLAUDE.md)
 - [変更履歴](./CHANGELOG.md)
 

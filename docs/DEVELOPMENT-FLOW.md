@@ -37,15 +37,17 @@ graph TD
     Phase3 --> Phase4[フェーズ4: プロトタイプ<br/>04_prototype.md]
     Phase4 --> Phase5[フェーズ5: 設計<br/>05_design.md]
     Phase5 --> ImplMode{実装モード選択}
-    ImplMode -->|1| ContextEng[コンテキストエンジニアリング実装]
-    ImplMode -->|2| Incremental[インクリメンタル実装]
-    ImplMode -->|3| Hybrid[ハイブリッド実装<br/>推奨]
-    ImplMode -->|4| Standard[標準実装]
+    ImplMode -->|1| ContextEng[コンテキストエンジニアリング実装<br/>🔧 統一構造対応]
+    ImplMode -->|2| Incremental[インクリメンタル実装<br/>🔧 統一構造対応]
+    ImplMode -->|3| Hybrid[ハイブリッド実装<br/>🔧 統一構造対応・推奨]
+    ImplMode -->|4| AutoIncremental[自動インクリメンタル実装<br/>🔧 統一構造対応]
+    ImplMode -->|5| SimpleAuto[簡易自動実装<br/>🔧 統一構造対応]
     
     ContextEng --> Phase6[実装完了]
     Incremental --> Phase6
     Hybrid --> Phase6
-    Standard --> Phase6
+    AutoIncremental --> Phase6
+    SimpleAuto --> Phase6
     Phase6 --> Phase7[フェーズ7: テスト<br/>07_testing.md]
     
     Phase7 --> Phase8[フェーズ8: コードレビュー<br/>08_code_review.md]
@@ -327,17 +329,34 @@ CEの品質 + インクリメンタルの検証：
 - パターンの蓄積
 - 柔軟な実行制御
 
-##### 5. 標準実装
+##### 5. 簡易自動実装
 
 ```
-従来の一括実装方式：
-- すべての機能を一度に実装
-- その後テストを実行
+シンプルな自動実装：
+
+1. 固定機能の実装
+   └→ 事前定義された機能を実装
+
+2. 自動認証対応
+   └→ パスワード・認証を自動処理
+
+3. プログレスバー表示
+   └→ 実装進捗の可視化
+
+4. 簡単な設定
+   └→ 最小限の設定で動作
+
+特徴:
+- 設定不要で即座に実行
+- ToDoアプリなど基本機能をカバー
+- 30秒から数分で完了
 ```
 
 **利点**：
-- シンプルな流れ
-- 小規模プロジェクトに適している
+- 極めて簡単な操作
+- 学習用に最適
+- 基本的なアプリケーション構成
+- 統一プロジェクト構造に対応
 
 #### フェーズ7-9: テスト、レビュー、ドキュメント
 

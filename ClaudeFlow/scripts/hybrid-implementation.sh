@@ -5,6 +5,10 @@
 
 set -e
 
+# 共通関数を読み込み
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common-functions.sh"
+
 # カラー定義
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -17,15 +21,31 @@ NC='\033[0m' # No Color
 # プロジェクトディレクトリ
 PROJECT_ROOT="$(dirname "$0")/../.."
 RESULTS_DIR="$PROJECT_ROOT/results"
-IMPLEMENTATION_DIR="$PROJECT_ROOT/implementation"
-TESTS_DIR="$PROJECT_ROOT/tests"
+BASE_IMPLEMENTATION_DIR="$PROJECT_ROOT/implementation"
 CONTEXT_DIR="$PROJECT_ROOT/.context"
-METRICS_FILE="$CONTEXT_DIR/code_metrics.log"
 
-# ディレクトリ作成
-mkdir -p "$IMPLEMENTATION_DIR"
-mkdir -p "$TESTS_DIR"
+# 引数処理
+REQUIREMENTS_FILE="${1:-$RESULTS_DIR/03_requirements_result.md}"
+DESIGN_FILE="${2:-$RESULTS_DIR/05_design_result.md}"
+
+# 統一プロジェクト構造を作成
+if [ -f "$REQUIREMENTS_FILE" ]; then
+    PROJECT_DIR=$(create_unified_project "$REQUIREMENTS_FILE" "$BASE_IMPLEMENTATION_DIR")
+    IMPLEMENTATION_DIR="$PROJECT_DIR/src"
+    TESTS_DIR="$PROJECT_DIR/tests"
+    log_info "統一プロジェクト構造で実行: $PROJECT_DIR"
+else
+    # 従来の方式をフォールバック
+    mkdir -p "$BASE_IMPLEMENTATION_DIR"
+    IMPLEMENTATION_DIR="$BASE_IMPLEMENTATION_DIR"
+    TESTS_DIR="$PROJECT_ROOT/tests"
+    PROJECT_DIR="$BASE_IMPLEMENTATION_DIR"
+    log_warning "要件ファイルが見つかりません。従来の構造を使用します。"
+fi
+
 mkdir -p "$CONTEXT_DIR"
+mkdir -p "$TESTS_DIR"
+METRICS_FILE="$CONTEXT_DIR/code_metrics.log"
 
 # コンテキストファイル
 CONTEXT_FILE="$CONTEXT_DIR/CONTEXT.md"
@@ -144,6 +164,13 @@ fi
 
 echo -e "${GREEN}${#features[@]}個の機能を特定しました${NC}"
 echo ""
+
+# 機能が0個の場合は終了
+if [ ${#features[@]} -eq 0 ]; then
+    echo -e "${YELLOW}実装する機能が見つかりません。${NC}"
+    echo -e "${YELLOW}要件ファイルと設計ファイルを確認してください。${NC}"
+    exit 0
+fi
 
 # 各機能の実装
 feature_index=0

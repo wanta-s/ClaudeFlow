@@ -139,10 +139,10 @@ for phase in "${phases[@]}"; do
             cat "$RESULTS_DIR/02_research_result.md" >> "$temp_input"
         fi
         
-        # 実行（トークン追跡付き）
+        # 実行（自動認証トークン追跡付き）
         log_info "実行中: $phase_name (要件レベル: $req_level)"
         input_content=$(cat "$temp_input" | tr -d '\0')
-        run_claude_with_tracking "$input_content" "$result_file" "$phase_name"
+        run_claude_auto_auth "$input_content" "$result_file" "$phase_name"
         
         # 一時ファイルを削除
         rm -f "$temp_input"
@@ -257,10 +257,10 @@ for phase in "${phases[@]}"; do
         cat "$INITIAL_INPUT" >> "$temp_input"
     fi
     
-    # 実行（トークン追跡付き）
+    # 実行（自動認証トークン追跡付き）
     log_info "実行中: $phase_name"
     input_content=$(cat "$temp_input" | tr -d '\0')
-    run_claude_with_tracking "$input_content" "$result_file" "$phase_name"
+    run_claude_auto_auth "$input_content" "$result_file" "$phase_name"
     
     # 一時ファイルを削除
     rm -f "$temp_input"
@@ -297,6 +297,9 @@ echo ""
 echo -e "${CYAN}=== 最終トークン使用量 ===${NC}"
 show_token_usage 0 "合計"
 echo -e "${CYAN}========================${NC}"
+
+# セキュリティサマリー表示
+show_security_summary
 
 # 最終レポート生成（オプション）
 if command -v tree &> /dev/null; then

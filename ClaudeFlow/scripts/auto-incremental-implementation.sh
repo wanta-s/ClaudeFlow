@@ -13,15 +13,33 @@ NC='\033[0m' # No Color
 
 # ディレクトリ設定
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common-functions.sh"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 TASKS_DIR="$BASE_DIR/tasks"
 RESULTS_DIR="$BASE_DIR/../results"
-IMPLEMENTATION_DIR="$RESULTS_DIR/implementation"
-TESTS_DIR="$RESULTS_DIR/tests"
+BASE_IMPLEMENTATION_DIR="$RESULTS_DIR/implementation"
 PROMPTS_DIR="$BASE_DIR/prompts"
 
 # 共通関数を読み込む
 source "$SCRIPT_DIR/common-functions.sh"
+
+# 要件ファイルを特定
+REQUIREMENTS_FILE="$RESULTS_DIR/03_requirements_result.md"
+
+# 統一プロジェクト構造を作成
+if [ -f "$REQUIREMENTS_FILE" ]; then
+    PROJECT_DIR=$(create_unified_project "$REQUIREMENTS_FILE" "$BASE_IMPLEMENTATION_DIR")
+    IMPLEMENTATION_DIR="$PROJECT_DIR/src"
+    TESTS_DIR="$PROJECT_DIR/tests"
+    log_info "統一プロジェクト構造で実行: $PROJECT_DIR"
+else
+    # 従来の方式をフォールバック
+    mkdir -p "$BASE_IMPLEMENTATION_DIR"
+    IMPLEMENTATION_DIR="$BASE_IMPLEMENTATION_DIR"
+    TESTS_DIR="$RESULTS_DIR/tests"
+    PROJECT_DIR="$BASE_IMPLEMENTATION_DIR"
+    log_warning "要件ファイルが見つかりません。従来の構造を使用します。"
+fi
 
 # 最大リトライ回数
 MAX_RETRY=5
@@ -334,3 +352,4 @@ trap 'echo -e "${RED}エラーが発生しました。処理を中止します�
 
 # メイン処理を実行
 main "$@"
+

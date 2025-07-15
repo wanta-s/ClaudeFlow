@@ -18,10 +18,23 @@ source "$SCRIPT_DIR/common-functions.sh"
 # ディレクトリ設定
 PROJECT_ROOT="$(dirname "$0")/.."
 RESULTS_DIR="$PROJECT_ROOT/results"
-IMPLEMENTATION_DIR="$RESULTS_DIR/implementation"
+BASE_IMPLEMENTATION_DIR="$RESULTS_DIR/implementation"
 
-# ディレクトリ作成
-mkdir -p "$IMPLEMENTATION_DIR"
+# 要件ファイルを特定
+REQUIREMENTS_FILE="$PROJECT_ROOT/../results/03_requirements_result.md"
+
+# 統一プロジェクト構造を作成
+if [ -f "$REQUIREMENTS_FILE" ]; then
+    PROJECT_DIR=$(create_unified_project "$REQUIREMENTS_FILE" "$BASE_IMPLEMENTATION_DIR")
+    IMPLEMENTATION_DIR="$PROJECT_DIR/src"
+    log_info "統一プロジェクト構造で実行: $PROJECT_DIR"
+else
+    # 従来の方式をフォールバック
+    mkdir -p "$BASE_IMPLEMENTATION_DIR"
+    IMPLEMENTATION_DIR="$BASE_IMPLEMENTATION_DIR"
+    PROJECT_DIR="$BASE_IMPLEMENTATION_DIR"
+    log_warning "要件ファイルが見つかりません。従来の構造を使用します。"
+fi
 
 echo -e "${BLUE}===================================${NC}"
 echo -e "${BLUE}  ToDoアプリ自動実装 (簡易版)  ${NC}"
@@ -56,7 +69,7 @@ for feature in "${features[@]}"; do
     echo -e "\n${BLUE}実装中: ${feature_name}${NC}"
     
     # プログレスバーと経過時間を表示
-    show_progress $current_feature $total_features "$feature_name"
+    show_progress $current_feature $total_features
     echo -n " 経過時間: "
     show_elapsed_time $start_time
     echo ""
@@ -85,9 +98,9 @@ Next.js 14 (App Router) + TypeScript + Prisma + Tailwind CSSを使用して実�
     # 実装実行（トークン追跡付き）
     echo -n "  生成中 "
     
-    # バックグラウンドで実行
+    # バックグラウンドで実行（自動認証付き）
     (
-        run_claude_with_tracking "$prompt" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md" "$feature_name"
+        run_claude_auto_auth "$prompt" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md" "$feature_name"
     ) > /tmp/claude_output_${feature_id}.log 2>&1 &
     
     # スピナーを表示しながら待機
@@ -110,7 +123,7 @@ done
 
 # 最終的な進捗を表示
 echo ""
-show_progress $total_features $total_features "完了"
+show_progress $total_features $total_features
 echo ""
 
 # 合計時間を表示
@@ -124,6 +137,10 @@ echo ""
 echo -e "${CYAN}=== 最終トークン使用量 ===${NC}"
 show_token_usage 0 "合計"
 echo -e "${CYAN}========================${NC}"
+
+# セキュリティサマリー表示
+show_security_summary
+
 echo -e "${YELLOW}実装結果は以下に保存されています：${NC}"
 echo "$IMPLEMENTATION_DIR"
 echo ""
