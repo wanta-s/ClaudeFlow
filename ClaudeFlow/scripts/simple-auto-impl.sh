@@ -116,6 +116,42 @@ Next.js 14 (App Router) + TypeScript + Prisma + Tailwind CSSを使用して実�
         # 実装結果のサイズを表示
         size=$(wc -l < "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")
         echo "  → ${size}行のコードを生成しました"
+        
+        # 構文エラーチェック
+        if [ "${CLAUDEFLOW_AUTO_VALIDATE:-true}" = "true" ]; then
+            echo -n "  検証中..."
+            
+            # 生成されたコードファイルを検証
+            local validation_passed=true
+            for code_file in "$IMPLEMENTATION_DIR"/*.{js,ts,jsx,tsx,py,html} "$PROJECT_DIR"/src/**/*.{js,ts,jsx,tsx,py,html}; do
+                if [ -f "$code_file" ]; then
+                    if ! validate_syntax "$code_file" >/dev/null 2>&1; then
+                        validation_passed=false
+                        break
+                    fi
+                fi
+            done
+            
+            if [ "$validation_passed" = false ]; then
+                echo -e " ${YELLOW}⚠️ 構文エラー検出${NC}"
+                
+                # 自動修正
+                local fix_prompt="以下の実装に構文エラーがあります。修正してください：
+
+$(cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")
+
+修正要件：
+- すべての構文エラーを修正
+- DOM要素の存在チェックを追加
+- 配列境界チェックを追加
+- エラーハンドリングを追加"
+                
+                run_claude_auto_auth "$fix_prompt" "$IMPLEMENTATION_DIR/${feature_id}_implementation.md" "${feature_name}の修正"
+                echo "  → 構文エラーを修正しました"
+            else
+                echo -e " ${GREEN}✓${NC}"
+            fi
+        fi
     else
         echo -e "\n${RED}✗ 失敗: ${feature_name}${NC}"
     fi

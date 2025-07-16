@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パックマン - ClaudeFlow製</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            min-height: 100vh; 
+            margin: 0; 
+            background: linear-gradient(135deg, #2c3e50, #34495e); 
+            color: white; 
+            padding: 20px; 
+        }
+        .container { 
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 15px; 
+            padding: 40px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .title { 
+            color: #f39c12; 
+            font-size: 32px; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+        }
+        .message {
+            font-size: 18px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🚨 パックマン</h1>
+        <div class="message">
+            申し訳ございません。<br>
+            アプリケーションの生成中にエラーが発生しました。
+        </div>
+        <div class="error">
+            <p>❌ HTMLファイルの抽出に失敗しました</p>
+            <p>実装結果からコードを正しく抽出できませんでした。</p>
+            <p>もう一度実行してください。</p>
+        </div>
+        <div class="message">
+            <small>⚡ ClaudeFlow 超軽量モードで作成</small>
+        </div>
+    </div>
+</body>
+</html>

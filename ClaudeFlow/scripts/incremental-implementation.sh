@@ -77,6 +77,41 @@ implement_feature() {
     echo -e "${YELLOW}実装中...${NC}"
     cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
+    # 構文エラーチェック
+    if [ "${CLAUDEFLOW_AUTO_VALIDATE:-true}" = "true" ]; then
+        log_info "実装の検証中..."
+        
+        # 実装ファイルから生成されたコードファイルを検証
+        local validation_passed=true
+        for code_file in "$IMPLEMENTATION_DIR"/*.{js,ts,jsx,tsx,py,html} "$PROJECT_DIR"/src/**/*.{js,ts,jsx,tsx,py,html}; do
+            if [ -f "$code_file" ]; then
+                if ! validate_syntax "$code_file"; then
+                    log_warning "構文エラー検出: $(basename "$code_file")"
+                    validation_passed=false
+                fi
+            fi
+        done
+        
+        if [ "$validation_passed" = false ]; then
+            log_warning "構文エラーが検出されました。修正を試みます..."
+            
+            # 修正プロンプト
+            local fix_prompt="以下の実装に構文エラーがあります。修正してください：
+
+$(cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")
+
+修正要件：
+- すべての構文エラーを修正
+- エラーパターンを避ける（DOM要素チェック、配列境界チェックなど）
+- 元の機能を保持"
+            
+            echo "$fix_prompt" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
+            log_success "構文エラーを修正しました"
+        else
+            log_success "検証合格"
+        fi
+    fi
+    
     echo -e "${GREEN}✅ 実装完了${NC}"
 }
 

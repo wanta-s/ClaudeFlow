@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡単計算機</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .calculator {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 300px;
+        }
+        
+        .display {
+            width: 100%;
+            height: 60px;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        button {
+            height: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .operator {
+            background: #007bff;
+            color: white;
+        }
+        
+        .operator:hover {
+            background: #0056b3;
+        }
+        
+        .clear {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .clear:hover {
+            background: #c82333;
+        }
+        
+        .equals {
+            background: #28a745;
+            color: white;
+            grid-row: span 2;
+        }
+        
+        .equals:hover {
+            background: #218838;
+        }
+        
+        .zero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="display" id="display" readonly value="0">
+        <div class="buttons">
+            <button onclick="clearDisplay()" class="clear">C</button>
+            <button onclick="appendToDisplay('/')" class="operator">÷</button>
+            <button onclick="appendToDisplay('*')" class="operator">×</button>
+            <button onclick="deleteLast()">←</button>
+            
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button onclick="appendToDisplay('-')" class="operator">-</button>
+            
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button onclick="appendToDisplay('+')" class="operator">+</button>
+            
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button onclick="calculate()" class="equals">=</button>
+            
+            <button onclick="appendToDisplay('0')" class="zero">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+        </div>
+    </div>
+
+    <script>
+        let currentInput = '0';
+        let operator = '';
+        let previousInput = '';
+        let waitingForOperand = false;
+
+        function updateDisplay() {
+            const display = document.getElementById('display');
+            display.value = currentInput;
+        }
+
+        function appendToDisplay(value) {
+            if (['+', '-', '*', '/'].includes(value)) {
+                if (operator && !waitingForOperand) {
+                    calculate();
+                }
+                
+                previousInput = currentInput;
+                operator = value;
+                waitingForOperand = true;
+            } else {
+                if (waitingForOperand) {
+                    currentInput = value;
+                    waitingForOperand = false;
+                } else {
+                    currentInput = currentInput === '0' ? value : currentInput + value;
+                }
+            }
+            
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            operator = '';
+            previousInput = '';
+            waitingForOperand = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (!waitingForOperand) {
+                currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0';
+                updateDisplay();
+            }
+        }
+
+        function calculate() {
+            if (operator && previousInput !== '' && !waitingForOperand) {
+                try {
+                    const prev = parseFloat(previousInput);
+                    const current = parseFloat(currentInput);
+                    let result;
+                    
+                    switch (operator) {
+                        case '+':
+                            result = prev + current;
+                            break;
+                        case '-':
+                            result = prev - current;
+                            break;
+                        case '*':
+                            result = prev * current;
+                            break;
+                        case '/':
+                            if (current === 0) {
+                                throw new Error('ゼロで除算はできません');
+                            }
+                            result = prev / current;
+                            break;
+                        default:
+                            return;
+                    }
+                    
+                    currentInput = result.toString();
+                    operator = '';
+                    previousInput = '';
+                    waitingForOperand = true;
+                    
+                } catch (error) {
+                    currentInput = 'エラー';
+                    operator = '';
+                    previousInput = '';
+                    waitingForOperand = true;
+                    
+                    setTimeout(() => {
+                        clearDisplay();
+                    }, 2000);
+                }
+                
+                updateDisplay();
+            }
+        }
+
+        // キーボードサポート
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            
+            if ('0123456789.'.includes(key)) {
+                appendToDisplay(key);
+            } else if ('+-*/'.includes(key)) {
+                appendToDisplay(key);
+            } else if (key === 'Enter' || key === '=') {
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                deleteLast();
+            }
+        });
+    </script>
+</body>
+</html>

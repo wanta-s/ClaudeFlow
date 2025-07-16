@@ -1,0 +1,72 @@
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: #228b22;
+  border: 1px solid #1a6b1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.cell:hover {
+  background-color: #2ba02b;
+}
+
+.cell-possible {
+  cursor: pointer;
+}
+
+.cell-last-move {
+  background-color: #3aaa3a;
+}
+
+.disc {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.cell-black .disc {
+  background-color: #1a1a1a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cell-white .disc {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.possible-move-indicator {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .cell {
+    width: 40px;
+    height: 40px;
+  }
+}

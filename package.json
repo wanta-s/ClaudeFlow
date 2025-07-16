@@ -15,7 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/wanta-s/ClaudeFlow.git"
   },
-  "keywords": ["mcp", "claudeflow", "claude-code", "installer", "ai-development"],
+  "keywords": [
+    "mcp",
+    "claudeflow",
+    "claude-code",
+    "installer",
+    "ai-development"
+  ],
   "author": "ClaudeFlow Team",
   "license": "MIT",
   "engines": {
@@ -24,5 +30,11 @@
   "bugs": {
     "url": "https://github.com/wanta-s/ClaudeFlow/issues"
   },
-  "homepage": "https://github.com/wanta-s/ClaudeFlow#readme"
+  "homepage": "https://github.com/wanta-s/ClaudeFlow#readme",
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^24.0.13",
+    "bcrypt": "^6.0.0",
+    "typescript": "^5.8.3"
+  }
 }

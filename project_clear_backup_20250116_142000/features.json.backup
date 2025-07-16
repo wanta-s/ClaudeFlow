@@ -1,0 +1,20 @@
+{
+  "features": [
+    {
+      "id": "feature_001",
+      "name": "ユーザー登録",
+      "description": "新規ユーザーの登録機能（メール、パスワード、名前）",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_002",
+      "name": "ユーザーログイン", 
+      "description": "ユーザー認証とJWTトークン生成",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    }
+  ]
+}

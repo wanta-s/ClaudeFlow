@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パックマン</title>
+    <style>
+body{margin:0;padding:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:Arial,sans-serif;overflow:hidden}
+#gameContainer{position:relative;background:#111;border-radius:10px;box-shadow:0 0 20px rgba(255,255,0,0.3)}
+#gameCanvas{display:block;border:2px solid #333;image-rendering:pixelated}
+#ui{position:absolute;top:10px;left:10px;right:10px;color:#fff;font-size:16px;display:flex;justify-content:space-between;text-shadow:2px 2px 0 #000}
+.score{color:#ff0}
+.lives{color:#0ff}
+#menu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#fff;background:rgba(0,0,0,0.9);padding:30px;border-radius:10px;min-width:300px}
+#menu h1{font-size:48px;margin:0 0 20px;color:#ff0;text-shadow:3px 3px 0 #f00;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.btn{background:#ff0;color:#000;border:none;padding:15px 30px;font-size:20px;font-weight:bold;cursor:pointer;border-radius:5px;margin:10px;transition:all 0.3s}
+.btn:hover{background:#fff;transform:scale(1.1)}
+#gameOver{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#fff;background:rgba(0,0,0,0.9);padding:30px;border-radius:10px}
+#gameOver h2{font-size:36px;margin:0 0 20px;color:#f00}
+.highScore{color:#0f0;font-size:24px;margin:10px 0}
+#touch{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:none}
+.touchBtn{background:rgba(255,255,255,0.3);border:2px solid #fff;width:50px;height:50px;border-radius:50%;position:absolute;cursor:pointer}
+#touchUp{top:-60px;left:60px}
+#touchDown{top:60px;left:60px}
+#touchLeft{top:0;left:0}
+#touchRight{top:0;left:120px}
+@media(max-width:600px){#gameCanvas{width:100%;height:auto}#touch{display:block}}
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui">
+            <div class="score">スコア: <span id="score">0</span></div>
+            <div class="level">レベル: <span id="level">1</span></div>
+            <div class="lives">ライフ: <span id="lives">3</span></div>
+        </div>
+        <div id="menu">
+            <h1>パックマン</h1>
+            <button class="btn" onclick="startGame()">ゲーム開始</button>
+            <div class="highScore">ハイスコア: <span id="menuHighScore">0</span></div>
+        </div>
+        <div id="gameOver">
+            <h2>ゲームオーバー</h2>
+            <div>スコア: <span id="finalScore">0</span></div>
+            <div class="highScore">ハイスコア: <span id="highScore">0</span></div>
+            <button class="btn" onclick="resetGame()">もう一度</button>
+            <button class="btn" onclick="showMenu()">メニュー</button>
+        </div>
+        <div id="touch">
+            <div class="touchBtn" id="touchUp"></div>
+            <div class="touchBtn" id="touchDown"></div>
+            <div class="touchBtn" id="touchLeft"></div>
+            <div class="touchBtn" id="touchRight"></div>
+        </div>
+    </div>
+    <script>
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+const CELL_SIZE=20;
+const COLS=28;
+const ROWS=31;
+canvas.width=COLS*CELL_SIZE;
+canvas.height=ROWS*CELL_SIZE;
+
+let gameState='menu';
+let score=0;
+let level=1;
+let lives=3;
+let highScore=parseInt(localStorage.getItem('pacmanHighScore')||'0');
+let dots=0;
+let totalDots=0;
+let powerMode=false;
+let powerTimer=0;
+let gameTimer=0;
+let animFrame=0;
+
+const maze=[
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1],
+[1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+[1,3,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,3,1],
+[1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+[1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+[1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1],
+[1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1],
+[1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1],
+[1,1,1,1,1,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,1,1,1,0,0,1,1,1,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,1,0,0,0,0,0,0,1,0,1,1,2,1,1,1,1,1,1],
+[0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,0,0,0],
+[1,1,1,1,1,1,2,1,1,0,1,0,0,0,0,0,0,1,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1],
+[1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1],
+[1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1],
+[1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+[1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+[1,3,2,2,1,1,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,1,1,2,2,3,1],
+[1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1],
+[1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1],
+[1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1],
+[1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1],
+[1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1],
+[1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
+const pacman={x:14,y:23,dir:'left',speed:2,animFrame:0,nextDir:null};
+
+const ghosts=[
+{x:14,y:11,color:'#ff0000',mode:'scatter',dir:'up',speed:1.5,scatter:{x:26,y:1},id:0},
+{x:13,y:14,color:'#ffb7ff',mode:'house',dir:'up',speed:1.5,scatter:{x:1,y:1},id:1},
+{x:14,y:14,color:'#00ffff',mode:'house',dir:'up',speed:1.5,scatter:{x:26,y:29},id:2},
+{x:15,y:14,color:'#ffb847',mode:'house',dir:'up',speed:1.5,scatter:{x:1,y:29},id:3}
+];
+
+let audioContext;
+let sounds={};
+
+function initAudio(){
+if(!audioContext){
+audioContext=new(window.AudioContext||window.webkitAudioContext)();
+createSounds();
+}
+}
+
+function createSounds(){
+sounds.dot=()=>{
+const osc=audioContext.createOscillator();
+const gain=audioContext.createGain();
+osc.connect(gain);
+gain.connect(audioContext.destination);
+osc.frequency.value=600;
+gain.gain.setValueAtTime(0.1,audioContext.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.1);
+osc.start();
+osc.stop(audioContext.currentTime+0.1);
+};
+sounds.power=()=>{
+const osc=audioContext.createOscillator();
+const gain=audioContext.createGain();
+osc.connect(gain);
+gain.connect(audioContext.destination);
+osc.frequency.value=400;
+gain.gain.setValueAtTime(0.2,audioContext.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.3);
+osc.start();
+osc.stop(audioContext.currentTime+0.3);
+};
+sounds.death=()=>{
+const osc=audioContext.createOscillator();
+const gain=audioContext.createGain();
+osc.connect(gain);
+gain.connect(audioContext.destination);
+osc.frequency.setValueAtTime(800,audioContext.currentTime);
+osc.frequency.exponentialRampToValueAtTime(200,audioContext.currentTime+0.5);
+gain.gain.setValueAtTime(0.3,audioContext.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.5);
+osc.start();
+osc.stop(audioContext.currentTime+0.5);
+};
+}
+
+function playSound(name){
+try{if(sounds[name])sounds[name]();}catch(e){}
+}
+
+function drawMaze(){
+ctx.fillStyle='#000';
+ctx.fillRect(0,0,canvas.width,canvas.height);
+for(let y=0;y<ROWS;y++){
+for(let x=0;x<COLS;x++){
+const cell=maze[y][x];
+if(cell===1){
+ctx.fillStyle='#0000ff';
+ctx.fillRect(x*CELL_SIZE,y*CELL_SIZE,CELL_SIZE,CELL_SIZE);
+ctx.strokeStyle='#000066';
+ctx.strokeRect(x*CELL_SIZE,y*CELL_SIZE,CELL_SIZE,CELL_SIZE);
+}else if(cell===2){
+ctx.fillStyle='#fff';
+ctx.beginPath();
+ctx.arc(x*CELL_SIZE+CELL_SIZE/2,y*CELL_SIZE+CELL_SIZE/2,2,0,Math.PI*2);
+ctx.fill();
+}else if(cell===3){
+ctx.fillStyle=animFrame%20<10?'#fff':'#ff0';
+ctx.beginPath();
+ctx.arc(x*CELL_SIZE+CELL_SIZE/2,y*CELL_SIZE+CELL_SIZE/2,6,0,Math.PI*2);
+ctx.fill();
+}
+}
+}
+}
+
+function drawPacman(){
+const x=pacman.x*CELL_SIZE+CELL_SIZE/2;
+const y=pacman.y*CELL_SIZE+CELL_SIZE/2;
+ctx.fillStyle='#ff0';
+ctx.beginPath();
+const mouthAngle=Math.abs(Math.sin(animFrame*0.2))*0.5;
+let startAngle=0;
+let endAngle=Math.PI*2;
+if(pacman.dir==='right'){startAngle=mouthAngle;endAngle=Math.PI*2-mouthAngle;}
+else if(pacman.dir==='left'){startAngle=Math.PI+mouthAngle;endAngle=Math.PI-mouthAngle;}
+else if(pacman.dir==='up'){startAngle=Math.PI*1.5+mouthAngle;endAngle=Math.PI*1.5-mouthAngle;}
+else if(pacman.dir==='down'){startAngle=Math.PI*0.5+mouthAngle;endAngle=Math.PI*0.5-mouthAngle;}
+ctx.arc(x,y,CELL_SIZE/2-2,startAngle,endAngle);
+ctx.lineTo(x,y);
+ctx.fill();
+}
+
+function drawGhosts(){
+ghosts.forEach(ghost=>{
+const x=ghost.x*CELL_SIZE+CELL_SIZE/2;
+const y=ghost.y*CELL_SIZE+CELL_SIZE/2;
+ctx.fillStyle=powerMode&&ghost.mode!=='dead'?'#0000ff':ghost.mode==='dead'?'#666':ghost.color;
+ctx.beginPath();
+ctx.arc(x,y-CELL_SIZE/4,CELL_SIZE/2-2,Math.PI,0);
+ctx.lineTo(x+CELL_SIZE/2-2,y+CELL_SIZE/4);
+for(let i=0;i<3;i++){
+const wx=(x+CELL_SIZE/2-2)-i*(CELL_SIZE/3-1);
+ctx.lineTo(wx,y+CELL_SIZE/4+(i%2)*3);
+}
+ctx.lineTo(x-CELL_SIZE/2+2,y+CELL_SIZE/4);
+ctx.closePath();
+ctx.fill();
+if(ghost.mode!=='dead'){
+ctx.fillStyle='#fff';
+ctx.beginPath();
+ctx.arc(x-4,y-4,3,0,Math.PI*2);
+ctx.arc(x+4,y-4,3,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle='#000';
+ctx.beginPath();
+ctx.arc(x-4+ghost.dir==='left'?-1:ghost.dir==='right'?1:0,y-4+ghost.dir==='up'?-1:ghost.dir==='down'?1:0,1.5,0,Math.PI*2);
+ctx.arc(x+4+ghost.dir==='left'?-1:ghost.dir==='right'?1:0,y-4+ghost.dir==='up'?-1:ghost.dir==='down'?1:0,1.5,0,Math.PI*2);
+ctx.fill();
+}
+});
+}
+
+function canMove(x,y){
+if(x<0||x>=COLS)return true;
+if(y<0||y>=ROWS)return false;
+return maze[Math.floor(y)][Math.floor(x)]!==1;
+}
+
+function getNextPos(entity,dir){
+let nx=entity.x;
+let ny=entity.y;
+const speed=entity.speed/CELL_SIZE;
+if(dir==='left')nx-=speed;
+else if(dir==='right')nx+=speed;
+else if(dir==='up')ny-=speed;
+else if(dir==='down')ny+=speed;
+if(nx<-0.5)nx=COLS-0.5;
+else if(nx>COLS-0.5)nx=-0.5;
+return{x:nx,y:ny};
+}
+
+function updatePacman(){
+const dirs=['left','right','up','down'];
+const keys={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down'};
+if(pacman.nextDir&&pacman.nextDir!==pacman.dir){
+const next=getNextPos(pacman,pacman.nextDir);
+if(canMove(next.x,next.y)){
+pacman.dir=pacman.nextDir;
+pacman.nextDir=null;
+}
+}
+const next=getNextPos(pacman,pacman.dir);
+if(canMove(next.x,next.y)){
+pacman.x=next.x;
+pacman.y=next.y;
+}
+const cellX=Math.floor(pacman.x);
+const cellY=Math.floor(pacman.y);
+if(maze[cellY][cellX]===2){
+maze[cellY][cellX]=0;
+score+=10;
+dots--;
+playSound('dot');
+}else if(maze[cellY][cellX]===3){
+maze[cellY][cellX]=0;
+score+=50;
+dots--;
+powerMode=true;
+powerTimer=500;
+ghosts.forEach(g=>{if(g.mode!=='dead'&&g.mode!=='house')g.mode='frightened';});
+playSound('power');
+}
+}
+
+function updateGhosts(){
+ghosts.forEach((ghost,i)=>{
+if(ghost.mode==='house'){
+if((i===1&&gameTimer>100)||(i===2&&gameTimer>200)||(i===3&&gameTimer>300)){
+ghost.mode='scatter';
+ghost.y=11;
+}
+return;
+}
+let target;
+if(ghost.mode==='scatter'){
+target=ghost.scatter;
+if(gameTimer>700)ghost.mode='chase';
+}else if(ghost.mode==='chase'){
+if(ghost.id===0){
+target={x:pacman.x,y:pacman.y};
+}else if(ghost.id===1){
+const ahead=4;
+let targetX=pacman.x;
+let targetY=pacman.y;
+if(pacman.dir==='left')targetX=Math.max(0,pacman.x-ahead);
+else if(pacman.dir==='right')targetX=Math.min(COLS-1,pacman.x+ahead);
+else if(pacman.dir==='up')targetY=Math.max(0,pacman.y-ahead);
+else if(pacman.dir==='down')targetY=Math.min(ROWS-1,pacman.y+ahead);
+target={x:targetX,y:targetY};
+}else if(ghost.id===2){
+const redGhost=ghosts[0];
+if(redGhost){
+const dx=pacman.x-redGhost.x;
+const dy=pacman.y-redGhost.y;
+target={x:Math.max(0,Math.min(COLS-1,pacman.x+dx)),
+y:Math.max(0,Math.min(ROWS-1,pacman.y+dy))};
+}else{
+target={x:pacman.x,y:pacman.y};
+}
+}else{
+const dist=Math.sqrt((ghost.x-pacman.x)**2+(ghost.y-pacman.y)**2);
+target=dist>8?{x:pacman.x,y:pacman.y}:ghost.scatter;
+}
+}else if(ghost.mode==='frightened'){
+target={x:Math.random()*COLS,y:Math.random()*ROWS};
+}else if(ghost.mode==='dead'){
+target={x:14,y:11};
+if(Math.abs(ghost.x-14)<1&&Math.abs(ghost.y-11)<1){
+ghost.mode='scatter';
+}
+}
+const dirs=['left','right','up','down'];
+let bestDir=ghost.dir;
+let bestDist=Infinity;
+const opposite={left:'right',right:'left',up:'down',down:'up'};
+dirs.forEach(dir=>{
+if(dir===opposite[ghost.dir])return;
+const next=getNextPos(ghost,dir);
+if(canMove(next.x,next.y)){
+const dist=Math.sqrt((next.x-target.x)**2+(next.y-target.y)**2);
+if(dist<bestDist){
+bestDist=dist;
+bestDir=dir;
+}
+}
+});
+ghost.dir=bestDir;
+const next=getNextPos(ghost,ghost.dir);
+if(canMove(next.x,next.y)){
+ghost.x=next.x;
+ghost.y=next.y;
+}
+});
+}
+
+function checkCollisions(){
+ghosts.forEach(ghost=>{
+const dist=Math.sqrt((ghost.x-pacman.x)**2+(ghost.y-pacman.y)**2);
+if(dist<0.8){
+if(powerMode&&ghost.mode!=='dead'){
+ghost.mode='dead';
+score+=200;
+}else if(ghost.mode!=='dead'){
+lives--;
+playSound('death');
+if(lives<=0){
+gameOver();
+}else{
+resetPositions();
+}
+}
+}
+});
+}
+
+function resetPositions(){
+pacman.x=14;
+pacman.y=23;
+pacman.dir='left';
+ghosts[0].x=14;ghosts[0].y=11;
+ghosts[1].x=13;ghosts[1].y=14;
+ghosts[2].x=14;ghosts[2].y=14;
+ghosts[3].x=15;ghosts[3].y=14;
+ghosts.forEach((g,i)=>g.mode=i===0?'scatter':'house');
+}
+
+function gameLoop(){
+try{
+if(gameState!=='playing')return;
+gameTimer++;
+animFrame++;
+if(powerMode){
+powerTimer--;
+if(powerTimer<=0){
+powerMode=false;
+ghosts.forEach(g=>{if(g.mode==='frightened')g.mode='chase';});
+}
+}
+updatePacman();
+updateGhosts();
+checkCollisions();
+if(dots===0){
+level++;
+initLevel();
+}
+drawMaze();
+drawPacman();
+drawGhosts();
+updateUI();
+requestAnimationFrame(gameLoop);
+}catch(e){
+console.error('Game error:',e);
+gameState='error';
+alert('ゲームエラーが発生しました。ページを再読み込みしてください。');
+}
+}
+
+function updateUI(){
+document.getElementById('score').textContent=score;
+document.getElementById('level').textContent=level;
+document.getElementById('lives').textContent=lives;
+document.getElementById('menuHighScore').textContent=highScore;
+}
+
+function initLevel(){
+dots=0;
+totalDots=0;
+for(let y=0;y<ROWS;y++){
+for(let x=0;x<COLS;x++){
+if(maze[y][x]===0&&(y<9||y>19||x<6||x>21)){
+maze[y][x]=2;
+}
+if(maze[y][x]===2||maze[y][x]===3){
+dots++;
+totalDots++;
+}
+}
+}
+ghosts.forEach(g=>g.speed=1.5+level*0.1);
+resetPositions();
+gameTimer=0;
+}
+
+function startGame(){
+initAudio();
+gameState='playing';
+score=0;
+level=1;
+lives=3;
+initLevel();
+document.getElementById('menu').style.display='none';
+gameLoop();
+}
+
+function gameOver(){
+gameState='gameover';
+if(score>highScore){
+highScore=score;
+localStorage.setItem('pacmanHighScore',highScore);
+}
+document.getElementById('finalScore').textContent=score;
+document.getElementById('highScore').textContent=highScore;
+document.getElementById('gameOver').style.display='block';
+}
+
+function resetGame(){
+document.getElementById('gameOver').style.display='none';
+startGame();
+}
+
+function showMenu(){
+gameState='menu';
+document.getElementById('gameOver').style.display='none';
+document.getElementById('menu').style.display='block';
+updateUI();
+}
+
+document.addEventListener('keydown',e=>{
+const keys={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',
+a:'left',d:'right',w:'up',s:'down'};
+if(keys[e.key]){
+pacman.nextDir=keys[e.key];
+e.preventDefault();
+}
+});
+
+['Up','Down','Left','Right'].forEach(dir=>{
+const btn=document.getElementById('touch'+dir);
+if(btn){
+btn.addEventListener('touchstart',e=>{
+pacman.nextDir=dir.toLowerCase();
+e.preventDefault();
+});
+btn.addEventListener('mousedown',e=>{
+pacman.nextDir=dir.toLowerCase();
+e.preventDefault();
+});
+}
+});
+
+document.addEventListener('DOMContentLoaded',()=>{
+updateUI();
+});
+    </script>
+</body>
+</html>

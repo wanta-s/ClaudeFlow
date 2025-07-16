@@ -1,0 +1,19 @@
+{
+  "name": "daily-reservation-rough",
+  "version": "1.0.0",
+  "description": "Rough implementation of daily reservation display",
+  "main": "index.ts",
+  "scripts": {
+    "demo": "node demo.js",
+    "test": "ts-node index.test.ts"
+  },
+  "dependencies": {
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0"
+  }
+}

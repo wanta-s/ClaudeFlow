@@ -1,0 +1,121 @@
+.game-info {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
+}
+
+.score-board {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.score.active {
+  background-color: #e8f5e9;
+  transform: scale(1.05);
+}
+
+.player-indicator {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.player-indicator.black {
+  background-color: #1a1a1a;
+}
+
+.player-indicator.white {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+.score-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.current-turn {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.turn-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.turn-indicator.black {
+  background-color: #1a1a1a;
+}
+
+.turn-indicator.white {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+.game-over {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.game-over h2 {
+  color: #228b22;
+  margin-bottom: 0.5rem;
+}
+
+.winner {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.new-game-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.new-game-button:hover {
+  background-color: #1a6b1a;
+}
+
+.new-game-button:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .game-info {
+    padding: 1rem;
+    min-width: auto;
+    width: 100%;
+    max-width: 400px;
+  }
+}

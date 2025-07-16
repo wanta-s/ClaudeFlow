@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オセロゲーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .player-info {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .player-info.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .board {
+            display: inline-block;
+            border: 2px solid #333;
+            background-color: #2e7d32;
+        }
+        
+        .row {
+            display: flex;
+        }
+        
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #1b5e20;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cell.valid-move:hover {
+            background-color: #4CAF50;
+            opacity: 0.6;
+        }
+        
+        .stone {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .stone.black {
+            background-color: #000;
+        }
+        
+        .stone.white {
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+        
+        .controls {
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 30px;
+            font-size: 16px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #1976D2;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .modal h2 {
+            margin-bottom: 20px;
+        }
+        
+        .modal p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>オセロゲーム</h1>
+        
+        <div class="game-info">
+            <div class="player-info" id="black-info">
+                黒: <span id="black-count">2</span>
+            </div>
+            <div class="player-info" id="white-info">
+                白: <span id="white-count">2</span>
+            </div>
+        </div>
+        
+        <div class="board" id="board"></div>
+        
+        <div class="controls">
+            <button onclick="resetGame()">新しいゲーム</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="game-over-modal">
+        <div class="modal-content">
+            <h2 id="result-title">ゲーム終了</h2>
+            <p id="result-message"></p>
+            <button onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        const EMPTY = 0;
+        const BLACK = 1;
+        const WHITE = 2;
+        const BOARD_SIZE = 8;
+        
+        let gameState = {
+            board: [],
+            currentPlayer: BLACK,
+            blackCount: 2,
+            whiteCount: 2,
+            gameOver: false
+        };
+        
+        function initializeBoard() {
+            gameState.board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(EMPTY));
+            gameState.board[3][3] = WHITE;
+            gameState.board[3][4] = BLACK;
+            gameState.board[4][3] = BLACK;
+            gameState.board[4][4] = WHITE;
+            gameState.currentPlayer = BLACK;
+            gameState.blackCount = 2;
+            gameState.whiteCount = 2;
+            gameState.gameOver = false;
+        }
+        
+        function renderBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'row';
+                
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    const cellElement = document.createElement('div');
+                    cellElement.className = 'cell';
+                    cellElement.dataset.row = row;
+                    cellElement.dataset.col = col;
+                    
+                    if (isValidMove(row, col, gameState.currentPlayer)) {
+                        cellElement.classList.add('valid-move');
+                    }
+                    
+                    cellElement.onclick = () => handleCellClick(row, col);
+                    
+                    if (gameState.board[row][col] !== EMPTY) {
+                        const stone = document.createElement('div');
+                        stone.className = 'stone';
+                        stone.classList.add(gameState.board[row][col] === BLACK ? 'black' : 'white');
+                        cellElement.appendChild(stone);
+                    }
+                    
+                    rowElement.appendChild(cellElement);
+                }
+                boardElement.appendChild(rowElement);
+            }
+            
+            updateGameInfo();
+        }
+        
+        function updateGameInfo() {
+            document.getElementById('black-count').textContent = gameState.blackCount;
+            document.getElementById('white-count').textContent = gameState.whiteCount;
+            
+            document.getElementById('black-info').classList.toggle('active', gameState.currentPlayer === BLACK);
+            document.getElementById('white-info').classList.toggle('active', gameState.currentPlayer === WHITE);
+        }
+        
+        function isValidMove(row, col, player) {
+            if (gameState.board[row][col] !== EMPTY) return false;
+            
+            const directions = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1],           [0, 1],
+                [1, -1],  [1, 0],  [1, 1]
+            ];
+            
+            for (const [dx, dy] of directions) {
+                if (checkDirection(row, col, dx, dy, player).length > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function checkDirection(row, col, dx, dy, player) {
+            const flipped = [];
+            let x = row + dx;
+            let y = col + dy;
+            const opponent = player === BLACK ? WHITE : BLACK;
+            
+            while (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE && gameState.board[x][y] === opponent) {
+                flipped.push([x, y]);
+                x += dx;
+                y += dy;
+            }
+            
+            if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE && gameState.board[x][y] === player && flipped.length > 0) {
+                return flipped;
+            }
+            
+            return [];
+        }
+        
+        function handleCellClick(row, col) {
+            if (gameState.gameOver || !isValidMove(row, col, gameState.currentPlayer)) {
+                return;
+            }
+            
+            const allFlipped = [];
+            const directions = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1],           [0, 1],
+                [1, -1],  [1, 0],  [1, 1]
+            ];
+            
+            for (const [dx, dy] of directions) {
+                const flipped = checkDirection(row, col, dx, dy, gameState.currentPlayer);
+                allFlipped.push(...flipped);
+            }
+            
+            gameState.board[row][col] = gameState.currentPlayer;
+            
+            for (const [x, y] of allFlipped) {
+                gameState.board[x][y] = gameState.currentPlayer;
+            }
+            
+            countStones();
+            
+            gameState.currentPlayer = gameState.currentPlayer === BLACK ? WHITE : BLACK;
+            
+            if (!hasValidMove(gameState.currentPlayer)) {
+                gameState.currentPlayer = gameState.currentPlayer === BLACK ? WHITE : BLACK;
+                if (!hasValidMove(gameState.currentPlayer)) {
+                    endGame();
+                }
+            }
+            
+            renderBoard();
+        }
+        
+        function hasValidMove(player) {
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    if (isValidMove(row, col, player)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        function countStones() {
+            gameState.blackCount = 0;
+            gameState.whiteCount = 0;
+            
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    if (gameState.board[row][col] === BLACK) {
+                        gameState.blackCount++;
+                    } else if (gameState.board[row][col] === WHITE) {
+                        gameState.whiteCount++;
+                    }
+                }
+            }
+        }
+        
+        function endGame() {
+            gameState.gameOver = true;
+            const modal = document.getElementById('game-over-modal');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            
+            if (gameState.blackCount > gameState.whiteCount) {
+                resultTitle.textContent = '黒の勝利！';
+                resultMessage.textContent = `黒: ${gameState.blackCount} - 白: ${gameState.whiteCount}`;
+            } else if (gameState.whiteCount > gameState.blackCount) {
+                resultTitle.textContent = '白の勝利！';
+                resultMessage.textContent = `白: ${gameState.whiteCount} - 黒: ${gameState.blackCount}`;
+            } else {
+                resultTitle.textContent = '引き分け！';
+                resultMessage.textContent = `黒: ${gameState.blackCount} - 白: ${gameState.whiteCount}`;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('game-over-modal').style.display = 'none';
+        }
+        
+        function resetGame() {
+            initializeBoard();
+            renderBoard();
+            closeModal();
+        }
+        
+        initializeBoard();
+        renderBoard();
+    </script>
+</body>
+</html>

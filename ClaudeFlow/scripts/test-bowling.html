@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ボーリングスコア計算</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a1a;color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center}.container{width:90%;max-width:1200px;background:#2a2a2a;border-radius:10px;padding:30px;box-shadow:0 10px 30px rgba(0,0,0,0.5)}h1{text-align:center;margin-bottom:30px;color:#4CAF50}.game-controls{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap}.game-controls button{padding:10px 20px;border:none;border-radius:5px;font-size:16px;cursor:pointer;transition:all 0.2s}.btn-primary{background:#4CAF50;color:#fff}.btn-primary:hover{background:#45a049}.btn-secondary{background:#f44336;color:#fff}.btn-secondary:hover{background:#da190b}.players{margin-bottom:20px}.player-input{display:flex;gap:10px;margin-bottom:10px;align-items:center}.player-input input{flex:1;padding:8px;border:none;border-radius:5px;background:#333;color:#fff}.player-input button{padding:8px 15px;border:none;border-radius:5px;background:#ff5722;color:#fff;cursor:pointer}.scorecard{overflow-x:auto;margin-bottom:30px}.scorecard table{width:100%;border-collapse:collapse;min-width:800px}.scorecard th,.scorecard td{padding:10px;text-align:center;border:1px solid #444}.scorecard th{background:#333;font-weight:bold}.scorecard .frame-box{display:flex;justify-content:center;align-items:center;height:40px}.scorecard .pins{font-size:14px;min-height:20px}.scorecard .score{font-size:18px;font-weight:bold;color:#4CAF50}.input-area{background:#333;padding:20px;border-radius:8px;margin-bottom:20px}.input-area h3{margin-bottom:15px;color:#4CAF50}.roll-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:15px}.roll-buttons button{padding:15px;border:none;border-radius:5px;font-size:18px;background:#555;color:#fff;cursor:pointer;transition:all 0.2s}.roll-buttons button:hover{background:#666;transform:scale(1.05)}.roll-buttons button:disabled{background:#444;color:#666;cursor:not-allowed;transform:none}.current-info{display:flex;justify-content:space-between;margin-top:15px;padding:10px;background:#444;border-radius:5px}.current-info span{font-size:16px}.winner{text-align:center;font-size:24px;color:#4CAF50;margin-top:20px}.error{color:#f44336;margin:10px 0;text-align:center}@media(max-width:768px){.container{padding:15px}.roll-buttons{grid-template-columns:repeat(4,1fr)}.scorecard{font-size:14px}.scorecard th,.scorecard td{padding:5px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎳 ボーリングスコア計算</h1>
+<div class="game-controls">
+<button class="btn-primary" onclick="game.newGame()">新しいゲーム</button>
+<button class="btn-secondary" onclick="game.reset()">リセット</button>
+</div>
+<div class="players">
+<div id="playerList"></div>
+<div class="player-input">
+<input type="text" id="playerName" placeholder="プレイヤー名を入力" maxlength="20">
+<button onclick="game.addPlayer()">プレイヤー追加</button>
+</div>
+</div>
+<div class="scorecard">
+<table id="scoreTable">
+<thead>
+<tr>
+<th>プレイヤー</th>
+<th colspan="2">1</th>
+<th colspan="2">2</th>
+<th colspan="2">3</th>
+<th colspan="2">4</th>
+<th colspan="2">5</th>
+<th colspan="2">6</th>
+<th colspan="2">7</th>
+<th colspan="2">8</th>
+<th colspan="2">9</th>
+<th colspan="3">10</th>
+<th>合計</th>
+</tr>
+</thead>
+<tbody id="scoreBody"></tbody>
+</table>
+</div>
+<div class="input-area" id="inputArea" style="display:none">
+<h3 id="currentPlayerInfo">現在のプレイヤー: -</h3>
+<div class="roll-buttons" id="rollButtons"></div>
+<div class="current-info">
+<span id="frameInfo">フレーム: 1</span>
+<span id="rollInfo">投球: 1回目</span>
+<span id="remainingPins">残りピン: 10本</span>
+</div>
+</div>
+<div id="winner" class="winner"></div>
+<div id="error" class="error"></div>
+</div>
+<script>
+const game={players:[],currentPlayerIndex:0,gameStarted:false,init(){this.renderPlayers();this.renderScorecard();for(let i=0;i<=10;i++){const btn=document.createElement('button');btn.textContent=i;btn.onclick=()=>this.roll(i);document.getElementById('rollButtons').appendChild(btn)}},addPlayer(){const input=document.getElementById('playerName');const name=input.value.trim();if(!name){this.showError('プレイヤー名を入力してください');return}if(this.players.some(p=>p.name===name)){this.showError('同じ名前のプレイヤーが既に存在します');return}if(this.players.length>=4){this.showError('最大4人までです');return}this.players.push({name,frames:Array(10).fill(null).map(()=>({rolls:[],score:null})),currentFrame:0,currentRoll:0,totalScore:0});input.value='';this.renderPlayers();this.renderScorecard()},removePlayer(index){if(this.gameStarted){this.showError('ゲーム中はプレイヤーを削除できません');return}this.players.splice(index,1);this.renderPlayers();this.renderScorecard()},renderPlayers(){const list=document.getElementById('playerList');list.innerHTML=this.players.map((p,i)=>`<div>${p.name} ${!this.gameStarted?`<button onclick="game.removePlayer(${i})">×</button>`:''}</div>`).join('')},newGame(){if(this.players.length===0){this.showError('プレイヤーを追加してください');return}this.gameStarted=true;this.currentPlayerIndex=0;this.players.forEach(p=>{p.frames=Array(10).fill(null).map(()=>({rolls:[],score:null}));p.currentFrame=0;p.currentRoll=0;p.totalScore=0});document.getElementById('inputArea').style.display='block';this.updateCurrentInfo();this.renderScorecard();this.updateButtons();this.showError('')},reset(){if(confirm('本当にリセットしますか？')){this.players=[];this.currentPlayerIndex=0;this.gameStarted=false;document.getElementById('inputArea').style.display='none';document.getElementById('winner').textContent='';this.renderPlayers();this.renderScorecard()}},roll(pins){const player=this.players[this.currentPlayerIndex];const frame=player.frames[player.currentFrame];const isLastFrame=player.currentFrame===9;if(isLastFrame){if(frame.rolls.length===0){frame.rolls.push(pins);if(pins===10){player.currentRoll=1}else{player.currentRoll=1}}else if(frame.rolls.length===1){frame.rolls.push(pins);if(frame.rolls[0]===10||frame.rolls[0]+frame.rolls[1]===10){player.currentRoll=2}else{this.nextPlayer()}}else if(frame.rolls.length===2){frame.rolls.push(pins);this.nextPlayer()}}else{if(player.currentRoll===0){frame.rolls.push(pins);if(pins===10){this.nextFrame()}else{player.currentRoll=1}}else{frame.rolls.push(pins);this.nextFrame()}}this.calculateScores();this.renderScorecard();this.updateCurrentInfo();this.updateButtons()},nextFrame(){const player=this.players[this.currentPlayerIndex];player.currentFrame++;player.currentRoll=0;if(player.currentFrame>=10){this.nextPlayer()}},nextPlayer(){const player=this.players[this.currentPlayerIndex];if(player.currentFrame>=10){player.currentFrame=9}this.currentPlayerIndex++;if(this.currentPlayerIndex>=this.players.length){this.currentPlayerIndex=0}if(this.players.every(p=>p.currentFrame===9&&this.isLastFrameComplete(p))){this.endGame()}},isLastFrameComplete(player){const frame=player.frames[9];if(!frame.rolls.length)return false;if(frame.rolls[0]===10)return frame.rolls.length===3;if(frame.rolls[0]+frame.rolls[1]===10)return frame.rolls.length===3;return frame.rolls.length===2},calculateScores(){this.players.forEach(player=>{let total=0;for(let i=0;i<10;i++){const frame=player.frames[i];if(i<9){if(frame.rolls[0]===10){const next1=player.frames[i+1].rolls[0]||0;let next2=0;if(player.frames[i+1].rolls[0]===10&&i<8){next2=player.frames[i+2].rolls[0]||0}else{next2=player.frames[i+1].rolls[1]||0}frame.score=10+next1+next2}else if(frame.rolls[0]+frame.rolls[1]===10){const next=player.frames[i+1].rolls[0]||0;frame.score=10+next}else{frame.score=frame.rolls[0]+(frame.rolls[1]||0)}}else{frame.score=frame.rolls.reduce((sum,pins)=>sum+pins,0)}if(frame.score!==null){total+=frame.score;frame.cumulative=total}}player.totalScore=total})},renderScorecard(){const tbody=document.getElementById('scoreBody');tbody.innerHTML=this.players.map(player=>{let row=`<tr><td>${player.name}</td>`;for(let i=0;i<10;i++){const frame=player.frames[i];if(i<9){row+=`<td class="pins">${this.formatRoll(frame.rolls[0],0,i)}</td>`;row+=`<td class="pins">${this.formatRoll(frame.rolls[1],frame.rolls[0],i)}</td>`}else{row+=`<td class="pins">${this.formatRoll(frame.rolls[0],0,i)}</td>`;row+=`<td class="pins">${this.formatRoll(frame.rolls[1],frame.rolls[0],i)}</td>`;row+=`<td class="pins">${this.formatRoll(frame.rolls[2],null,i,frame.rolls)}</td>`}}row+=`<td class="score">${player.totalScore}</td></tr>`;row+=`<tr><td></td>`;for(let i=0;i<10;i++){const frame=player.frames[i];row+=`<td colspan="${i===9?3:2}" class="score">${frame.cumulative||''}</td>`}row+=`<td></td></tr>`;return row}).join('')},formatRoll(pins,prevPins,frameIndex,rolls=[]){if(pins===undefined)return'';if(frameIndex===9&&rolls.length>1){if(rolls[0]===10){if(pins===10)return'X';return pins===0?'-':pins}if(rolls[0]+rolls[1]===10&&rolls.length===2){return'/'}}if(pins===10)return'X';if(prevPins!==null&&prevPins+pins===10)return'/';return pins===0?'-':pins},updateCurrentInfo(){if(!this.gameStarted)return;const player=this.players[this.currentPlayerIndex];document.getElementById('currentPlayerInfo').textContent=`現在のプレイヤー: ${player.name}`;document.getElementById('frameInfo').textContent=`フレーム: ${player.currentFrame+1}`;document.getElementById('rollInfo').textContent=`投球: ${player.currentRoll+1}回目`;const frame=player.frames[player.currentFrame];let remaining=10;if(player.currentFrame===9){if(frame.rolls.length===1){remaining=frame.rolls[0]===10?10:10-frame.rolls[0]}else if(frame.rolls.length===2){remaining=frame.rolls[0]===10||frame.rolls[0]+frame.rolls[1]===10?10:0}}else if(player.currentRoll===1){remaining=10-frame.rolls[0]}document.getElementById('remainingPins').textContent=`残りピン: ${remaining}本`},updateButtons(){if(!this.gameStarted)return;const player=this.players[this.currentPlayerIndex];const frame=player.frames[player.currentFrame];let maxPins=10;if(player.currentFrame===9){if(frame.rolls.length===1&&frame.rolls[0]!==10){maxPins=10-frame.rolls[0]}else if(frame.rolls.length===2&&frame.rolls[0]!==10&&frame.rolls[0]+frame.rolls[1]!==10){maxPins=0}}else if(player.currentRoll===1){maxPins=10-frame.rolls[0]}const buttons=document.getElementById('rollButtons').children;for(let i=0;i<=10;i++){buttons[i].disabled=i>maxPins}},endGame(){this.gameStarted=false;const winner=this.players.reduce((max,p)=>p.totalScore>max.totalScore?p:max);document.getElementById('winner').textContent=`🏆 優勝: ${winner.name} (${winner.totalScore}点)`;document.getElementById('inputArea').style.display='none'},showError(msg){document.getElementById('error').textContent=msg;if(msg)setTimeout(()=>document.getElementById('error').textContent='',3000)}};game.init();
+</script>
+</body>
+</html>

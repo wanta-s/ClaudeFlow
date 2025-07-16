@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ボーリングスコアアプリ</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#1a1a2e;color:#eee;min-height:100vh;display:flex;justify-content:center;align-items:center}
+.container{background:#16213e;padding:2rem;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);max-width:1200px;width:95%}
+h1{text-align:center;color:#ff6b6b;margin-bottom:2rem;font-size:2.5rem;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+.game-info{display:flex;justify-content:space-around;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.info-box{background:#0f3460;padding:1rem 2rem;border-radius:10px;text-align:center;min-width:150px}
+.info-box h3{color:#4fbdba;font-size:0.9rem;margin-bottom:0.5rem}
+.info-box p{font-size:1.5rem;font-weight:bold;color:#fff}
+.players-section{margin-bottom:2rem}
+.player-setup{display:flex;gap:1rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap}
+.player-setup input{padding:0.5rem 1rem;border:none;border-radius:5px;background:#0f3460;color:#fff;font-size:1rem}
+.player-setup input::placeholder{color:#888}
+button{padding:0.5rem 1.5rem;border:none;border-radius:5px;background:#ff6b6b;color:#fff;font-size:1rem;cursor:pointer;transition:all 0.3s}
+button:hover{background:#ff5252;transform:translateY(-2px);box-shadow:0 5px 15px rgba(255,107,107,0.3)}
+button:disabled{background:#666;cursor:not-allowed;transform:none}
+.btn-secondary{background:#4fbdba}
+.btn-secondary:hover{background:#3ca9a6}
+.btn-warning{background:#ffa500}
+.btn-warning:hover{background:#ff8c00}
+.scorecard{background:#0f3460;border-radius:10px;padding:1rem;margin-bottom:1rem;overflow-x:auto}
+.player-name{color:#4fbdba;font-size:1.2rem;margin-bottom:0.5rem;font-weight:bold}
+.frames{display:flex;gap:2px}
+.frame{background:#1a1a2e;border:2px solid #4fbdba;border-radius:5px;padding:0.5rem;min-width:80px;text-align:center;position:relative;transition:all 0.3s}
+.frame.active{background:#2d4a7c;border-color:#ff6b6b;transform:scale(1.05)}
+.frame.completed{background:#0d2f4f}
+.frame-number{font-size:0.8rem;color:#888;margin-bottom:0.3rem}
+.throws{display:flex;justify-content:center;gap:5px;margin-bottom:0.3rem}
+.throw{min-width:25px;min-height:25px;background:#16213e;border:1px solid #4fbdba;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:0.9rem}
+.frame-score{font-size:1.2rem;font-weight:bold;color:#ff6b6b}
+.frame-10 .throws{flex-wrap:wrap}
+.control-panel{margin-top:2rem;text-align:center}
+.pin-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:0.5rem;max-width:400px;margin:1rem auto}
+.pin-btn{padding:1rem;font-size:1.2rem;background:#2d4a7c;border:2px solid #4fbdba}
+.pin-btn:hover{background:#3d5a8c}
+.action-buttons{display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.stats{background:#0f3460;padding:1.5rem;border-radius:10px;margin-top:2rem}
+.stats h2{color:#4fbdba;margin-bottom:1rem}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.stat-item{background:#1a1a2e;padding:1rem;border-radius:5px}
+.stat-item h4{color:#ff6b6b;font-size:0.9rem;margin-bottom:0.5rem}
+.stat-item p{font-size:1.2rem}
+.history{background:#0f3460;padding:1.5rem;border-radius:10px;margin-top:2rem;max-height:300px;overflow-y:auto}
+.history h2{color:#4fbdba;margin-bottom:1rem}
+.history-item{background:#1a1a2e;padding:0.8rem;border-radius:5px;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center}
+.history-date{color:#888;font-size:0.9rem}
+.history-score{color:#ff6b6b;font-weight:bold}
+@keyframes roll{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes strike{0%{transform:scale(1)rotate(0deg)}50%{transform:scale(1.5)rotate(180deg)}100%{transform:scale(1)rotate(360deg)}}
+.rolling{animation:roll 0.5s ease-in-out}
+.strike-animation{animation:strike 0.6s ease-in-out}
+@media(max-width:768px){.frames{overflow-x:scroll}.frame{min-width:70px}.pin-buttons{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎳 ボーリングスコアアプリ</h1>
+<div class="game-info">
+<div class="info-box">
+<h3>現在のプレイヤー</h3>
+<p id="currentPlayer">-</p>
+</div>
+<div class="info-box">
+<h3>フレーム</h3>
+<p id="currentFrame">-</p>
+</div>
+<div class="info-box">
+<h3>残りピン</h3>
+<p id="remainingPins">10</p>
+</div>
+</div>
+<div class="players-section">
+<div class="player-setup">
+<input type="text" id="playerNameInput" placeholder="プレイヤー名を入力" maxlength="20">
+<button onclick="addPlayer()">プレイヤー追加</button>
+<button onclick="startGame()" class="btn-secondary" id="startBtn" disabled>ゲーム開始</button>
+<button onclick="resetGame()" class="btn-warning">リセット</button>
+</div>
+</div>
+<div id="scorecards"></div>
+<div class="control-panel" id="controlPanel" style="display:none">
+<div class="pin-buttons" id="pinButtons"></div>
+<div class="action-buttons">
+<button onclick="throwBall('strike')" id="strikeBtn">ストライク!</button>
+<button onclick="undoThrow()" class="btn-warning">取り消し</button>
+</div>
+</div>
+<div class="stats" id="statsPanel" style="display:none">
+<h2>📊 統計情報</h2>
+<div class="stat-grid" id="stats"></div>
+</div>
+<div class="history" id="historyPanel">
+<h2>📜 ゲーム履歴</h2>
+<div id="historyList"></div>
+</div>
+</div>
+<script>
+const TOTAL_FRAMES=10,TOTAL_PINS=10;
+let players=[],currentPlayerIndex=0,gameStarted=false,gameHistory=[];
+class Player{
+constructor(name){
+this.name=name;
+this.frames=[];
+this.currentFrame=0;
+this.currentThrow=0;
+this.totalScore=0;
+this.stats={strikes:0,spares:0,gutterballs:0,perfectFrames:0};
+for(let i=0;i<TOTAL_FRAMES;i++){
+this.frames.push({throws:[],score:null,cumulative:null});
+}
+}
+isGameComplete(){
+if(this.currentFrame<9)return false;
+const lastFrame=this.frames[9];
+if(this.currentFrame>9)return true;
+if(lastFrame.throws.length<2)return false;
+if(lastFrame.throws[0]===10||lastFrame.throws[0]+lastFrame.throws[1]===10){
+return lastFrame.throws.length>=3;
+}
+return lastFrame.throws.length>=2;
+}
+canThrow(){
+if(this.isGameComplete())return false;
+if(this.currentFrame<9){
+const frame=this.frames[this.currentFrame];
+if(frame.throws.length===0)return true;
+if(frame.throws[0]===10)return false;
+return frame.throws.length<2;
+}else{
+const frame=this.frames[9];
+if(frame.throws.length<2)return true;
+if(frame.throws[0]===10)return frame.throws.length<3;
+if(frame.throws[0]+frame.throws[1]===10)return frame.throws.length<3;
+return false;
+}
+}
+getRemainingPins(){
+if(this.currentFrame>=10)return 0;
+const frame=this.frames[this.currentFrame];
+if(frame.throws.length===0)return 10;
+if(this.currentFrame<9){
+if(frame.throws[0]===10)return 0;
+return 10-frame.throws[0];
+}else{
+if(frame.throws.length===1){
+if(frame.throws[0]===10)return 10;
+return 10-frame.throws[0];
+}else if(frame.throws.length===2){
+if(frame.throws[0]===10||frame.throws[0]+frame.throws[1]===10)return 10;
+return 0;
+}
+return 0;
+}
+}
+addThrow(pins){
+if(!this.canThrow())return false;
+const frame=this.frames[this.currentFrame];
+frame.throws.push(pins);
+if(pins===0)this.stats.gutterballs++;
+if(this.currentFrame<9){
+if(pins===10&&frame.throws.length===1){
+this.stats.strikes++;
+this.currentFrame++;
+}else if(frame.throws.length===2){
+if(frame.throws[0]+frame.throws[1]===10)this.stats.spares++;
+this.currentFrame++;
+}
+}else{
+if(frame.throws.length===1&&pins===10)this.stats.strikes++;
+else if(frame.throws.length===2&&frame.throws[0]!==10&&frame.throws[0]+frame.throws[1]===10)this.stats.spares++;
+if(frame.throws.length===3||(frame.throws.length===2&&frame.throws[0]+frame.throws[1]<10&&frame.throws[0]!==10)){
+this.currentFrame++;
+}
+}
+this.calculateScores();
+return true;
+}
+calculateScores(){
+let cumulative=0;
+for(let i=0;i<TOTAL_FRAMES;i++){
+const frame=this.frames[i];
+if(frame.throws.length===0)break;
+let frameScore=0;
+if(i<9){
+if(frame.throws[0]===10){
+frameScore=10;
+if(i+1<TOTAL_FRAMES&&this.frames[i+1].throws.length>0){
+frameScore+=this.frames[i+1].throws[0];
+if(this.frames[i+1].throws.length>1){
+frameScore+=this.frames[i+1].throws[1];
+}else if(i+2<TOTAL_FRAMES&&this.frames[i+2].throws.length>0){
+frameScore+=this.frames[i+2].throws[0];
+}
+}else{
+frame.score=null;
+frame.cumulative=null;
+continue;
+}
+}else if(frame.throws.length===2){
+frameScore=frame.throws[0]+frame.throws[1];
+if(frameScore===10&&i+1<TOTAL_FRAMES&&this.frames[i+1].throws.length>0){
+frameScore+=this.frames[i+1].throws[0];
+}else if(frameScore<10){
+}else{
+frame.score=null;
+frame.cumulative=null;
+continue;
+}
+}else{
+frame.score=null;
+frame.cumulative=null;
+continue;
+}
+}else{
+frameScore=frame.throws.reduce((a,b)=>a+b,0);
+}
+frame.score=frameScore;
+cumulative+=frameScore;
+frame.cumulative=cumulative;
+}
+this.totalScore=cumulative;
+}
+undoLastThrow(){
+for(let i=TOTAL_FRAMES-1;i>=0;i--){
+const frame=this.frames[i];
+if(frame.throws.length>0){
+const lastThrow=frame.throws.pop();
+if(lastThrow===0)this.stats.gutterballs--;
+if(i<9&&lastThrow===10&&frame.throws.length===0)this.stats.strikes--;
+else if(frame.throws.length===1&&frame.throws[0]+lastThrow===10)this.stats.spares--;
+if(i<this.currentFrame||(i===9&&this.currentFrame===10)){
+this.currentFrame=i;
+}
+this.calculateScores();
+return true;
+}
+}
+return false;
+}
+}
+function addPlayer(){
+const input=document.getElementById('playerNameInput');
+const name=input.value.trim();
+if(!name||players.length>=8){
+alert(players.length>=8?'最大8人まで':'プレイヤー名を入力してください');
+return;
+}
+if(players.some(p=>p.name===name)){
+alert('既に存在するプレイヤー名です');
+return;
+}
+players.push(new Player(name));
+input.value='';
+updateUI();
+document.getElementById('startBtn').disabled=players.length===0;
+}
+function startGame(){
+if(players.length===0)return;
+gameStarted=true;
+currentPlayerIndex=0;
+document.getElementById('controlPanel').style.display='block';
+document.getElementById('statsPanel').style.display='block';
+document.querySelector('.player-setup').style.display='none';
+updateUI();
+}
+function resetGame(){
+if(gameStarted&&!confirm('本当にリセットしますか？'))return;
+if(gameStarted&&players.some(p=>p.currentFrame>0)){
+saveGameToHistory();
+}
+players=[];
+currentPlayerIndex=0;
+gameStarted=false;
+document.getElementById('controlPanel').style.display='none';
+document.getElementById('statsPanel').style.display='none';
+document.querySelector('.player-setup').style.display='flex';
+document.getElementById('startBtn').disabled=true;
+updateUI();
+}
+function throwBall(type){
+const player=players[currentPlayerIndex];
+if(!player||!player.canThrow())return;
+let pins;
+if(type==='strike'){
+pins=player.getRemainingPins();
+}else{
+pins=parseInt(type);
+}
+if(pins>player.getRemainingPins())return;
+player.addThrow(pins);
+if(pins===10&&player.currentFrame<10){
+animateStrike();
+}
+if(!player.canThrow()){
+currentPlayerIndex=(currentPlayerIndex+1)%players.length;
+if(currentPlayerIndex===0&&players.every(p=>p.isGameComplete())){
+endGame();
+}
+}
+updateUI();
+}
+function undoThrow(){
+const player=players[currentPlayerIndex];
+if(!player)return;
+if(player.currentFrame===0&&player.frames[0].throws.length===0&&currentPlayerIndex>0){
+currentPlayerIndex--;
+players[currentPlayerIndex].undoLastThrow();
+}else{
+player.undoLastThrow();
+}
+updateUI();
+}
+function updateUI(){
+updateGameInfo();
+updateScorecards();
+updatePinButtons();
+updateStats();
+}
+function updateGameInfo(){
+const player=players[currentPlayerIndex];
+document.getElementById('currentPlayer').textContent=player?player.name:'-';
+document.getElementById('currentFrame').textContent=player?`${Math.min(player.currentFrame+1,10)}/10`:'-';
+document.getElementById('remainingPins').textContent=player?player.getRemainingPins():'10';
+}
+function updateScorecards(){
+const container=document.getElementById('scorecards');
+container.innerHTML='';
+players.forEach((player,pIndex)=>{
+const card=document.createElement('div');
+card.className='scorecard';
+const nameDiv=document.createElement('div');
+nameDiv.className='player-name';
+nameDiv.textContent=`${player.name} - 合計: ${player.totalScore}点`;
+card.appendChild(nameDiv);
+const framesDiv=document.createElement('div');
+framesDiv.className='frames';
+player.frames.forEach((frame,fIndex)=>{
+const frameDiv=document.createElement('div');
+frameDiv.className='frame'+(fIndex===9?' frame-10':'');
+if(pIndex===currentPlayerIndex&&fIndex===player.currentFrame&&!player.isGameComplete()){
+frameDiv.classList.add('active');
+}else if(frame.throws.length>0){
+frameDiv.classList.add('completed');
+}
+const frameNumber=document.createElement('div');
+frameNumber.className='frame-number';
+frameNumber.textContent=`F${fIndex+1}`;
+frameDiv.appendChild(frameNumber);
+const throwsDiv=document.createElement('div');
+throwsDiv.className='throws';
+if(fIndex<9){
+for(let i=0;i<2;i++){
+const throwDiv=document.createElement('div');
+throwDiv.className='throw';
+if(i<frame.throws.length){
+if(i===0&&frame.throws[0]===10){
+throwDiv.textContent='X';
+}else if(i===1&&frame.throws[0]+frame.throws[1]===10){
+throwDiv.textContent='/';
+}else if(frame.throws[i]===0){
+throwDiv.textContent='-';
+}else{
+throwDiv.textContent=frame.throws[i];
+}
+}
+throwsDiv.appendChild(throwDiv);
+}
+}else{
+for(let i=0;i<3;i++){
+const throwDiv=document.createElement('div');
+throwDiv.className='throw';
+if(i<frame.throws.length){
+if(frame.throws[i]===10){
+throwDiv.textContent='X';
+}else if(i>0&&frame.throws[i-1]!==10&&frame.throws[i-1]+frame.throws[i]===10){
+throwDiv.textContent='/';
+}else if(frame.throws[i]===0){
+throwDiv.textContent='-';
+}else{
+throwDiv.textContent=frame.throws[i];
+}
+}
+throwsDiv.appendChild(throwDiv);
+}
+}
+frameDiv.appendChild(throwsDiv);
+const scoreDiv=document.createElement('div');
+scoreDiv.className='frame-score';
+scoreDiv.textContent=frame.cumulative!==null?frame.cumulative:'';
+frameDiv.appendChild(scoreDiv);
+framesDiv.appendChild(frameDiv);
+});
+card.appendChild(framesDiv);
+container.appendChild(card);
+});
+}
+function updatePinButtons(){
+const container=document.getElementById('pinButtons');
+container.innerHTML='';
+if(!gameStarted)return;
+const player=players[currentPlayerIndex];
+if(!player||!player.canThrow())return;
+const remaining=player.getRemainingPins();
+for(let i=0;i<=remaining;i++){
+const btn=document.createElement('button');
+btn.className='pin-btn';
+btn.textContent=i;
+btn.onclick=()=>throwBall(i.toString());
+container.appendChild(btn);
+}
+document.getElementById('strikeBtn').disabled=remaining===0;
+}
+function updateStats(){
+const container=document.getElementById('stats');
+container.innerHTML='';
+players.forEach(player=>{
+const statDiv=document.createElement('div');
+statDiv.className='stat-item';
+const avgScore=player.currentFrame>0?Math.round(player.totalScore/(player.currentFrame+1)):0;
+statDiv.innerHTML=`
+<h4>${player.name}</h4>
+<p>ストライク: ${player.stats.strikes} | スペア: ${player.stats.spares}</p>
+<p>平均スコア: ${avgScore}点</p>
+`;
+container.appendChild(statDiv);
+});
+}
+function animateStrike(){
+const activeFrame=document.querySelector('.frame.active');
+if(activeFrame){
+activeFrame.classList.add('strike-animation');
+setTimeout(()=>activeFrame.classList.remove('strike-animation'),600);
+}
+}
+function endGame(){
+saveGameToHistory();
+setTimeout(()=>{
+const winner=players.reduce((a,b)=>a.totalScore>b.totalScore?a:b);
+alert(`ゲーム終了！\n優勝: ${winner.name} (${winner.totalScore}点)`);
+},500);
+}
+function saveGameToHistory(){
+const gameData={
+date:new Date().toLocaleString('ja-JP'),
+players:players.map(p=>({name:p.name,score:p.totalScore})),
+winner:players.reduce((a,b)=>a.totalScore>b.totalScore?a:b).name
+};
+gameHistory.unshift(gameData);
+if(gameHistory.length>10)gameHistory.pop();
+localStorage.setItem('bowlingHistory',JSON.stringify(gameHistory));
+updateHistoryDisplay();
+}
+function loadHistory(){
+const saved=localStorage.getItem('bowlingHistory');
+if(saved){
+gameHistory=JSON.parse(saved);
+updateHistoryDisplay();
+}
+}
+function updateHistoryDisplay(){
+const container=document.getElementById('historyList');
+container.innerHTML='';
+if(gameHistory.length===0){
+container.innerHTML='<p style="color:#888;text-align:center">履歴がありません</p>';
+return;
+}
+gameHistory.forEach(game=>{
+const item=document.createElement('div');
+item.className='history-item';
+const playersText=game.players.map(p=>`${p.name}(${p.score})`).join(', ');
+item.innerHTML=`
+<div>
+<div class="history-date">${game.date}</div>
+<div style="color:#ccc;font-size:0.8rem">${playersText}</div>
+</div>
+<div class="history-score">優勝: ${game.winner}</div>
+`;
+container.appendChild(item);
+});
+}
+document.getElementById('playerNameInput').addEventListener('keypress',e=>{
+if(e.key==='Enter')addPlayer();
+});
+loadHistory();
+updateUI();
+</script>
+</body>
+</html>

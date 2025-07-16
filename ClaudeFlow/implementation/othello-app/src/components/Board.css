@@ -1,0 +1,17 @@
+.board {
+  display: inline-block;
+  background-color: #228b22;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.board-row {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .board {
+    padding: 5px;
+  }
+}

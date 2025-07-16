@@ -10,12 +10,24 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[0;33m'
 RED='\033[0;31m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
+
+# 共通関数を読み込む
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common-functions.sh"
 
 # 出力ディレクトリ
 OUTPUT_DIR="$(dirname "$0")/../results"
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_FILE="$OUTPUT_DIR/00_user_input.md"
+
+# 既存プロジェクトの確認とクリア
+if [ -f "$PROJECT_ROOT/.current_project" ] || [ -f "$PROJECT_ROOT/ClaudeFlow/implementation/features.json" ]; then
+    echo -e "${YELLOW}🧹 前のプロジェクトの設定をクリアしています...${NC}"
+    clear_project_state "quick_project_$(date +%H%M%S)"
+    echo ""
+fi
 
 # ウェルカムメッセージ
 clear
@@ -86,6 +98,26 @@ cat > "$OUTPUT_FILE" << EOF
 ---
 *このファイルはクイックスタートモードで自動生成されました。*
 EOF
+
+# 開発設定を選択
+echo -e "${CYAN}開発設定を選択してください：${NC}"
+echo "1) 高速プロトタイプ - 最速でコア機能のみ実装（推奨）"
+echo "2) 標準開発 - バランスの取れた全機能実装"
+echo "3) 本格開発 - 完全品質のプロダクション実装"
+echo "4) カスタム設定 - 詳細に設定"
+echo -n "選択 (1-4) [デフォルト: 1]: "
+read -r dev_mode
+
+case "${dev_mode:-1}" in
+    1) apply_preset "rapid" ;;
+    2) apply_preset "standard" ;;
+    3) apply_preset "production" ;;
+    4) configure_claudeflow_custom ;;
+    *) apply_preset "rapid" ;;
+esac
+
+echo ""
+show_current_config
 
 echo -e "${GREEN}✅ 設定が完了しました！${NC}"
 echo ""

@@ -12,6 +12,10 @@ YELLOW='\033[0;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# 共通関数を読み込む
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common-functions.sh"
+
 # ウェルカムメッセージ
 clear
 echo -e "${CYAN}================================================${NC}"
@@ -20,36 +24,68 @@ echo -e "${CYAN}================================================${NC}"
 echo ""
 echo -e "${BLUE}アイデアから動くプロトタイプまで、AIが自動で開発します。${NC}"
 echo ""
+
+# 既存プロジェクトの確認
+if [ -f "$PROJECT_ROOT/.current_project" ] || [ -f "$PROJECT_ROOT/ClaudeFlow/implementation/features.json" ]; then
+    echo -e "${YELLOW}⚠️  前のプロジェクトの設定が検出されました${NC}"
+    echo ""
+    echo -n "新しいプロジェクトを開始する前に、既存の設定をクリアしますか？ (y/N): "
+    read -r clear_choice
+    if [[ "$clear_choice" =~ ^[Yy]$ ]]; then
+        echo ""
+        echo -n "新しいプロジェクト名を入力してください: "
+        read -r new_project_name
+        clear_project_state "${new_project_name:-new_project}"
+        echo ""
+    fi
+fi
+
 echo -e "${GREEN}どちらのモードで始めますか？${NC}"
 echo ""
-echo -e "${YELLOW}1) クイックスタート${NC} - アプリ名だけ入力（30秒で開始）"
+echo -e "${CYAN}🚀 1) 超軽量モード${NC} - アプリ名だけで5分完成"
+echo "   └ オセロゲーム等の簡単なアプリ向け（3フェーズ）"
+echo -e "${BLUE}   🎯 CodeFit Design: 800行制限でコンパクト実装${NC}"
+echo ""
+echo -e "${YELLOW}2) クイックスタート${NC} - アプリ名だけ入力（30秒で開始）"
 echo "   └ 最速でプロトタイプを作成したい方向け"
+echo -e "${BLUE}   🎯 CodeFit Design: 1500行制限で軽量実装${NC}"
 echo ""
-echo -e "${YELLOW}2) 詳細設定${NC} - 質問に答えてカスタマイズ（3-5分）"
+echo -e "${BLUE}3) 詳細設定${NC} - 質問に答えてカスタマイズ（3-5分）"
 echo "   └ 要件を細かく指定したい方向け"
+echo -e "${BLUE}   🎯 CodeFit Design: 2000行制限で標準実装${NC}"
 echo ""
-echo -e "${YELLOW}3) フルオート${NC} - 質問なしで即開始（10秒）"
+echo -e "${GREEN}4) フルオート${NC} - 質問なしで即開始（10秒）"
 echo "   └ とにかく今すぐ動くものが欲しい方向け"
+echo -e "${BLUE}   🎯 CodeFit Design: 2000行制限で標準実装${NC}"
 echo ""
-echo -n "選択してください (1-3): "
+echo -n "選択してください (1-4): "
 read mode_choice
 
 case $mode_choice in
     1)
         echo ""
-        echo -e "${BLUE}クイックスタートモードを起動します...${NC}"
+        echo -e "${CYAN}🚀 超軽量モードを起動します...${NC}"
+        sleep 1
+        "$(dirname "$0")/ultra-light.sh"
+        ;;
+    2)
+        echo ""
+        echo -e "${YELLOW}クイックスタートモードを起動します...${NC}"
         sleep 1
         "$(dirname "$0")/quick-start.sh"
         ;;
-    2)
+    3)
         echo ""
         echo -e "${BLUE}詳細設定モードを起動します...${NC}"
         sleep 1
         "$(dirname "$0")/interactive-planning.sh"
         ;;
-    3)
+    4)
         echo ""
         echo -e "${BLUE}フルオートモードで開発を開始します...${NC}"
+        
+        # デフォルト設定を適用
+        apply_preset "rapid"
         
         # 出力ディレクトリ
         OUTPUT_DIR="$(dirname "$0")/../results"

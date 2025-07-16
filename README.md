@@ -1,7 +1,7 @@
 # ClaudeFlow (CF)
 
 [![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/CHANGELOG.md)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/wanta-s/ClaudeFlow/blob/main/LICENSE)
 [![Status](https://img.shields.io/badge/status-開発中-orange.svg)](#開発状況)
 
 **ClaudeFlow** は、Claude Codeがより効率的にコードを生成できるように、プロジェクトの構造化と計画立案を支援するツールです。
@@ -31,6 +31,58 @@ ClaudeFlowは「プロジェクトの設計図」を作成し、Claude Codeが�
 2. **タスクの体系化** - 複雑な開発を管理可能な単位に分割
 3. **開発フローの標準化** - 一貫性のある開発プロセスを提供
 4. **🔒 セキュリティ自動化** - 認証情報の自動生成と安全な管理
+5. **⚡ 軽量化対応** - 簡単なアプリ向けの高速開発モード
+6. **🎯 CodeFit Design** - 行数制限による制約駆動開発
+7. **🌐 日本語対応強化** - Claude AIによる自然な日本語→英語プロジェクト名変換
+
+## 🎯 CodeFit Design（行数設計法）
+
+ClaudeFlowは**CodeFit Design**という新しい設計手法を採用しています：
+
+### 核心理念
+- **制約から創造性** - 行数制限が生む本質的な機能設計
+- **ユーザーとの協働** - 制約を共有し、一緒に最適解を探る
+- **品質重視** - 機能数より使いやすさと安定性を優先
+- **継続的改善** - 制約内での最適化を繰り返す
+
+### 行数制限システム
+```bash
+超軽量モード: 800行以内
+軽量モード: 1500行以内
+標準モード: 2000行以内
+```
+
+### 詳細情報
+- 📖 [CodeFit Design 哲学](docs/CODEFIT-DESIGN.md)
+- 🛠️ [実践手法](docs/CODEFIT-METHODOLOGY.md)
+
+## 開発モード
+
+### 🚀 超軽量モード（推奨：簡単なアプリ）
+```bash
+./start.sh  # → 1) 超軽量モード を選択
+```
+- **対象**: オセロゲーム、計算機、簡単なWebアプリ
+- **時間**: 5分で完成
+- **フェーズ**: 3つ（企画+要件 → 実装+テスト → 完成）
+- **成果物**: 動作するHTMLファイル + 統合ドキュメント
+
+### ⚡ 軽量モード（推奨：中程度のアプリ）
+```bash
+export CLAUDEFLOW_MODE=light
+./run-pipeline.sh input.md
+```
+- **対象**: TODOアプリ、簡単なCRUDアプリ
+- **時間**: 10-15分
+- **フェーズ**: 5つ（企画 → 要件 → プロトタイプ → 実装 → テスト）
+
+### 📋 標準モード（推奨：本格的なアプリ）
+```bash
+./start.sh  # → 3) 詳細設定 を選択
+```
+- **対象**: 業務システム、複雑なWebアプリ
+- **時間**: 30-60分
+- **フェーズ**: 9つ（全工程）
 
 ## Claude Codeとの連携フロー
 
@@ -55,6 +107,34 @@ ClaudeFlowは「プロジェクトの設計図」を作成し、Claude Codeが�
 - 明確な設計に基づいたコード生成
 - プロジェクト全体の一貫性を維持
 - 複雑なプロジェクトも段階的に実装
+
+## 🌐 日本語対応機能
+
+ClaudeFlowは日本語での開発を強力にサポートします：
+
+### 日本語プロジェクト名の自動変換
+```bash
+# 入力: 家計簿アプリ
+# 出力: household-budget-app/
+
+# 入力: 英単語学習ツール
+# 出力: english-vocabulary-app/
+```
+
+### 変換方式（優先順位）
+1. **Claude AI変換** - 意味を理解した自然な英語名
+2. **辞書マッピング** - 56個の事前定義された変換
+3. **ローマ字変換** - ひらがな・カタカナの機械的変換
+4. **タイムスタンプ** - 変換不可能な場合の一意性確保
+
+### 設定方法
+```bash
+# Claude変換を無効化（高速化したい場合）
+export CLAUDEFLOW_USE_CLAUDE_TRANSLATION=false
+
+# Claude変換を有効化（デフォルト）
+export CLAUDEFLOW_USE_CLAUDE_TRANSLATION=true
+```
 
 ## インストール
 
@@ -136,9 +216,56 @@ Claude Codeは構造化された計画を参照しながら、一貫性のある
 - **09_documentation.md** - ドキュメント計画
 
 ### 支援スクリプト
-- **start.sh** - インタラクティブなプロジェクト設定
+- **start.sh** - インタラクティブなプロジェクト設定（軽量モード選択可能）
+- **ultra-light.sh** - 超軽量モード（3フェーズ、5分で完成）
+- **quick-start.sh** - クイックスタート（自動クリーンアップ機能付き）
 - **generate-tasks.sh** - タスク生成
 - **interactive-planning.sh** - 詳細計画の作成
+- **manage-projects.sh** - プロジェクト管理ユーティリティ
+- **generate-unified-docs.sh** - 統合ドキュメント生成
+- **set-light-mode.sh** - 軽量モード設定
+
+### 環境変数設定
+
+ClaudeFlowの動作は以下の環境変数で設定できます：
+
+#### タイムアウト設定
+```bash
+export CLAUDEFLOW_TIMEOUT_SPEC=900     # 機能仕様生成のタイムアウト（秒）
+export CLAUDEFLOW_TIMEOUT_IMPL=600     # 実装生成のタイムアウト（秒）
+export CLAUDEFLOW_TIMEOUT_TEST=450     # テスト生成のタイムアウト（秒）
+export CLAUDEFLOW_TIMEOUT_DEFAULT=600  # その他のタイムアウト（秒）
+```
+
+#### 実行制御
+```bash
+export CLAUDEFLOW_IMPL_LEVEL=2         # 実装レベル（1=ラフ、2=標準、3=商用）
+export CLAUDEFLOW_FEATURE_SELECTION=C  # 機能選択（A=全て、C=コア機能のみ）
+export AUTO_CONTINUE=true              # 自動継続モード
+export CLAUDEFLOW_QUIET_MODE=true      # 簡潔表示モード
+export CLAUDEFLOW_FORCE_FEATURES_REUSE=false  # 既存features.json強制使用（デフォルト: false）
+export CLAUDEFLOW_USE_CLAUDE_TRANSLATION=true  # Claude AIによる日本語変換（デフォルト: true）
+export CLAUDEFLOW_AUTO_FEATURES=true   # 機能の自動選択（デフォルト: true）
+```
+
+#### プロジェクト管理
+```bash
+# プロジェクト状態の確認
+./scripts/manage-projects.sh status
+
+# プロジェクトのクリア
+./scripts/manage-projects.sh clean
+
+# プロジェクト一覧の表示
+./scripts/manage-projects.sh list
+```
+
+**タイムアウト設定の使用例：**
+```bash
+# 大規模な機能仕様生成の場合、タイムアウトを15分に延長
+export CLAUDEFLOW_TIMEOUT_SPEC=900
+./hybrid-implementation.sh requirements.md design.md
+```
 
 ## 実例
 

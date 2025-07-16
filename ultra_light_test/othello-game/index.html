@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オセロゲーム</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .current-player {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        .stone-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+
+        .black { background: #333; }
+        .white { background: #fff; }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 2px;
+            background: #8B4513;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background: #228B22;
+            border: 1px solid #006400;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .cell:hover {
+            background: #32CD32;
+        }
+
+        .cell.valid-move {
+            background: #90EE90;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .stone {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+            animation: placeStone 0.3s ease-out;
+        }
+
+        @keyframes placeStone {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 24px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-over h2 {
+            margin: 0 0 15px 0;
+            color: #f39c12;
+        }
+
+        .pass-notice {
+            background: #f39c12;
+            color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-info">
+            <div class="current-player" id="currentPlayer">黒のターン</div>
+            <div class="score">
+                <div class="score-item">
+                    <div class="stone-preview black"></div>
+                    <span id="blackScore">2</span>
+                </div>
+                <div class="score-item">
+                    <div class="stone-preview white"></div>
+                    <span id="whiteScore">2</span>
+                </div>
+            </div>
+            <div id="passNotice" class="pass-notice hidden">
+                パスしました - 置ける場所がありません
+            </div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="controls">
+            <button class="btn" onclick="resetGame()">ゲームリセット</button>
+            <button class="btn" onclick="passMove()">パス</button>
+        </div>
+    </div>
+
+    <div id="gameOverModal" class="game-over hidden">
+        <h2>ゲーム終了</h2>
+        <div id="gameResult"></div>
+        <button class="btn" onclick="resetGame(); closeGameOverModal();">新しいゲーム</button>
+    </div>
+
+    <script>
+        let board = Array(8).fill().map(() => Array(8).fill(0));
+        let currentPlayer = 1; // 1 = 黒, 2 = 白
+        let gameOver = false;
+
+        // 初期配置
+        function initBoard() {
+            board = Array(8).fill().map(() => Array(8).fill(0));
+            board[3][3] = 2; // 白
+            board[3][4] = 1; // 黒
+            board[4][3] = 1; // 黒
+            board[4][4] = 2; // 白
+            currentPlayer = 1;
+            gameOver = false;
+        }
+
+        // 盤面を描画
+        function renderBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.onclick = () => makeMove(row, col);
+
+                    if (board[row][col] === 1) {
+                        const stone = document.createElement('div');
+                        stone.className = 'stone black';
+                        cell.appendChild(stone);
+                    } else if (board[row][col] === 2) {
+                        const stone = document.createElement('div');
+                        stone.className = 'stone white';
+                        cell.appendChild(stone);
+                    } else if (isValidMove(row, col, currentPlayer)) {
+                        cell.classList.add('valid-move');
+                    }
+
+                    boardElement.appendChild(cell);
+                }
+            }
+
+            updateUI();
+        }
+
+        // 有効な手かチェック
+        function isValidMove(row, col, player) {
+            if (board[row][col] !== 0) return false;
+
+            const directions = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
+            
+            for (let [dr, dc] of directions) {
+                if (checkDirection(row, col, dr, dc, player)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 特定の方向で挟めるかチェック
+        function checkDirection(row, col, dr, dc, player) {
+            let r = row + dr;
+            let c = col + dc;
+            let hasOpponent = false;
+
+            while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+                if (board[r][c] === 0) return false;
+                if (board[r][c] === player) return hasOpponent;
+                hasOpponent = true;
+                r += dr;
+                c += dc;
+            }
+            return false;
+        }
+
+        // 石を置く
+        function makeMove(row, col) {
+            if (gameOver || !isValidMove(row, col, currentPlayer)) return;
+
+            board[row][col] = currentPlayer;
+            flipStones(row, col, currentPlayer);
+            
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            
+            // 次のプレイヤーが置ける場所があるかチェック
+            if (!hasValidMoves(currentPlayer)) {
+                // パス
+                showPassNotice();
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                
+                // 両方のプレイヤーが置けない場合ゲーム終了
+                if (!hasValidMoves(currentPlayer)) {
+                    endGame();
+                    return;
+                }
+            }
+
+            renderBoard();
+        }
+
+        // 石をひっくり返す
+        function flipStones(row, col, player) {
+            const directions = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
+            
+            for (let [dr, dc] of directions) {
+                if (checkDirection(row, col, dr, dc, player)) {
+                    let r = row + dr;
+                    let c = col + dc;
+                    
+                    while (board[r][c] !== player) {
+                        board[r][c] = player;
+                        r += dr;
+                        c += dc;
+                    }
+                }
+            }
+        }
+
+        // 有効な手があるかチェック
+        function hasValidMoves(player) {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (isValidMove(row, col, player)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // UIを更新
+        function updateUI() {
+            const blackScore = board.flat().filter(cell => cell === 1).length;
+            const whiteScore = board.flat().filter(cell => cell === 2).length;
+            
+            document.getElementById('blackScore').textContent = blackScore;
+            document.getElementById('whiteScore').textContent = whiteScore;
+            document.getElementById('currentPlayer').textContent = 
+                currentPlayer === 1 ? '黒のターン' : '白のターン';
+            
+            hidePassNotice();
+        }
+
+        // パス通知
+        function showPassNotice() {
+            document.getElementById('passNotice').classList.remove('hidden');
+            setTimeout(() => {
+                hidePassNotice();
+            }, 2000);
+        }
+
+        function hidePassNotice() {
+            document.getElementById('passNotice').classList.add('hidden');
+        }
+
+        // 手動パス
+        function passMove() {
+            if (gameOver) return;
+            
+            if (hasValidMoves(currentPlayer)) {
+                alert('まだ置ける場所があります！');
+                return;
+            }
+            
+            showPassNotice();
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            
+            if (!hasValidMoves(currentPlayer)) {
+                endGame();
+                return;
+            }
+            
+            renderBoard();
+        }
+
+        // ゲーム終了
+        function endGame() {
+            gameOver = true;
+            const blackScore = board.flat().filter(cell => cell === 1).length;
+            const whiteScore = board.flat().filter(cell => cell === 2).length;
+            
+            let result;
+            if (blackScore > whiteScore) {
+                result = `黒の勝利！<br>黒: ${blackScore} - 白: ${whiteScore}`;
+            } else if (whiteScore > blackScore) {
+                result = `白の勝利！<br>黒: ${blackScore} - 白: ${whiteScore}`;
+            } else {
+                result = `引き分け！<br>黒: ${blackScore} - 白: ${whiteScore}`;
+            }
+            
+            document.getElementById('gameResult').innerHTML = result;
+            document.getElementById('gameOverModal').classList.remove('hidden');
+        }
+
+        // ゲームリセット
+        function resetGame() {
+            initBoard();
+            renderBoard();
+        }
+
+        // ゲーム終了モーダルを閉じる
+        function closeGameOverModal() {
+            document.getElementById('gameOverModal').classList.add('hidden');
+        }
+
+        // ゲーム開始
+        initBoard();
+        renderBoard();
+    </script>
+</body>
+</html>

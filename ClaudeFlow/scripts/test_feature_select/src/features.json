@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "id": "feature_001",
+      "name": "ユーザー登録",
+      "description": "新規ユーザー登録機能",
+      "priority": 1
+    },
+    {
+      "id": "feature_002",
+      "name": "ユーザーログイン",
+      "description": "JWT認証によるログイン",
+      "priority": 1
+    },
+    {
+      "id": "feature_003",
+      "name": "タスク作成",
+      "description": "新規タスクの作成",
+      "priority": 2
+    },
+    {
+      "id": "feature_004",
+      "name": "タスク一覧",
+      "description": "タスクの一覧表示",
+      "priority": 2
+    },
+    {
+      "id": "feature_005",
+      "name": "タスク更新",
+      "description": "タスクの更新・削除",
+      "priority": 3
+    }
+  ]
+}

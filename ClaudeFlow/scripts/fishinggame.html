@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚釣りゲーム</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Arial',sans-serif;overflow:hidden;background:#e8f5ff;transition:background 0.5s}
+        body.morning{background:#ffeaa7}
+        body.day{background:#74b9ff}
+        body.evening{background:#ff7675}
+        body.night{background:#2d3436}
+        #gameContainer{max-width:800px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+        #header{background:rgba(255,255,255,0.9);padding:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+        #timeDisplay{font-size:18px;font-weight:bold}
+        #stats{display:flex;gap:20px}
+        .stat{display:flex;align-items:center;gap:5px}
+        #pond{flex:1;position:relative;background:linear-gradient(to bottom,transparent 60%,#4FC3F7 60%);overflow:hidden}
+        #sky{position:absolute;width:100%;height:60%;background:linear-gradient(to bottom,#87CEEB,#E0F7FA);transition:background 0.5s}
+        .morning #sky{background:linear-gradient(to bottom,#FFE5B4,#FFA07A)}
+        .day #sky{background:linear-gradient(to bottom,#87CEEB,#E0F7FA)}
+        .evening #sky{background:linear-gradient(to bottom,#FF6B6B,#FFD93D)}
+        .night #sky{background:linear-gradient(to bottom,#0F2027,#203A43)}
+        #sun{position:absolute;width:60px;height:60px;background:#FFD700;border-radius:50%;transition:all 0.5s}
+        .morning #sun{top:50%;left:10%;background:#FFA500}
+        .day #sun{top:10%;left:50%;background:#FFD700}
+        .evening #sun{top:30%;right:10%;background:#FF6347}
+        .night #sun{display:none}
+        #moon{position:absolute;width:50px;height:50px;background:#F0F0F0;border-radius:50%;display:none;top:10%;right:20%}
+        .night #moon{display:block}
+        #water{position:absolute;bottom:0;width:100%;height:40%;background:rgba(79,195,247,0.6)}
+        #waterWaves{position:absolute;bottom:0;width:200%;height:40%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:waves 3s linear infinite}
+        @keyframes waves{from{transform:translateX(0)}to{transform:translateX(-100px)}}
+        #fishingLine{position:absolute;width:2px;background:#333;transform-origin:top;display:none}
+        #hook{position:absolute;width:10px;height:10px;background:#666;border-radius:50%;display:none}
+        #rodTip{position:absolute;top:50%;right:50px;width:3px;height:100px;background:#8B4513;transform-origin:bottom;transform:rotate(-30deg)}
+        #controls{background:rgba(255,255,255,0.9);padding:15px;display:flex;justify-content:center;gap:10px;box-shadow:0 -2px 5px rgba(0,0,0,0.1)}
+        button{padding:10px 20px;font-size:16px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;transition:all 0.3s}
+        button:hover{background:#45a049;transform:scale(1.05)}
+        button:active{transform:scale(0.95)}
+        button:disabled{background:#ccc;cursor:not-allowed;transform:scale(1)}
+        #modals{position:fixed;top:0;left:0;width:100%;height:100%;display:none;background:rgba(0,0,0,0.5);z-index:1000}
+        .modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:10px;max-width:600px;max-height:80vh;overflow-y:auto;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+        .modal h2{margin-bottom:15px;color:#333}
+        .closeBtn{position:absolute;top:10px;right:10px;font-size:24px;cursor:pointer;color:#999}
+        .closeBtn:hover{color:#333}
+        #catchResult{text-align:center;padding:20px}
+        #catchResult img{width:100px;height:100px;margin:20px 0}
+        #catchResult h3{color:#4CAF50;margin:10px 0}
+        #catchResult p{color:#666;margin:5px 0}
+        #fishMessage{font-style:italic;color:#2196F3;margin:15px 0;padding:10px;background:#E3F2FD;border-radius:5px}
+        #collectionGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-top:20px}
+        .fishCard{background:#f5f5f5;border:2px solid #ddd;border-radius:5px;padding:10px;text-align:center;cursor:pointer;transition:all 0.3s}
+        .fishCard.collected{background:#E8F5E9;border-color:#4CAF50}
+        .fishCard:hover{transform:scale(1.05);box-shadow:0 2px 5px rgba(0,0,0,0.2)}
+        .fishCard img{width:50px;height:50px}
+        .fishCard .name{font-size:12px;margin-top:5px}
+        .fishCard .rarity{color:#FFD700;margin-top:3px}
+        .fishCard .count{font-size:10px;color:#666}
+        #bite{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#FF5722;display:none;animation:pulse 0.5s infinite}
+        @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.2)}}
+        #splash{position:absolute;width:100px;height:100px;display:none;pointer-events:none}
+        .splashDrop{position:absolute;width:4px;height:4px;background:#4FC3F7;border-radius:50%;animation:splashAnim 0.6s ease-out}
+        @keyframes splashAnim{to{transform:translateY(50px);opacity:0}}
+        #ecoMessage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#4CAF50;color:white;padding:20px;border-radius:10px;font-size:18px;display:none;z-index:2000;animation:fadeInOut 2s}
+        @keyframes fadeInOut{0%,100%{opacity:0}50%{opacity:1}}
+        .settingItem{margin:10px 0;display:flex;justify-content:space-between;align-items:center}
+        .settingItem label{flex:1}
+        .settingItem input[type="range"]{width:200px}
+        .settingItem span{width:50px;text-align:right}
+        #tutorial{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:30px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.3);text-align:center;z-index:2000}
+        #tutorial h2{margin-bottom:20px;color:#2196F3}
+        #tutorial p{margin:10px 0;line-height:1.6}
+        @media(max-width:600px){#gameContainer{max-width:100%}#collectionGrid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}.fishCard img{width:40px;height:40px}.modal{width:90%;max-width:none}}
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="header">
+            <div id="timeDisplay">朝</div>
+            <div id="stats">
+                <div class="stat">🐟 <span id="totalCaught">0</span>匹</div>
+                <div class="stat">🌱 <span id="ecoPoints">0</span>P</div>
+            </div>
+        </div>
+        <div id="pond">
+            <div id="sky">
+                <div id="sun"></div>
+                <div id="moon"></div>
+            </div>
+            <div id="water">
+                <div id="waterWaves"></div>
+            </div>
+            <div id="fishingLine"></div>
+            <div id="hook"></div>
+            <div id="rodTip"></div>
+            <div id="bite">HIT!</div>
+            <div id="splash"></div>
+        </div>
+        <div id="controls">
+            <button id="castBtn" onclick="game.cast()">釣り糸を垂らす</button>
+            <button onclick="game.showCollection()">図鑑</button>
+            <button onclick="game.showSettings()">設定</button>
+        </div>
+    </div>
+    <div id="modals">
+        <div id="catchModal" class="modal">
+            <span class="closeBtn" onclick="game.closeModal()">×</span>
+            <div id="catchResult"></div>
+        </div>
+        <div id="collectionModal" class="modal">
+            <span class="closeBtn" onclick="game.closeModal()">×</span>
+            <h2>魚図鑑</h2>
+            <p>コレクション: <span id="collectionCount">0</span>/50</p>
+            <div id="collectionGrid"></div>
+        </div>
+        <div id="settingsModal" class="modal">
+            <span class="closeBtn" onclick="game.closeModal()">×</span>
+            <h2>設定</h2>
+            <div class="settingItem">
+                <label>効果音</label>
+                <input type="range" id="sfxVolume" min="0" max="100" value="50">
+                <span id="sfxValue">50</span>
+            </div>
+            <div class="settingItem">
+                <label>BGM</label>
+                <input type="range" id="bgmVolume" min="0" max="100" value="30">
+                <span id="bgmValue">30</span>
+            </div>
+            <button onclick="game.resetData()">データリセット</button>
+        </div>
+    </div>
+    <div id="tutorial">
+        <h2>のんびり釣り日和へようこそ！</h2>
+        <p>「釣り糸を垂らす」ボタンをクリックして釣りを始めましょう</p>
+        <p>魚がかかったら「引き上げる！」をクリック！</p>
+        <p>いろんな魚を釣って図鑑を完成させよう🐟</p>
+        <button onclick="game.startGame()">はじめる</button>
+    </div>
+    <div id="ecoMessage"></div>
+    <script>
+        const game = {
+            data: {
+                totalCaught: 0,
+                fishCollection: {},
+                ecoPoints: 0,
+                settings: { sfx: 50, bgm: 30 }
+            },
+            state: {
+                isCasting: false,
+                isBiting: false,
+                currentFish: null,
+                timeOfDay: 'morning'
+            },
+            fishes: [
+                {id:'carp',name:'コイ',rarity:2,size:{min:20,max:60},times:['morning','evening'],message:'ゆったり泳いでいたよ',points:10,chance:25},
+                {id:'crucian',name:'フナ',rarity:1,size:{min:10,max:30},times:['morning','day','evening'],message:'元気に泳いでる！',points:5,chance:30},
+                {id:'bass',name:'ブラックバス',rarity:3,size:{min:30,max:70},times:['day','evening'],message:'力強い引きだった！',points:20,chance:15},
+                {id:'bluegill',name:'ブルーギル',rarity:1,size:{min:5,max:20},times:['day'],message:'ちっちゃくてかわいい',points:5,chance:25},
+                {id:'catfish',name:'ナマズ',rarity:3,size:{min:40,max:100},times:['night','evening'],message:'ヒゲがチャーミング',points:25,chance:10},
+                {id:'eel',name:'ウナギ',rarity:4,size:{min:50,max:120},times:['night'],message:'にょろにょろ〜',points:40,chance:5},
+                {id:'goldfish',name:'金魚',rarity:2,size:{min:5,max:15},times:['morning','day'],message:'きれいな色だね',points:15,chance:20},
+                {id:'koi',name:'錦鯉',rarity:4,size:{min:40,max:80},times:['morning','evening'],message:'豪華な模様！',points:50,chance:5},
+                {id:'turtle',name:'カメ',rarity:3,size:{min:10,max:30},times:['day'],message:'の〜んびり',points:30,chance:8},
+                {id:'frog',name:'カエル',rarity:2,size:{min:5,max:15},times:['evening','night'],message:'ケロケロ♪',points:20,chance:12},
+                {id:'boot',name:'長靴',rarity:1,size:{min:30,max:30},times:['morning','day','evening','night'],message:'...',points:0,chance:10,isTrash:true},
+                {id:'can',name:'空き缶',rarity:1,size:{min:10,max:10},times:['morning','day','evening','night'],message:'...',points:0,chance:10,isTrash:true},
+                {id:'tire',name:'タイヤ',rarity:2,size:{min:50,max:50},times:['morning','day','evening','night'],message:'重い...',points:0,chance:5,isTrash:true},
+                {id:'bottle',name:'ビン',rarity:1,size:{min:20,max:20},times:['morning','day','evening','night'],message:'...',points:0,chance:8,isTrash:true},
+                {id:'rainbow',name:'虹色の魚',rarity:5,size:{min:60,max:100},times:['morning'],message:'幸運をお裾分け☆',points:100,chance:1},
+                {id:'moon',name:'月光魚',rarity:5,size:{min:40,max:60},times:['night'],message:'月の光のように輝いてる',points:80,chance:2},
+                {id:'sakura',name:'桜鯉',rarity:4,size:{min:30,max:50},times:['morning'],message:'春の訪れを感じる',points:60,chance:3},
+                {id:'dragon',name:'龍魚',rarity:5,size:{min:80,max:150},times:['night'],message:'伝説の魚だ！',points:200,chance:0.5},
+                {id:'clown',name:'ピエロ魚',rarity:3,size:{min:15,max:25},times:['day'],message:'笑顔になっちゃう',points:35,chance:7},
+                {id:'crystal',name:'クリスタルフィッシュ',rarity:4,size:{min:20,max:40},times:['day','evening'],message:'透き通ってきれい',points:70,chance:4}
+            ],
+            init() {
+                this.loadData();
+                this.updateTimeOfDay();
+                this.updateUI();
+                setInterval(() => this.updateTimeOfDay(), 60000);
+                document.getElementById('sfxVolume').addEventListener('input', e => {
+                    this.data.settings.sfx = e.target.value;
+                    document.getElementById('sfxValue').textContent = e.target.value;
+                    this.saveData();
+                });
+                document.getElementById('bgmVolume').addEventListener('input', e => {
+                    this.data.settings.bgm = e.target.value;
+                    document.getElementById('bgmValue').textContent = e.target.value;
+                    this.saveData();
+                });
+            },
+            loadData() {
+                const saved = localStorage.getItem('fishingGameData');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    this.data = { ...this.data, ...parsed };
+                }
+            },
+            saveData() {
+                localStorage.setItem('fishingGameData', JSON.stringify(this.data));
+            },
+            updateTimeOfDay() {
+                const hour = new Date().getHours();
+                if (hour >= 5 && hour < 10) this.state.timeOfDay = 'morning';
+                else if (hour >= 10 && hour < 17) this.state.timeOfDay = 'day';
+                else if (hour >= 17 && hour < 20) this.state.timeOfDay = 'evening';
+                else this.state.timeOfDay = 'night';
+                
+                const timeNames = { morning: '朝', day: '昼', evening: '夕', night: '夜' };
+                document.getElementById('timeDisplay').textContent = timeNames[this.state.timeOfDay];
+                document.body.className = this.state.timeOfDay;
+            },
+            updateUI() {
+                document.getElementById('totalCaught').textContent = this.data.totalCaught;
+                document.getElementById('ecoPoints').textContent = this.data.ecoPoints;
+            },
+            cast() {
+                if (this.state.isCasting) {
+                    this.reel();
+                    return;
+                }
+                
+                this.state.isCasting = true;
+                const btn = document.getElementById('castBtn');
+                btn.textContent = '待機中...';
+                btn.disabled = true;
+                
+                const line = document.getElementById('fishingLine');
+                const hook = document.getElementById('hook');
+                const rod = document.getElementById('rodTip');
+                
+                line.style.display = 'block';
+                hook.style.display = 'block';
+                line.style.top = '50%';
+                line.style.right = '50px';
+                line.style.height = '0';
+                hook.style.top = '50%';
+                hook.style.right = '50px';
+                
+                let lineHeight = 0;
+                const castAnim = setInterval(() => {
+                    lineHeight += 5;
+                    line.style.height = lineHeight + 'px';
+                    hook.style.top = `calc(50% + ${lineHeight}px)`;
+                    if (lineHeight >= 150) {
+                        clearInterval(castAnim);
+                        this.startBiting();
+                    }
+                }, 20);
+                
+                this.playSound('cast');
+            },
+            startBiting() {
+                const waitTime = Math.random() * 3000 + 2000;
+                setTimeout(() => {
+                    if (!this.state.isCasting) return;
+                    
+                    const availableFish = this.fishes.filter(f => 
+                        f.times.includes(this.state.timeOfDay) && Math.random() * 100 < f.chance
+                    );
+                    
+                    if (availableFish.length === 0) return;
+                    
+                    this.state.currentFish = availableFish[Math.floor(Math.random() * availableFish.length)];
+                    this.state.isBiting = true;
+                    
+                    document.getElementById('bite').style.display = 'block';
+                    document.getElementById('castBtn').textContent = '引き上げる！';
+                    document.getElementById('castBtn').disabled = false;
+                    
+                    this.playSound('bite');
+                    
+                    setTimeout(() => {
+                        if (this.state.isBiting) {
+                            this.state.isBiting = false;
+                            this.state.currentFish = null;
+                            document.getElementById('bite').style.display = 'none';
+                            document.getElementById('castBtn').textContent = '逃げられた...';
+                            setTimeout(() => this.reset(), 1000);
+                        }
+                    }, 2000);
+                }, waitTime);
+            },
+            reel() {
+                if (!this.state.isBiting) {
+                    this.reset();
+                    return;
+                }
+                
+                document.getElementById('bite').style.display = 'none';
+                this.createSplash();
+                
+                const fish = this.state.currentFish;
+                const size = Math.floor(Math.random() * (fish.size.max - fish.size.min + 1)) + fish.size.min;
+                
+                this.data.totalCaught++;
+                
+                if (!this.data.fishCollection[fish.id]) {
+                    this.data.fishCollection[fish.id] = { count: 0, maxSize: 0 };
+                }
+                this.data.fishCollection[fish.id].count++;
+                this.data.fishCollection[fish.id].maxSize = Math.max(this.data.fishCollection[fish.id].maxSize, size);
+                
+                if (fish.isTrash) {
+                    this.data.ecoPoints += 10;
+                    this.showEcoMessage('ゴミを回収！ +10エコポイント');
+                } else {
+                    this.data.ecoPoints += fish.points;
+                }
+                
+                this.saveData();
+                this.updateUI();
+                this.showCatchResult(fish, size);
+                this.reset();
+                this.playSound(fish.isTrash ? 'trash' : 'catch');
+            },
+            reset() {
+                this.state.isCasting = false;
+                this.state.isBiting = false;
+                this.state.currentFish = null;
+                
+                document.getElementById('fishingLine').style.display = 'none';
+                document.getElementById('hook').style.display = 'none';
+                document.getElementById('bite').style.display = 'none';
+                document.getElementById('castBtn').textContent = '釣り糸を垂らす';
+                document.getElementById('castBtn').disabled = false;
+            },
+            createSplash() {
+                const splash = document.getElementById('splash');
+                splash.style.display = 'block';
+                splash.style.left = 'calc(50% + 100px)';
+                splash.style.top = '65%';
+                splash.innerHTML = '';
+                
+                for (let i = 0; i < 20; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'splashDrop';
+                    drop.style.left = Math.random() * 100 + 'px';
+                    drop.style.top = Math.random() * 100 + 'px';
+                    drop.style.animationDelay = Math.random() * 0.3 + 's';
+                    splash.appendChild(drop);
+                }
+                
+                setTimeout(() => splash.style.display = 'none', 1000);
+            },
+            showCatchResult(fish, size) {
+                const modal = document.getElementById('modals');
+                const catchModal = document.getElementById('catchModal');
+                const result = document.getElementById('catchResult');
+                
+                const emoji = fish.isTrash ? '🗑️' : '🐟';
+                const stars = '★'.repeat(fish.rarity) + '☆'.repeat(5 - fish.rarity);
+                
+                result.innerHTML = `
+                    <h3>${fish.isTrash ? 'ゴミを釣り上げた！' : '釣れた！'}</h3>
+                    <div style="font-size: 80px">${emoji}</div>
+                    <h2>${fish.name}</h2>
+                    <p class="rarity">${stars}</p>
+                    <p>サイズ: ${size}cm</p>
+                    <p>ポイント: +${fish.isTrash ? 0 : fish.points}P</p>
+                    ${fish.message ? `<div id="fishMessage">"${fish.message}"</div>` : ''}
+                    ${fish.isTrash ? '<p style="color:#4CAF50">エコポイント +10P</p>' : ''}
+                `;
+                
+                modal.style.display = 'block';
+                catchModal.style.display = 'block';
+                document.getElementById('collectionModal').style.display = 'none';
+                document.getElementById('settingsModal').style.display = 'none';
+            },
+            showEcoMessage(text) {
+                const msg = document.getElementById('ecoMessage');
+                msg.textContent = text;
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.display = 'none', 2000);
+            },
+            showCollection() {
+                const modal = document.getElementById('modals');
+                const collectionModal = document.getElementById('collectionModal');
+                const grid = document.getElementById('collectionGrid');
+                
+                const collected = Object.keys(this.data.fishCollection).length;
+                document.getElementById('collectionCount').textContent = collected;
+                
+                grid.innerHTML = '';
+                this.fishes.forEach(fish => {
+                    const card = document.createElement('div');
+                    card.className = 'fishCard';
+                    const data = this.data.fishCollection[fish.id];
+                    
+                    if (data) {
+                        card.classList.add('collected');
+                        card.innerHTML = `
+                            <div style="font-size: 40px">${fish.isTrash ? '🗑️' : '🐟'}</div>
+                            <div class="name">${fish.name}</div>
+                            <div class="rarity">${'★'.repeat(fish.rarity)}</div>
+                            <div class="count">${data.count}匹 最大${data.maxSize}cm</div>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div style="font-size: 40px">❓</div>
+                            <div class="name">？？？</div>
+                            <div class="rarity">？？？</div>
+                        `;
+                    }
+                    
+                    card.onclick = () => {
+                        if (data) {
+                            alert(`${fish.name}\\n${fish.message}\\n\\nレア度: ${'★'.repeat(fish.rarity)}\\n釣った数: ${data.count}匹\\n最大サイズ: ${data.maxSize}cm`);
+                        }
+                    };
+                    
+                    grid.appendChild(card);
+                });
+                
+                modal.style.display = 'block';
+                collectionModal.style.display = 'block';
+                document.getElementById('catchModal').style.display = 'none';
+                document.getElementById('settingsModal').style.display = 'none';
+            },
+            showSettings() {
+                const modal = document.getElementById('modals');
+                const settingsModal = document.getElementById('settingsModal');
+                
+                document.getElementById('sfxVolume').value = this.data.settings.sfx;
+                document.getElementById('bgmVolume').value = this.data.settings.bgm;
+                document.getElementById('sfxValue').textContent = this.data.settings.sfx;
+                document.getElementById('bgmValue').textContent = this.data.settings.bgm;
+                
+                modal.style.display = 'block';
+                settingsModal.style.display = 'block';
+                document.getElementById('catchModal').style.display = 'none';
+                document.getElementById('collectionModal').style.display = 'none';
+            },
+            closeModal() {
+                document.getElementById('modals').style.display = 'none';
+            },
+            resetData() {
+                if (confirm('本当にデータをリセットしますか？')) {
+                    localStorage.removeItem('fishingGameData');
+                    this.data = {
+                        totalCaught: 0,
+                        fishCollection: {},
+                        ecoPoints: 0,
+                        settings: { sfx: 50, bgm: 30 }
+                    };
+                    this.updateUI();
+                    this.closeModal();
+                    alert('データをリセットしました');
+                }
+            },
+            startGame() {
+                document.getElementById('tutorial').style.display = 'none';
+                this.playSound('start');
+            },
+            playSound(type) {
+                const volume = this.data.settings.sfx / 100;
+                if (volume === 0) return;
+                
+                const sounds = {
+                    cast: { freq: 400, duration: 100 },
+                    bite: { freq: 800, duration: 200 },
+                    catch: { freq: 600, duration: 300 },
+                    trash: { freq: 200, duration: 300 },
+                    start: { freq: 500, duration: 200 }
+                };
+                
+                const sound = sounds[type];
+                if (!sound) return;
+                
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.frequency.setValueAtTime(sound.freq, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(volume * 0.1, audioCtx.currentTime);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + sound.duration / 1000);
+            }
+        };
+        
+        window.onload = () => game.init();
+    </script>
+</body>
+</html>

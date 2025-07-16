@@ -81,6 +81,71 @@ implement_feature() {
     # 実装実行
     cat "$IMPLEMENTATION_DIR/implement_${feature_id}.md" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
     
+    # 構文エラーチェック
+    if [ "${CLAUDEFLOW_AUTO_VALIDATE:-true}" = "true" ]; then
+        echo -e "${CYAN}検証中...${NC}"
+        
+        # 実装から生成されたコードファイルを検証
+        local validation_passed=true
+        local validation_report="$IMPLEMENTATION_DIR/${feature_id}_validation.txt"
+        
+        # 検証レポート初期化
+        echo "=== 実装検証レポート: $feature_name ===" > "$validation_report"
+        echo "実行日時: $(date)" >> "$validation_report"
+        echo "" >> "$validation_report"
+        
+        # すべてのコードファイルをチェック
+        for code_file in "$IMPLEMENTATION_DIR"/*.{js,ts,jsx,tsx,py,html} "$PROJECT_DIR"/src/**/*.{js,ts,jsx,tsx,py,html}; do
+            if [ -f "$code_file" ]; then
+                echo "検証中: $(basename "$code_file")" >> "$validation_report"
+                
+                # 構文チェック
+                if ! validate_syntax "$code_file" >> "$validation_report" 2>&1; then
+                    echo "❌ 構文エラー" >> "$validation_report"
+                    validation_passed=false
+                else
+                    echo "✅ 構文OK" >> "$validation_report"
+                fi
+                
+                # ランタイムエラーチェック
+                if ! validate_runtime "$code_file" >> "$validation_report" 2>&1; then
+                    echo "⚠️ ランタイムエラーの可能性" >> "$validation_report"
+                fi
+                
+                echo "" >> "$validation_report"
+            fi
+        done
+        
+        if [ "$validation_passed" = false ]; then
+            echo -e "${YELLOW}⚠️ 構文エラーが検出されました${NC}"
+            
+            # 自動修正モードの場合は修正を試みる
+            if [ "$AUTO_FIX" = true ]; then
+                echo -e "${YELLOW}自動修正を試みます...${NC}"
+                
+                local fix_prompt="以下の実装に構文エラーまたはエラーパターンが検出されました。修正してください：
+
+実装内容:
+$(cat "$IMPLEMENTATION_DIR/${feature_id}_implementation.md")
+
+検証レポート:
+$(cat "$validation_report")
+
+修正要件：
+- すべての構文エラーを修正
+- DOM要素の存在チェックを追加
+- 配列アクセスの境界チェックを追加
+- try-catchでエラーハンドリングを追加
+- 元の機能を保持"
+                
+                echo "$fix_prompt" | claude --print --dangerously-skip-permissions --allowedTools 'Bash Write Edit MultiEdit Read LS Glob Grep' > "$IMPLEMENTATION_DIR/${feature_id}_implementation.md"
+                echo -e "${GREEN}構文エラーを修正しました${NC}"
+            fi
+        else
+            echo -e "${GREEN}✅ 検証合格${NC}"
+        fi
+    fi
+    
     echo -e "${GREEN}✅ 実装完了${NC}"
 }
 

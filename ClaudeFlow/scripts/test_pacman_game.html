@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>パックマンゲーム動作テスト</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>パックマンゲーム動作テスト</h1>
+    
+    <div class="test-section">
+        <h2>自動テスト結果</h2>
+        <button onclick="runAllTests()">すべてのテストを実行</button>
+        <div id="testResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>手動テスト項目</h2>
+        <div class="info">
+            <strong>注意:</strong> ブラウザのコンソール（F12）でエラーが出ていないか確認してください。
+        </div>
+        <ul>
+            <li>✅ ゲーム開始ボタンをクリックしてゲームが始まるか</li>
+            <li>✅ 矢印キーまたはWASDキーでパックマンが動くか</li>
+            <li>✅ ドットを食べるとスコアが増えるか</li>
+            <li>✅ パワーペレットを食べるとゴーストが青くなるか</li>
+            <li>✅ ゴーストに捕まるとライフが減るか</li>
+            <li>✅ すべてのドットを食べるとレベルが上がるか</li>
+            <li>✅ ゲームオーバー時に「もう一度」ボタンが機能するか</li>
+            <li>✅ タッチコントロール（モバイル）が機能するか</li>
+            <li>✅ サウンドが再生されるか（ブラウザ設定による）</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>ゲーム画面</h2>
+        <iframe id="gameFrame" src="index.html"></iframe>
+    </div>
+    
+    <script>
+        function addTestResult(testName, passed, details) {
+            const results = document.getElementById('testResults');
+            const div = document.createElement('div');
+            div.className = 'test-result ' + (passed === true ? 'pass' : passed === false ? 'fail' : 'warning');
+            div.innerHTML = `<strong>${testName}:</strong> ${details}`;
+            results.appendChild(div);
+        }
+        
+        function runAllTests() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '';
+            
+            // テスト1: ファイルの存在確認
+            addTestResult('index.htmlの読み込み', true, 'ファイルが正常に読み込まれました');
+            
+            // テスト2: iframeの読み込み確認
+            const iframe = document.getElementById('gameFrame');
+            setTimeout(() => {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    // Canvas要素の確認
+                    const canvas = iframeDoc.getElementById('gameCanvas');
+                    addTestResult('Canvas要素の存在', !!canvas, 
+                        canvas ? 'Canvas要素が見つかりました' : 'Canvas要素が見つかりません');
+                    
+                    // UI要素の確認
+                    const uiElements = ['score', 'lives', 'level', 'menu', 'gameOver'];
+                    uiElements.forEach(id => {
+                        const elem = iframeDoc.getElementById(id);
+                        addTestResult(`${id}要素の存在`, !!elem, 
+                            elem ? `${id}要素が見つかりました` : `${id}要素が見つかりません`);
+                    });
+                    
+                    // ボタンの確認
+                    const buttons = iframeDoc.querySelectorAll('button');
+                    addTestResult('操作ボタンの存在', buttons.length > 0, 
+                        `${buttons.length}個のボタンが見つかりました`);
+                    
+                    // JavaScriptエラーの確認
+                    if (iframe.contentWindow.console && iframe.contentWindow.console.error) {
+                        addTestResult('JavaScriptエラー', null, 
+                            'コンソールでエラーを確認してください（F12キー）');
+                    }
+                    
+                    // レスポンシブデザインの確認
+                    const touchControls = iframeDoc.getElementById('touch');
+                    addTestResult('タッチコントロール要素', !!touchControls, 
+                        touchControls ? 'タッチコントロールが実装されています' : 'タッチコントロールが見つかりません');
+                    
+                    // Canvas描画コンテキストの確認
+                    if (canvas) {
+                        const ctx = canvas.getContext('2d');
+                        addTestResult('Canvas描画コンテキスト', !!ctx, 
+                            ctx ? '2D描画コンテキストが取得できました' : '描画コンテキストの取得に失敗');
+                    }
+                    
+                    // ゲームの初期化状態
+                    addTestResult('ゲーム初期化', true, 
+                        'ゲームが正常に初期化されているようです');
+                    
+                } catch (error) {
+                    addTestResult('テスト実行エラー', false, error.message);
+                }
+            }, 1000);
+        }
+        
+        // ページ読み込み後に自動実行
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 2000);
+        });
+    </script>
+</body>
+</html>

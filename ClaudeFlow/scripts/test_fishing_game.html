@@ -1,0 +1,122 @@
+<\!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>魚釣りゲーム動作確認</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .pass { background: #e8f5e9; color: #2e7d32; }
+        .fail { background: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
+    <h1>魚釣りゲーム動作テスト</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        let testCount = 0;
+        let passCount = 0;
+        
+        function test(name, fn) {
+            testCount++;
+            const div = document.createElement('div');
+            div.className = 'test';
+            
+            try {
+                fn();
+                div.className += ' pass';
+                div.innerHTML = `✅ ${name}`;
+                passCount++;
+            } catch (e) {
+                div.className += ' fail';
+                div.innerHTML = `❌ ${name}<br>エラー: ${e.message}`;
+            }
+            
+            results.appendChild(div);
+        }
+        
+        // テスト開始
+        test('ローカルストレージの動作確認', () => {
+            localStorage.setItem('test', 'value');
+            if (localStorage.getItem('test') \!== 'value') {
+                throw new Error('ローカルストレージが正しく動作していません');
+            }
+            localStorage.removeItem('test');
+        });
+        
+        test('JSON解析の動作確認', () => {
+            const obj = { name: 'test', value: 123 };
+            const json = JSON.stringify(obj);
+            const parsed = JSON.parse(json);
+            if (parsed.name \!== 'test' || parsed.value \!== 123) {
+                throw new Error('JSON処理が正しく動作していません');
+            }
+        });
+        
+        test('配列とオブジェクトの操作確認', () => {
+            const arr = [1, 2, 3];
+            const filtered = arr.filter(x => x > 1);
+            if (filtered.length \!== 2) {
+                throw new Error('配列操作が正しく動作していません');
+            }
+            
+            const obj = { a: 1, b: 2 };
+            if (\!Object.keys(obj).includes('a')) {
+                throw new Error('オブジェクト操作が正しく動作していません');
+            }
+        });
+        
+        test('Math関数の動作確認', () => {
+            const random = Math.random();
+            if (random < 0 || random >= 1) {
+                throw new Error('Math.randomが正しく動作していません');
+            }
+            
+            if (Math.floor(3.7) \!== 3) {
+                throw new Error('Math.floorが正しく動作していません');
+            }
+        });
+        
+        test('Date処理の動作確認', () => {
+            const now = new Date();
+            const hours = now.getHours();
+            if (hours < 0 || hours > 23) {
+                throw new Error('Date処理が正しく動作していません');
+            }
+        });
+        
+        // 結果表示
+        const summary = document.createElement('div');
+        summary.style.marginTop = '20px';
+        summary.style.fontSize = '18px';
+        summary.style.fontWeight = 'bold';
+        
+        if (passCount === testCount) {
+            summary.innerHTML = `🎉 すべてのテストに合格しました！(${passCount}/${testCount})`;
+            summary.style.color = '#2e7d32';
+        } else {
+            summary.innerHTML = `⚠️ 一部のテストに失敗しました (${passCount}/${testCount})`;
+            summary.style.color = '#f57c00';
+        }
+        
+        results.appendChild(summary);
+        
+        // 実際のゲームファイルをiframeで読み込む
+        const iframe = document.createElement('iframe');
+        iframe.src = 'fishinggame.html';
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.style.marginTop = '20px';
+        iframe.style.border = '2px solid #ccc';
+        
+        const iframeTitle = document.createElement('h2');
+        iframeTitle.textContent = '実際のゲーム画面:';
+        iframeTitle.style.marginTop = '30px';
+        
+        document.body.appendChild(iframeTitle);
+        document.body.appendChild(iframe);
+    </script>
+</body>
+</html>

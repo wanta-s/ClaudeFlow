@@ -1,0 +1,20 @@
+{
+  "app_name": "app-20250717-071437",
+  "generated_at": "2025-07-16T22:15:36Z",
+  "auto_selected": true,
+  "features": [
+    {"name": "基本UI", "estimated_lines": 30, "priority": "高"},
+    {"name": "コア機能", "estimated_lines": , "priority": "高"},
+    {"name": "データ処理", "estimated_lines": , "priority": "高"},
+    {"name": "エラーハンドリング", "estimated_lines": , "priority": "高"},
+    {"name": "アニメーション", "estimated_lines": , "priority": "中"},
+    {"name": "高度なUI", "estimated_lines": , "priority": "中"},
+    {"name": "ゲームメカニクス", "estimated_lines": , "priority": "中"},
+    {"name": "インタラクティブ操作", "estimated_lines": , "priority": "中"},
+    {"name": "視覚エフェクト", "estimated_lines": , "priority": "中"},
+    {"name": "データ永続化", "estimated_lines": , "priority": "中"},
+    {"name": "パフォーマンス最適化", "estimated_lines": , "priority": "中"},
+    {"name": "API連携", "estimated_lines": , "priority": "中"},
+    {"name": "マルチユーザー", "estimated_lines": , "priority": "中"}
+  ]
+}

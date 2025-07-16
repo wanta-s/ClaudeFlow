@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚釣りゲーム - 動作確認テスト</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #2196F3;
+            text-align: center;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #ddd;
+        }
+        .test-item.pass {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .test-item.fail {
+            border-color: #F44336;
+            background: #FFEBEE;
+        }
+        .test-button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #1976D2;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        #gameFrame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎣 魚釣りゲーム - 動作確認テスト</h1>
+    
+    <div class="test-section">
+        <h2>基本動作テスト</h2>
+        <button class="test-button" onclick="runAllTests()">全テスト実行</button>
+        
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>ゲーム画面</h2>
+        <p>以下にゲームが表示されます。実際にプレイして動作を確認してください。</p>
+        <iframe id="gameFrame" src="fishinggame.html"></iframe>
+    </div>
+    
+    <div class="test-section">
+        <h2>手動テストチェックリスト</h2>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                「はじめる」ボタンをクリックしてゲームが開始できる
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                「釣り糸を垂らす」ボタンで釣りが始まる
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                「HIT!」表示後に「引き上げる！」で魚が釣れる
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                釣果モーダルが正しく表示される
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                図鑑が開いて釣った魚が表示される
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                設定画面が開いて音量調整ができる
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                時間帯によって背景が変化する
+            </label>
+        </div>
+        <div class="test-item">
+            <label>
+                <input type="checkbox" onchange="updateManualTest(this)">
+                データが保存され、リロード後も維持される
+            </label>
+        </div>
+    </div>
+    
+    <script>
+        // 自動テスト関数
+        async function runAllTests() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<p>テスト実行中...</p>';
+            
+            const tests = [
+                {
+                    name: 'HTMLファイルの存在確認',
+                    test: async () => {
+                        try {
+                            const response = await fetch('fishinggame.html');
+                            return response.ok;
+                        } catch {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'JavaScriptエラーチェック',
+                    test: async () => {
+                        try {
+                            const frame = document.getElementById('gameFrame');
+                            const frameWindow = frame.contentWindow;
+                            return frameWindow && !frameWindow.document.querySelector('body').textContent.includes('エラー');
+                        } catch {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'ゲームオブジェクトの存在確認',
+                    test: async () => {
+                        try {
+                            const frame = document.getElementById('gameFrame');
+                            const frameWindow = frame.contentWindow;
+                            return frameWindow && typeof frameWindow.game === 'object';
+                        } catch {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: '必須DOM要素の存在確認',
+                    test: async () => {
+                        try {
+                            const frame = document.getElementById('gameFrame');
+                            const frameDoc = frame.contentDocument;
+                            const elements = ['gameContainer', 'pond', 'castBtn', 'modals'];
+                            return elements.every(id => frameDoc.getElementById(id) !== null);
+                        } catch {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'localStorage機能の確認',
+                    test: async () => {
+                        try {
+                            localStorage.setItem('test', '1');
+                            const result = localStorage.getItem('test') === '1';
+                            localStorage.removeItem('test');
+                            return result;
+                        } catch {
+                            return false;
+                        }
+                    }
+                }
+            ];
+            
+            let html = '';
+            for (const test of tests) {
+                const result = await test.test();
+                const status = result ? 'pass' : 'fail';
+                const icon = result ? '✅' : '❌';
+                html += `<div class="test-item ${status}">${icon} ${test.name}</div>`;
+            }
+            
+            results.innerHTML = html;
+        }
+        
+        // 手動テスト更新
+        function updateManualTest(checkbox) {
+            const testItem = checkbox.closest('.test-item');
+            if (checkbox.checked) {
+                testItem.classList.add('pass');
+            } else {
+                testItem.classList.remove('pass');
+            }
+        }
+        
+        // ページロード後に自動テスト実行
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>

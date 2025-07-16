@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ボウリングテスト</title>
+<style>
+body { font-family: monospace; padding: 20px; background: #333; color: #fff; }
+.test { margin: 20px 0; padding: 10px; border: 1px solid #666; }
+.pass { color: #4f4; }
+.fail { color: #f44; }
+pre { background: #222; padding: 10px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>ボウリングゲーム動作テスト</h1>
+<div id="testResults"></div>
+
+<script>
+// テスト結果表示用
+const results = document.getElementById('testResults');
+let testCount = 0;
+let passCount = 0;
+
+function test(name, fn) {
+    testCount++;
+    const div = document.createElement('div');
+    div.className = 'test';
+    try {
+        fn();
+        div.innerHTML = `<span class="pass">✓ PASS</span> ${name}`;
+        passCount++;
+    } catch (e) {
+        div.innerHTML = `<span class="fail">✗ FAIL</span> ${name}<br><pre>${e.message}\n${e.stack}</pre>`;
+    }
+    results.appendChild(div);
+}
+
+function assert(condition, message) {
+    if (!condition) {
+        throw new Error(message || 'Assertion failed');
+    }
+}
+
+// BowlingGameクラスの簡易実装をインポート
+class BowlingGame {
+    constructor() {
+        this.frames = [];
+        this.currentFrame = 0;
+        this.currentRoll = 0;
+        this.totalScore = 0;
+        this.pins = Array(10).fill(true);
+        this.history = [];
+        this.gameHistory = [];
+        this.init();
+    }
+    
+    init() {
+        for(let i = 0; i < 10; i++) {
+            this.frames.push({rolls: [], score: 0, cumulative: 0});
+        }
+    }
+    
+    roll(pinsDown) {
+        if(this.currentFrame >= 10) return;
+        
+        const frame = this.frames[this.currentFrame];
+        frame.rolls.push(pinsDown);
+        
+        if(this.currentFrame < 9) {
+            if(pinsDown === 10 || frame.rolls.length === 2) {
+                this.currentFrame++;
+                this.currentRoll = 0;
+            } else {
+                this.currentRoll++;
+            }
+        } else {
+            // 10フレーム目の処理
+            if((frame.rolls.length === 1 && pinsDown === 10) ||
+               (frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] >= 10) ||
+               frame.rolls.length === 3) {
+                this.currentFrame++;
+            } else if(frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] < 10) {
+                this.currentFrame++;
+            } else {
+                this.currentRoll++;
+            }
+        }
+        
+        this.calculateScores();
+    }
+    
+    calculateScores() {
+        let total = 0;
+        for(let i = 0; i < 10; i++) {
+            const frame = this.frames[i];
+            if(frame.rolls.length === 0) break;
+            
+            let frameScore = 0;
+            if(i < 9) {
+                if(frame.rolls[0] === 10) { // ストライク
+                    frameScore = 10;
+                    if(i + 1 < 10 && this.frames[i + 1].rolls.length > 0) {
+                        frameScore += this.frames[i + 1].rolls[0];
+                        if(this.frames[i + 1].rolls.length > 1) {
+                            frameScore += this.frames[i + 1].rolls[1];
+                        } else if(i + 2 < 10 && this.frames[i + 2].rolls.length > 0) {
+                            frameScore += this.frames[i + 2].rolls[0];
+                        }
+                    }
+                } else if(frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] === 10) { // スペア
+                    frameScore = 10;
+                    if(i + 1 < 10 && this.frames[i + 1].rolls.length > 0) {
+                        frameScore += this.frames[i + 1].rolls[0];
+                    }
+                } else {
+                    frameScore = frame.rolls.reduce((a, b) => a + b, 0);
+                }
+            } else {
+                frameScore = frame.rolls.reduce((a, b) => a + b, 0);
+            }
+            
+            frame.score = frameScore;
+            total += frameScore;
+            frame.cumulative = total;
+        }
+        this.totalScore = total;
+    }
+}
+
+// テスト実行
+test('ゲーム初期化', () => {
+    const game = new BowlingGame();
+    assert(game.frames.length === 10, 'フレーム数が10でない');
+    assert(game.currentFrame === 0, '開始フレームが0でない');
+    assert(game.totalScore === 0, '初期スコアが0でない');
+});
+
+test('通常の投球', () => {
+    const game = new BowlingGame();
+    game.roll(3);
+    game.roll(4);
+    assert(game.frames[0].rolls[0] === 3, '1投目が記録されていない');
+    assert(game.frames[0].rolls[1] === 4, '2投目が記録されていない');
+    assert(game.currentFrame === 1, 'フレームが進んでいない');
+    assert(game.totalScore === 7, 'スコア計算が正しくない');
+});
+
+test('ストライクの処理', () => {
+    const game = new BowlingGame();
+    game.roll(10); // ストライク
+    assert(game.currentFrame === 1, 'ストライク後にフレームが進んでいない');
+    game.roll(3);
+    game.roll(4);
+    assert(game.frames[0].cumulative === 17, 'ストライクのボーナス計算が正しくない');
+});
+
+test('スペアの処理', () => {
+    const game = new BowlingGame();
+    game.roll(7);
+    game.roll(3); // スペア
+    game.roll(4);
+    game.roll(2);
+    assert(game.frames[0].cumulative === 14, 'スペアのボーナス計算が正しくない');
+});
+
+test('パーフェクトゲーム', () => {
+    const game = new BowlingGame();
+    for(let i = 0; i < 12; i++) {
+        game.roll(10);
+    }
+    assert(game.totalScore === 300, 'パーフェクトゲームのスコアが300でない');
+});
+
+test('ガターゲーム', () => {
+    const game = new BowlingGame();
+    for(let i = 0; i < 20; i++) {
+        game.roll(0);
+    }
+    assert(game.totalScore === 0, 'ガターゲームのスコアが0でない');
+});
+
+test('10フレーム目の特殊処理', () => {
+    const game = new BowlingGame();
+    // 9フレームまで適当に投げる
+    for(let i = 0; i < 9; i++) {
+        game.roll(0);
+        game.roll(0);
+    }
+    // 10フレーム目でストライク
+    game.roll(10);
+    game.roll(10);
+    game.roll(10);
+    assert(game.frames[9].rolls.length === 3, '10フレーム目で3投できていない');
+    assert(game.frames[9].score === 30, '10フレーム目のスコア計算が正しくない');
+});
+
+// テスト結果サマリー
+const summary = document.createElement('div');
+summary.style.marginTop = '30px';
+summary.style.fontSize = '1.2em';
+summary.innerHTML = `
+<h2>テスト結果</h2>
+<p>合計: ${testCount}件</p>
+<p class="pass">成功: ${passCount}件</p>
+<p class="fail">失敗: ${testCount - passCount}件</p>
+`;
+results.appendChild(summary);
+</script>
+</body>
+</html>

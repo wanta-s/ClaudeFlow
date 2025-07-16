@@ -1,0 +1,29 @@
+{
+  "name": "reservation-system-integration-tests",
+  "version": "1.0.0",
+  "description": "統合テスト for 予約システム",
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "jest e2e-reservation-flow.test.ts",
+    "test:interaction": "jest feature-interaction.test.ts",
+    "test:dataflow": "jest data-flow.test.ts",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": ["<rootDir>"],
+    "testMatch": ["**/*.test.ts"],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/../$1"
+    }
+  }
+}

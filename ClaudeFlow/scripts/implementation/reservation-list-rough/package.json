@@ -1,0 +1,27 @@
+{
+  "name": "reservation-list-rough",
+  "version": "1.0.0",
+  "description": "Rough level implementation of reservation list feature",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": ["reservation", "list", "rough"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.8.0",
+    "@types/supertest": "^2.0.14",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  }
+}

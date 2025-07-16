@@ -1,0 +1,84 @@
+{
+  "features": [
+    {
+      "id": "feature_001",
+      "name": "ユーザー登録",
+      "description": "新規ユーザーの登録機能（メール、パスワード、名前）",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_002",
+      "name": "ユーザーログイン",
+      "description": "ユーザー認証とJWTトークン生成",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_003",
+      "name": "タスク作成",
+      "description": "新しいタスクの作成機能",
+      "priority": 2,
+      "core": true,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_004",
+      "name": "タスク一覧表示",
+      "description": "ユーザーのタスク一覧を表示",
+      "priority": 2,
+      "core": true,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_005",
+      "name": "タスクステータス管理",
+      "description": "タスクのステータス変更機能",
+      "priority": 3,
+      "core": true,
+      "dependencies": ["feature_003", "feature_004"]
+    },
+    {
+      "id": "feature_006",
+      "name": "タスク詳細表示",
+      "description": "個別タスクの詳細情報表示",
+      "priority": 3,
+      "core": true,
+      "dependencies": ["feature_004"]
+    },
+    {
+      "id": "feature_007",
+      "name": "タスク編集",
+      "description": "既存タスクの編集機能",
+      "priority": 4,
+      "core": true,
+      "dependencies": ["feature_006"]
+    },
+    {
+      "id": "feature_008",
+      "name": "タスク削除",
+      "description": "タスクの論理削除機能",
+      "priority": 4,
+      "core": true,
+      "dependencies": ["feature_006"]
+    },
+    {
+      "id": "feature_009",
+      "name": "ユーザープロファイル",
+      "description": "ユーザー情報の表示と編集",
+      "priority": 5,
+      "core": false,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_010",
+      "name": "ダッシュボード統計",
+      "description": "タスク統計情報の表示",
+      "priority": 6,
+      "core": false,
+      "dependencies": ["feature_004"]
+    }
+  ]
+}

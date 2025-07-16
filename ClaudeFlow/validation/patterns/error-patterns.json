@@ -1,0 +1,76 @@
+{
+  "javascript": {
+    "dom_operations": {
+      "pattern": "document\\.getElementById\\([^)]+\\)(?!\\s*&&|\\s*\\?)(?!.*?\\s*if\\s*\\()",
+      "message": "DOM要素の存在チェックが必要です",
+      "severity": "error",
+      "fix_template": "const element = document.getElementById('${id}');\nif (element) {\n  ${code}\n}"
+    },
+    "array_access": {
+      "pattern": "\\[\\d+\\](?!.*?\\s*&&\\s*.*?\\[|.*?\\s*\\?\\.|.*?length\\s*>)",
+      "message": "配列の境界チェックが必要です",
+      "severity": "warning",
+      "fix_template": "if (array.length > ${index}) {\n  ${code}\n}"
+    },
+    "null_property_access": {
+      "pattern": "\\w+\\.\\w+(?!\\s*&&|\\s*\\?|\\.\\?)",
+      "message": "nullチェックが推奨されます",
+      "severity": "warning",
+      "fix_template": "${object}?.${property}"
+    },
+    "async_without_try": {
+      "pattern": "async\\s+function[^{]+\\{(?![^}]*try\\s*\\{)",
+      "message": "非同期関数にtry-catchが必要です",
+      "severity": "error",
+      "fix_template": "async function ${name}() {\n  try {\n    ${code}\n  } catch (error) {\n    console.error('Error in ${name}:', error);\n    throw error;\n  }\n}"
+    },
+    "event_listener_cleanup": {
+      "pattern": "addEventListener\\([^)]+\\)(?!.*removeEventListener)",
+      "message": "イベントリスナーのクリーンアップが必要です",
+      "severity": "warning",
+      "fix_template": "// クリーンアップ関数を実装してください\nfunction cleanup() {\n  element.removeEventListener('${event}', handler);\n}"
+    }
+  },
+  "typescript": {
+    "any_type": {
+      "pattern": ":\\s*any(?:\\s|$|\\)|,)",
+      "message": "any型の使用は避けてください",
+      "severity": "warning",
+      "fix_template": ": unknown // または適切な型を指定"
+    },
+    "non_null_assertion": {
+      "pattern": "!\\.",
+      "message": "非nullアサーション演算子の使用は避けてください",
+      "severity": "warning",
+      "fix_template": "?."
+    }
+  },
+  "python": {
+    "bare_except": {
+      "pattern": "except\\s*:",
+      "message": "具体的な例外タイプを指定してください",
+      "severity": "error",
+      "fix_template": "except Exception as e:"
+    },
+    "missing_type_hints": {
+      "pattern": "def\\s+\\w+\\s*\\([^)]*\\)\\s*(?!->)",
+      "message": "型ヒントの追加を推奨します",
+      "severity": "info",
+      "fix_template": "def ${name}(${params}) -> ${return_type}:"
+    }
+  },
+  "general": {
+    "hardcoded_credentials": {
+      "pattern": "(password|secret|key|token)\\s*=\\s*[\"'][^\"']+[\"']",
+      "message": "認証情報のハードコーディングは避けてください",
+      "severity": "critical",
+      "fix_template": "${key} = os.environ.get('${KEY_NAME}')"
+    },
+    "console_log": {
+      "pattern": "console\\.(log|debug|info)\\(",
+      "message": "本番環境でのconsole.logの使用を避けてください",
+      "severity": "info",
+      "fix_template": "// logger.${level}(${message});"
+    }
+  }
+}

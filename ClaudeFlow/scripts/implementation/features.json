@@ -1,0 +1,124 @@
+{
+  "features": [
+    {
+      "id": "feature_001",
+      "name": "ユーザー登録API",
+      "description": "新規ユーザーの登録機能。メールアドレス、パスワードのバリデーション、パスワードのハッシュ化、ユーザーレコードの作成を実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_002",
+      "name": "ログインAPI",
+      "description": "ユーザー認証とJWTトークンの発行。メールアドレスとパスワードの検証、セッション管理を実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": ["feature_001"]
+    },
+    {
+      "id": "feature_003",
+      "name": "認証ミドルウェア",
+      "description": "APIエンドポイントの保護。JWTトークンの検証、ユーザー情報の取得、認証エラーハンドリングを実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_004",
+      "name": "タスク作成API",
+      "description": "新規タスクの作成機能。タイトル、説明、期限の設定、バリデーション、データベースへの保存を実装",
+      "priority": 2,
+      "core": true,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_005",
+      "name": "タスク一覧取得API",
+      "description": "ユーザーのタスク一覧の取得。ページネーション、ソート、ステータスフィルタリングを実装",
+      "priority": 2,
+      "core": true,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_006",
+      "name": "タスク更新API",
+      "description": "既存タスクの更新機能。タイトル、説明、ステータス、期限の更新、完了/未完了の切り替えを実装",
+      "priority": 2,
+      "core": true,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_007",
+      "name": "タスク削除API",
+      "description": "タスクの削除機能。ソフトデリート実装、削除権限の確認、関連データのクリーンアップを実装",
+      "priority": 3,
+      "core": true,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_008",
+      "name": "タスク検索API",
+      "description": "タイトルと説明でのキーワード検索。部分一致検索、検索結果のページネーション、ハイライト表示用データの生成を実装",
+      "priority": 3,
+      "core": true,
+      "dependencies": ["feature_005"]
+    },
+    {
+      "id": "feature_009",
+      "name": "ログアウトAPI",
+      "description": "ユーザーセッションの終了。JWTトークンの無効化、セッションレコードの更新を実装",
+      "priority": 3,
+      "core": false,
+      "dependencies": ["feature_002"]
+    },
+    {
+      "id": "feature_010",
+      "name": "プロフィール更新API",
+      "description": "ユーザープロフィールの更新。名前の変更、バリデーション、更新履歴の記録を実装",
+      "priority": 4,
+      "core": false,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_011",
+      "name": "データベース接続管理",
+      "description": "PostgreSQLとの接続管理。接続プール、エラーハンドリング、トランザクション管理を実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_012",
+      "name": "エラーハンドリング",
+      "description": "統一的なエラー処理。エラーコード体系、エラーレスポンス形式、ログ出力を実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_013",
+      "name": "入力バリデーション",
+      "description": "共通バリデーション機能。メールアドレス、パスワード強度、日付形式、文字列長の検証を実装",
+      "priority": 1,
+      "core": false,
+      "dependencies": []
+    },
+    {
+      "id": "feature_014",
+      "name": "レート制限",
+      "description": "API呼び出しの制限機能。IPベースの制限、ユーザーベースの制限、制限超過時のエラーレスポンスを実装",
+      "priority": 4,
+      "core": false,
+      "dependencies": ["feature_003"]
+    },
+    {
+      "id": "feature_015",
+      "name": "ログ記録",
+      "description": "アプリケーションログの記録。アクセスログ、エラーログ、監査ログの出力と管理を実装",
+      "priority": 4,
+      "core": false,
+      "dependencies": []
+    }
+  ]
+}
